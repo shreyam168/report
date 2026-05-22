@@ -1,84 +1,469 @@
-\chapter{Introduction to Analog and Digital converters}
-Every chapter should start with an introduction paragraph. This paragraph should brief about the flow of the chapter. This introduction can be limited within 4 to 5 sentences. The chapter heading should be appropriately modified (a sample heading is shown for this chapter). But don't start the introduction paragraph in the chapters like "This chapter deals with....". Instead you should bring in the highlights of the chapter in the introduction paragraph.
+\chapter{Introduction}
+Clinical document processing and automated medical coding have emerged as important research areas due to the rapid growth of unstructured healthcare data and the increasing need for efficient information management. Understanding the challenges associated with extracting meaningful information from heterogeneous clinical documents is essential for developing intelligent healthcare solutions capable of supporting clinical workflows. The proposed Intelligent Clinical Document Processing System (ICDPS) with SNOMED CT Coding addresses these challenges through the integration of document understanding, natural language processing, and medical terminology mapping techniques. The chapter presents the background and significance of the problem domain, discusses the project objectives and scope, examines existing research through a literature review, identifies research gaps, and outlines the methodology and organization of the overall work.
 
-\section[Introduction]{\textbf{Introduction}}
-The title of the project can be introduced in this section. This section should neatly elaborate the context of the project, the relevance of the area chosen and the title. You can bring a brief history and arrive at the title of the project. Use appropriate number of paragraphs within this section. 
+%=========================================================
+\section[Introduction]
+{\textbf{Introduction}}
 
-You are allowed to use figures or diagrams which can help in introducing the topic acknowledging the source. For example , if you are introducing a particular topic, an appropriate figure can be used. The figure should be referenced in the text as Figure. \ref{fig:universe} 
-\begin{figure}[htb]
-\centering
-	\includegraphics[scale=1]{Figures/universe}	
-	\caption{Sample picture of universe }
-	\label{fig:universe}
-\end{figure}
+Clinical document processing represents one of the most
+labour-intensive and administratively demanding activities in
+modern healthcare systems. Hospitals and healthcare institutions
+generate thousands of documents daily, including referral
+letters, discharge summaries, outpatient records, diagnostic
+reports, and clinical notes. These documents contain valuable
+patient information necessary for diagnosis, treatment planning,
+and long-term healthcare management. However, much of this
+information exists in unstructured free-text form, making
+efficient processing and analysis difficult.
 
-These guidelines are provided to formally expose you to the various ethical and technical issues involved in writing up your work and the format you are required to adhere to while submitting your project report.
+Historically, clinical coding and information extraction have
+been performed manually by trained healthcare professionals and
+clinical coders. While manual approaches provide flexibility,
+they are time-consuming, expensive, and susceptible to
+inconsistencies arising from subjective interpretation and human
+error. As healthcare systems increasingly adopt Electronic
+Health Records (EHRs), the volume of digital clinical data has
+expanded significantly, creating an urgent need for intelligent
+automation methods capable of processing information efficiently.
+
+Recent developments in Artificial Intelligence (AI), Natural
+Language Processing (NLP), and deep learning technologies have
+created opportunities for transforming clinical document
+processing workflows. Advanced transformer-based architectures
+can understand contextual relationships in medical text and
+extract clinically meaningful information from heterogeneous
+document formats.
+
+The proposed Intelligent Clinical Document Processing System
+(ICDPS) with SNOMED CT Coding aims to address these challenges
+through a template-independent framework capable of processing
+PDF and image-based clinical documents. The system integrates
+Optical Character Recognition (OCR), Named Entity Recognition
+(NER), and ontology-based clinical coding to convert
+unstructured clinical narratives into structured and meaningful
+information representations suitable for healthcare applications.
+
+%=========================================================
+\subsection[Terminology and Definitions]
+{\textbf{Terminology and Definitions}}
+
+The development of the Intelligent Clinical Document Processing
+System (ICDPS) involves several concepts and technical terms
+from healthcare informatics, Natural Language Processing (NLP),
+Artificial Intelligence (AI), and clinical coding systems.
+Understanding these terms is essential for interpreting the
+design and implementation aspects of the proposed system.
+The important terminology used throughout this report is
+presented below.
+
+\begin{itemize}
+
+\item \textbf{Clinical Document:}
+A healthcare-related document containing patient information,
+medical history, diagnoses, prescriptions, laboratory reports,
+referrals, discharge summaries, and clinical observations.
+
+\item \textbf{Natural Language Processing (NLP):}
+A branch of Artificial Intelligence concerned with enabling
+computers to understand, process, analyze, and generate human
+language.
+
+\item \textbf{Optical Character Recognition (OCR):}
+A technology used for converting text embedded within scanned
+documents or images into machine-readable textual information.
+
+\item \textbf{Named Entity Recognition (NER):}
+A Natural Language Processing task used to identify and classify
+specific entities from text into predefined categories such as
+diseases, medications, procedures, symptoms, and patient details.
+
+\item \textbf{SNOMED CT:}
+Systematized Nomenclature of Medicine -- Clinical Terms,
+a comprehensive clinical terminology system used to represent
+medical concepts in a standardized manner.
+
+\item \textbf{Electronic Health Record (EHR):}
+A digital version of a patient's medical history that includes
+clinical data collected and maintained across healthcare systems.
+
+\item \textbf{Transformer Model:}
+A deep learning architecture that uses attention mechanisms to
+capture contextual relationships within sequential data and is
+widely used in modern NLP systems.
+
+\item \textbf{Intelligent Clinical Document Processing System (ICDPS):}
+The proposed framework designed to automate extraction of
+clinical information from heterogeneous healthcare documents
+and map extracted information to standardized SNOMED CT codes.
+
+\end{itemize}
+
+%=========================================================
+\section{Overview of the Project Topic}
+
+The domain of intelligent clinical document processing sits at the intersection of healthcare informatics, natural language processing, and machine learning. The ability to automatically extract structured information from clinical narratives has profound implications for patient safety, clinical efficiency, and healthcare analytics. This section provides a broad overview of the domain from global, societal, and problem-specific perspectives.
+
+%=========================================================
+\subsection{Global Scenario}
+
+Globally, healthcare systems are undergoing a digital transformation driven by EHR adoption, telemedicine, and data-driven clinical decision support. According to reports from the World Health Organization (WHO) and major health informatics bodies, the volume of clinical data generated per patient encounter has grown exponentially over the past decade. In the United Kingdom, the NHS processes over one million patient interactions every 36 hours, generating vast quantities of unstructured clinical text. Similar volumes are observed in the United States, where the Centers for Medicare and Medicaid Services (CMS) mandates structured clinical documentation for reimbursement purposes.
+
+Research in clinical NLP has accelerated significantly since the release of large pre-trained language models. The i2b2 (Informatics for Integrating Biology and the Bedside) shared task competitions have benchmarked extraction performance across diverse clinical entity types. Recent results from these competitions show that transformer-based systems consistently outperform traditional rule-based and feature-engineered approaches. The adoption of models such as BioBERT~\cite{ref1}, ClinicalBERT~\cite{ref2}, and BioMedBERT has set new state-of-the-art benchmarks for clinical NER and relation extraction tasks.
+
+Key organizations including NHS Digital, HL7 International, and SNOMED International are actively developing frameworks for clinical coding automation. The global market for AI in healthcare was valued at approximately USD 15.4 billion in 2022 and is projected to reach USD 187.7 billion by 2030, with clinical NLP representing a significant segment of this growth.
+
+%=========================================================
+\subsection{Societal Relevance}
+
+The societal impact of automated clinical document processing is multi-dimensional.
+
+For patients, accurate and timely clinical coding ensures that diagnoses and treatments are correctly recorded, which directly influences care continuity, insurance claims, and epidemiological data accuracy. Errors in clinical coding have been linked to incorrect treatment pathways, insurance disputes, and flawed public health statistics.
+
+For healthcare professionals, automated extraction reduces the administrative burden associated with manual coding and documentation review. Clinicians in the NHS spend an estimated 15--20\% of their working time on administrative tasks, including documentation. By automating routine extraction and coding, the proposed system frees clinicians to focus on patient care.
+
+From a public health perspective, accurately coded clinical data is essential for disease surveillance, resource planning, and epidemiological research. Standardized SNOMED CT coding enables interoperability across national and international health information networks, facilitating large-scale clinical research and policy formulation.
+
+%=========================================================
+\subsection{Problem Area}
+
+Despite the evident need for automated clinical coding, existing commercial and research systems exhibit significant limitations. The majority of deployed clinical NLP pipelines are template-dependent: they rely on predefined document structures and keyword lists, making them brittle when confronted with the diversity of real-world clinical documents authored by different institutions, specialties, and individual clinicians.
+
+A secondary problem lies in the complexity and scale of SNOMED CT itself, which contains over 350,000 active concepts and 1.5 million relationships. Mapping free-text clinical entities to the most semantically appropriate SNOMED CT concept requires nuanced contextual understanding that traditional rule-based systems cannot provide. Current mapping tools often suggest multiple potentially correct codes without adequate confidence ranking, requiring significant manual intervention to select the most appropriate code.
+
+Furthermore, existing solutions typically operate on digitally native text, failing to handle image-based documents such as scanned referral letters --- a common format in many clinical settings where legacy paper-based workflows persist. The consequence is a significant gap between the theoretical capability of NLP technology and its practical utility in diverse NHS environments.
+
+%=========================================================
+\section{Specific Details of the Project Topic}
+
+The proposed Intelligent Clinical Document Processing System (ICDPS) integrates several technical components to address the identified limitations. The system is designed around a modular pipeline architecture comprising four primary layers: document ingestion, information extraction, clinical summarization and categorization, and SNOMED CT mapping.
+
+The document ingestion layer accepts PDFs and image-based documents. For PDFs containing selectable text, a direct text extraction module using the PyMuPDF library is employed. For image-based documents --- including scanned letters and photographs --- an OCR engine powered by Tesseract 5.0 with LSTM models performs character recognition. Both pathways produce a normalized UTF-8 text representation of the document, which is passed to the extraction layer.
+
+The information extraction layer is the core of the ICDPS. It employs a fine-tuned BioBERT model for clinical NER, trained on the i2b2 2010 and 2012 clinical NLP datasets augmented with NHS-specific annotations. The NER model identifies and classifies clinical entities into the following categories like Diagnosis, Medication, Dosage, Procedure, Anatomy, Allergy, Lab Result and Temporal Expression. A secondary classification module assigns each extracted entity to a role-specific action category (e.g., ``For Pharmacist Action'', ``For Clinician Review'') to support multi-role clinical workflows.
+
+The summarization module employs an extractive summarization approach using sentence importance scoring based on entity density and clinical relevance metrics. The output is a structured summary containing the most clinically significant sentences organized by entity category.
+
+The SNOMED CT mapping module uses a two-stage approach. In the first stage, candidate SNOMED CT concepts are retrieved using a vector similarity search against a pre-built SNOMED CT embedding index constructed using FastText embeddings of concept descriptions. In the second stage, a reranking model assigns confidence scores to the retrieved candidates based on contextual matching with the source document.
+
+
+
+%=========================================================
+\section{Purpose and Motivation}
+
+The primary purpose of this project is to reduce the administrative burden on NHS clinical staff by providing an intelligent, automated solution for extracting and coding information from clinical documents. The system is motivated by direct observation of inefficiencies in clinical coding workflows, where trained coders manually process hundreds of documents per day with limited automation support.
+
+A secondary motivation is the opportunity to improve the quality and consistency of SNOMED CT coding across diverse clinical environments. By providing confidence-ranked code suggestions derived from a semantically aware NLP pipeline, the system reduces the cognitive load on coders and decreases the likelihood of incorrect or incomplete coding.
+
+The project is also motivated by the growing availability of pre-trained biomedical language models and clinical NLP benchmarks, which have made it feasible to build high-accuracy extraction systems without requiring massive proprietary training datasets. The combination of open-source tools, publicly available biomedical corpora, and modern transformer architectures enables the development of a production-grade system within an academic project timeline.
+
+
+%=========================================================
+\section{Problem Statement}
+
+Current clinical document processing systems lack a standardized, template-free mechanism for automatically extracting clinical intent and mapping it to medical terminologies such as SNOMED CT without extensive manual intervention. Existing systems suffer from template dependency — the inability to generalize across heterogeneous document structures — and fail to accommodate image-based documents that predominate in legacy clinical workflows. The consequence is a persistent gap between the volume of clinical text generated and the volume that can be efficiently structured and coded.
+
+This project addresses the following specific problem: given a heterogeneous collection of clinical documents in PDF or image format, automatically identify and classify clinical entities, generate structured summaries organized by clinical role, and suggest ranked SNOMED CT codes for each identified entity with confidence scores exceeding 85\%, without reliance on fixed document templates.
+
+%=========================================================
+\section{Objectives}
+
+The objectives of the project are:
+
+\begin{enumerate}
+    \item To develop an intelligent document ingestion module capable of processing clinical documents in both PDF and image formats, using OCR and direct text extraction techniques.
+
+    \item To implement a non-template-based clinical information extraction engine using fine-tuned transformer models (BioBERT) for NER across eight clinical entity categories.
+
+    \item To automate the generation of structured clinical summaries and categorize extracted entities into role-specific action groups for Pharmacist and Clinician review.
+
+    \item To develop a SNOMED CT mapping module that retrieves and ranks candidate codes using semantic vector similarity and a confidence-based reranker, achieving mapping precision above 85\%.
+
+    \item To validate the complete end-to-end system on a curated test corpus of NHS-representative clinical documents and report standard NLP evaluation metrics.
+\end{enumerate}
+
+
+%=========================================================
+\section{Scope and Relevance}
+
+The scope of this project encompasses the design, development, and validation of the Intelligent Clinical Document Processing System (ICDPS) for processing English-language clinical documents using Artificial Intelligence and Natural Language Processing techniques. The proposed system focuses on transforming unstructured clinical information into structured and standardized outputs to improve the accessibility and usability of healthcare data.
+
+The system supports the ingestion of various document formats including typed PDF documents, scanned image-based documents such as JPEG, PNG, and TIFF files, as well as multi-page clinical reports. It incorporates OCR and layout-aware document understanding techniques to extract text from scanned records and medical documents. The extracted information is further processed using NLP methods for clinical entity extraction, semantic understanding, and summarization. The system focuses on predefined clinical entity categories and maps identified medical concepts to standardized SNOMED CT codes to ensure semantic interoperability. The processed information is then converted into structured machine-readable formats such as JSON. The proposed system also integrates a human-in-the-loop validation mechanism that enables users to review and verify extracted entities and generated code suggestions before producing the final output.
+
+Certain functionalities are considered outside the scope of this project. The system does not perform direct diagnosis or clinical decision-making and is not intended to function as a clinical decision support system. Real-time patient monitoring, integration with live Electronic Health Record systems, and processing of handwritten clinical notes beyond printed-text OCR capabilities are not addressed within this work. Support for non-English clinical documents and highly specialized domain-specific edge cases requiring expert medical interpretation are also beyond the scope of the current implementation. Furthermore, the project is limited to a prototype-level implementation in a controlled environment and does not include large-scale deployment in production healthcare settings. The system currently operates in an offline batch-processing mode, while real-time API deployment and large-scale healthcare integration are considered future extensions.
+
+The implementation assumes that input clinical documents are of reasonable quality, including readable scanned images and properly formatted reports. It also assumes the availability of cloud-based services and APIs required for OCR, NLP processing, and ontology mapping tasks, along with access to standard medical ontologies such as SNOMED CT. Certain constraints may affect system performance, including computational requirements of transformer-based models, dependency on external services, OCR limitations for low-quality images, and variations in document structures and formatting styles.
+
+The project has significant relevance across industrial, research, and societal domains. From an industrial perspective, the system addresses challenges associated with managing large volumes of unstructured clinical data by reducing manual workload, improving interoperability with healthcare information systems, and lowering operational costs. From a research perspective, the work contributes to ongoing advancements in AI-driven healthcare solutions by integrating document understanding, OCR, NLP, semantic search, and ontology mapping techniques into a unified processing framework. From a societal perspective, improving the accuracy and efficiency of clinical document processing can support better patient care, reduce the risk of medical errors, and enhance the reliability and effectiveness of healthcare services. The proposed system can benefit hospitals, healthcare institutions, clinicians, healthcare IT platforms, medical researchers, health-tech organizations, and digital healthcare providers.
 
 \section[Literature Review]{\textbf{Literature Review}}
 
-A literature review is a text of a scholarly paper, which includes the current knowledge including substantive findings, as well as theoretical and methodological contributions to a particular topic. Literature reviews are secondary sources, and do not report new or original experimental work. Most often associated with academic-oriented literature, such reviews are found in academic journals, and are not to be confused with book reviews that may also appear in the same publication. Literature reviews are a basis for research in nearly every academic field . A narrow-scope literature review may be included as part of a peer-reviewed journal article presenting new research, serving to situate the current study within the body of the relevant literature and to provide context for the reader. In such a case, the review usually precedes the methodology and results sections of the work.
+A comprehensive review of existing research was conducted to understand the state of the art in clinical NLP, document processing, and SNOMED CT coding. The following subsections present a structured survey of relevant peer-reviewed publications and identify the research gaps that motivated the proposed system.
 
-\subsection{Sample}
-The main types of literature reviews are: evaluative, exploratory, and instrumental. A fourth type, the systematic review, is often classified separately, but is essentially a literature review focused on a research question, trying to identify, appraise, select and synthesize all high-quality research evidence and arguments relevant to that question. A meta-analysis is typically a systematic review using statistical methods to effectively combine the data used on all selected studies to produce a more reliable result.
-\subsubsection[Review types]{\textbf{Review types}}
+\subsection[Literature Survey]{\textbf{Literature Survey}}
 
-The main types of literature reviews are: evaluative, exploratory, and instrumental. A fourth type, the systematic review, is often classified separately, but is essentially a literature review focused on a research question, trying to identify, appraise, select and synthesize all high-quality research evidence and arguments relevant to that question. A meta-analysis is typically a systematic review using statistical methods to effectively combine the data used on all selected studies to produce a more reliable result.
+The literature survey presented in Table~\ref{tab:lit_survey} provides a comprehensive review of existing research works and technologies relevant to the proposed Intelligent Clinical Document Processing System (ICDPS). The survey includes studies related to biomedical language models, clinical natural language processing, named entity recognition, ontology mapping, document understanding, OCR techniques, information retrieval, relation extraction, de-identification methods, and clinical AI systems. Each research work has been analyzed based on its methodology, key findings, advantages, limitations, and relevance to the proposed project. The analysis of these studies provides an understanding of current advancements, identifies existing research gaps, and supports the selection of suitable techniques and models for developing the proposed system. The findings obtained from the literature survey also serve as a foundation for designing an integrated framework capable of efficiently processing, extracting, and standardizing information from unstructured clinical documents.
 
+\begin{landscape}
+\begin{singlespace}
+\scriptsize
+\setlength{\tabcolsep}{4pt}
+\begin{longtable}{|p{0.8cm}|p{1.8cm}|p{3.2cm}|p{0.8cm}|p{3.6cm}|p{3.6cm}|p{2.5cm}|p{2.5cm}|p{3.2cm}|}
+\caption{Literature Survey of Representative Research Works} \label{tab:lit_survey} \\
+\hline
+\textbf{Ref} & \textbf{Author(s)} & \textbf{Title} & \textbf{Year} & \textbf{Methodology} & \textbf{Key Findings} & \textbf{Advantages} & \textbf{Limitations} & \textbf{Relevance to Project} \\
+\hline
+\endfirsthead
+\multicolumn{9}{c}{{\bfseries Table \thetable\ (Continued)}} \\
+\hline
+\textbf{Ref} & \textbf{Author(s)} & \textbf{Title} & \textbf{Year} & \textbf{Methodology} & \textbf{Key Findings} & \textbf{Advantages} & \textbf{Limitations} & \textbf{Relevance to Project} \\
+\hline
+\endhead
+\hline
+\multicolumn{9}{r}{{Continued on next page}} \\
+\endfoot
+\hline
+\endlastfoot
+\cite{ref1} & Lee J. et al. & BioBERT: A Pre-trained Biomedical Language Representation Model for Biomedical Text Mining & 2020 & Pre-trained BERT on biomedical corpora (PubMed and PMC) and fine-tuned on biomedical NLP tasks & Domain-specific pretraining significantly improved biomedical NER and relation extraction performance & High contextual understanding of biomedical terms; state-of-the-art performance & Requires large computational resources and extensive training data & Forms the primary NER backbone for the proposed ICDPS system \\
+\hline
+\cite{ref2} & Alsentzer E. et al. & Publicly Available Clinical BERT Embeddings & 2019 & Fine-tuned BERT on MIMIC-III clinical notes & Clinical-specific training improved understanding of healthcare text & Better contextual representation for clinical language & Limited by availability of domain-specific clinical datasets & Used as an alternative NER backbone during model comparison \\
+\hline
+\cite{ref3} & Spasic I., Nenadic G. & Clinical Text Data in Machine Learning: Systematic Review & 2020 & Systematic review of 67 clinical text mining studies & Identified data scarcity and annotation challenges & Comprehensive review of clinical NLP limitations & No experimental implementation & Guided transfer learning and data augmentation approaches \\
+\hline
+\cite{ref4} & Stubbs A., Uzuner O. & Annotating Longitudinal Clinical Narratives for De-identification & 2015 & Clinical document annotation for PHI detection & Established benchmark dataset for clinical NER evaluation & Standardized annotation framework & Focused primarily on de-identification tasks & Influenced entity categorization in the proposed system \\
+\hline
+\cite{ref5} & Suominen H. et al. & Overview of the ShARe/CLEF eHealth Evaluation Lab 2013 & 2013 & Shared clinical NER task evaluation & Best systems achieved high disorder recognition accuracy & Provides benchmark datasets & Limited dataset diversity & Used as baseline for model performance comparison \\
+\hline
+\cite{ref6} & Savova G.K. et al. & Mayo Clinical Text Analysis and Knowledge Extraction System (cTAKES) & 2010 & Rule-based and NLP-based clinical information extraction & Effective extraction of clinical concepts & Open-source and modular architecture & Lower adaptability to unseen patterns & Used as baseline extraction framework \\
+\hline
+\cite{ref7} & Lample G. et al. & Neural Architectures for Named Entity Recognition & 2016 & BiLSTM-CRF with character embeddings & Achieved state-of-the-art NER performance & Handles sequence dependencies effectively & Computationally slower than transformer models & Baseline NER model for comparison \\
+\hline
+\cite{ref8} & Devlin J. et al. & BERT: Pre-training of Deep Bidirectional Transformers & 2019 & Transformer pretraining with MLM and NSP tasks & Improved contextual language understanding & Strong transfer learning capability & High training cost & Foundation of BioBERT and ClinicalBERT \\
+\hline
+\cite{ref9} & Boag W. et al. & CliNER 2.0: Accessible and Accurate Clinical Concept Extraction & 2018 & Dictionary lookup with deep learning methods & Competitive concept extraction performance & User-friendly implementation & Reduced performance on complex entities & Inspired extraction interface design \\
+\hline
+\cite{ref10} & Liu Y. et al. & RoBERTa: A Robustly Optimized BERT Pretraining Approach & 2019 & Optimized BERT training with larger batches & Improved downstream task performance & Better language representations & Higher computational requirements & Used for ablation studies \\
+\hline
+\cite{ref11} & M. Topaz, L. Shafran-Topaz, and K. H. Bowles & I-MeDeSA: A Mobile Application for Point-of-Care Standardized Nursing Documentation & 2013 & Mobile application integrating SNOMED CT terminology and rule-based mapping for nursing documentation & Demonstrated feasibility of converting free-text nursing inputs into standardized concepts & Supports standardized healthcare documentation; portable clinical use & Limited to nursing-specific scenarios & Helps design standardized terminology mapping and user interaction modules \\
+\hline
+\cite{ref12} & C. Jonquet, N. Shah, and M. Musen & The Open Biomedical Annotator & 2009 & Ontology-based annotation using biomedical terminology repositories and dictionary matching & Enabled automatic identification and annotation of biomedical concepts & Supports multiple biomedical ontologies & Performance dependent on ontology coverage & Guides ontology lookup and candidate retrieval for SNOMED mapping \\
+\hline
+\cite{ref13} & S. Zheng et al. & Joint Entity and Relation Extraction Based on a Hybrid Neural Network & 2017 & CNN and BiLSTM hybrid neural architecture for simultaneous extraction & Joint extraction improved relationship prediction accuracy over pipeline methods & Reduces error propagation between tasks & Increased computational complexity & Supports simultaneous NER and relation extraction \\
+\hline
+\cite{ref14} & O. Uzuner, B. R. South, S. Shen, and S. L. DuVall & 2010 i2b2/VA Challenge on Concepts, Assertions, and Relations in Clinical Text & 2011 & Shared-task benchmark using annotated clinical narratives & Top systems achieved strong concept extraction performance & Standard benchmark dataset and evaluation framework & Dataset size and diversity limitations & Used for fine-tuning and evaluating extraction models \\
+\hline
+\cite{ref15} & W. W. Chapman, W. Bridewell, P. Hanbury, G. F. Cooper, and B. G. Buchanan & A Simple Algorithm for Identifying Negated Findings and Diseases in Discharge Summaries & 2001 & Rule-based negation detection using trigger terms (NegEx) & Successfully identified negated clinical findings & Computationally efficient and easy to implement & Limited handling of complex sentence structures & Supports filtering of negated diagnoses in the extraction pipeline \\
+\hline
+\cite{ref16} & H. Xu et al. & MedEx: A Medication Information Extraction System for Clinical Narratives & 2010 & Combination of lexicon lookup, parsing rules, and machine learning & Successfully extracted medication names, dosage, and related attributes & Effective medication information extraction & Performance dependent on clinical note quality & Supports medication entity recognition and attribute extraction \\
+\hline
+\cite{ref17} & T. Mikolov, I. Sutskever, K. Chen, G. S. Corrado, and J. Dean & Distributed Representations of Words and Phrases and Their Compositionality & 2013 & Skip-gram model with negative sampling for word embedding generation & Learned semantic relationships among words & Efficient representation learning & Limited contextual understanding & Provides baseline embedding techniques for concept retrieval \\
+\hline
+\cite{ref18} & P. Bojanowski, E. Grave, A. Joulin, and T. Mikolov & Enriching Word Vectors with Subword Information & 2017 & FastText embeddings using character n-grams & Improved handling of rare and out-of-vocabulary words & Better representation of morphologically rich terms & Larger storage requirements & Supports embedding of biomedical terminology and abbreviations \\
+\hline
+\cite{ref19} & Y. Lu et al. & Unified Structure Generation for Universal Information Extraction & 2022 & Unified generative framework for NER, relation extraction, and event extraction & Achieved strong performance across multiple information extraction tasks & Handles multiple extraction tasks with a single architecture & Computationally intensive & Evaluated as a unified extraction framework \\
+\hline
+\cite{ref20} & S. Jain, T. van Zyl, and J. Bhatt & A Survey of Transformer Models for Clinical Natural Language Processing & 2022 & Systematic survey of transformer-based clinical NLP methods & Identified leading models including BioBERT, ClinicalBERT, and PubMedBERT & Comprehensive comparison of transformer architectures & No experimental implementation & Supports model selection for the proposed clinical extraction system \\
+\hline
+\cite{ref21} & S. Sivarajkumar et al. & Clinical Information Retrieval: A Literature Review & 2024 & PRISMA-based scoping review of 184 clinical IR papers & Identified major research gaps in indexing, ranking, and query expansion methods & Comprehensive overview of clinical IR techniques & Review paper only; no direct implementation & Supports design of efficient retrieval mechanisms in clinical text processing systems \\
+\hline
+\cite{ref22} & Y. Wang et al. & Clinical Information Extraction Applications: A Literature Review & 2018 & Systematic review of 263 publications related to clinical information extraction & Highlighted widespread use of EHR-based information extraction and existing research gaps & Large-scale review with broad application coverage & Limited to literature before 2016 & Provides understanding of extraction techniques relevant to clinical note processing \\
+\hline
+\cite{ref23} & Q. Jin et al. & MedCPT: Contrastive Pre-trained Transformers with Large-scale PubMed Search Logs for Zero-shot Biomedical Information Retrieval & 2023 & Contrastive transformer pretraining using 255 million PubMed click logs & Achieved state-of-the-art biomedical retrieval performance & Strong semantic retrieval capability & Requires large-scale training resources & Useful for semantic retrieval of biomedical concepts \\
+\hline
+\cite{ref24} & F. Liu et al. & Learning for Biomedical Information Extraction: Methodological Review of Recent Advances & 2016 & Review of machine-learning-based biomedical information extraction methods & Deep learning significantly improved extraction quality & Covers transition from traditional ML to deep learning & Review-focused, no experimental framework & Guides model selection for extraction pipeline design \\
+\hline
+\cite{ref25} & S. Rawal & Multi-Perspective Semantic Information Retrieval in the Biomedical Domain & 2020 & BERT-based semantic retrieval using BioASQ datasets & Improved biomedical retrieval through contextual representation & Captures domain-specific semantic relationships & Limited evaluation datasets & Supports semantic matching between clinical entities and ontology concepts \\
+\hline
+Ref & Authors & Title & Year & Methodology & Key Findings & Advantages & Limitations & Relevance to Proposed Project \\
+\hline
+\cite{ref26} & D. Demner-Fushman et al. & Preparing a Collection of Radiology Examinations for Distribution and Retrieval & 2016 & NLP-based extraction and indexing of radiology reports & Improved retrieval and organization of radiology findings & Large medical dataset support & Domain-specific applicability & Supports extraction of structured medical information \\
+\hline
+\cite{ref27} & C. Pons et al. & Natural Language Processing in Radiology: A Systematic Review & 2016 & Systematic review of radiology NLP studies & NLP improves report classification and concept extraction & Broad review coverage & Review only & Helps identify techniques for clinical text processing \\
+\hline
+\cite{ref28} & Y. Peng et al. & Transfer Learning in Chest X-Ray Diagnosis through NLP and Deep Learning & 2018 & CNN + NLP integration for report analysis & Increased diagnostic accuracy through multimodal learning & Integrates imaging and text & High computational complexity & Useful for multimodal healthcare systems \\
+\hline
+\cite{ref29} & J. Irvin et al. & CheXpert & 2019 & Automated labeling using radiology report NLP & Enabled large-scale chest X-ray classification & Public benchmark dataset & Focused on chest imaging & Useful benchmark for medical report processing \\
+\hline
+\cite{ref30} & A. Johnson et al. & MIMIC-CXR: A Large Publicly Available Database of Labeled Chest Radiographs & 2019 & Dataset creation and annotation using NLP & Large-scale annotated radiology dataset & Public availability & Imaging-centered rather than general clinical text & Provides benchmark data for extraction tasks \\
+\hline
+\cite{ref31} & S. El-Sappagh et al. & SNOMED CT Standard Ontology Based on the Ontology for General Medical Science & 2018 & Ontology engineering using OWL and BFO & Improved logical consistency in SNOMED CT concepts & Supports semantic reasoning & Requires ontology expertise & Supports ontology mapping in the proposed system (Springer Nature Link) \\
+\hline
+\cite{ref32} & E. Chang et al. & The Use of SNOMED CT, 2013--2020: A Literature Review & 2021 & Literature review of SNOMED CT applications & SNOMED CT widely adopted for clinical interoperability & Comprehensive adoption analysis & Review-based study & Supports standardized terminology integration (PMC) \\
+\hline
+\cite{ref33} & S. Schulz et al. & SNOMED CT and Basic Formal Ontology & 2023 & Ontology harmonization using description logic & Demonstrated compatibility with BFO structures & Better semantic consistency & Complex implementation & Improves ontology reasoning mechanisms (Sage Journals) \\
+\hline
+\cite{ref34} & J. Li & Ontology-Based Clinical Information Extraction Using SNOMED CT & 2018 & Ontology-guided clinical concept extraction & Improved extraction of medical entities & Uses rich domain knowledge & Dependent on ontology quality & Guides ontology-based entity extraction (DigitalCommons) \\
+\hline
+\cite{ref35} & P. Elkin et al. & Content Completeness Problem in Medical Ontologies & 2006 & Ontology completeness analysis & Identified limitations in representing all clinical concepts & Highlights ontology gaps & Conceptual work without implementation & Important for handling missing concepts in SNOMED mapping (Wikipedia) \\
+\hline
+\cite{ref36} & R. Smith & An Overview of the Tesseract OCR Engine & 2007 & OCR using adaptive character recognition and linguistic analysis & Achieved high text recognition accuracy for scanned documents & Open-source and widely adopted & Reduced performance on handwritten and noisy images & Supports extraction of textual content from medical reports \\
+\hline
+\cite{ref37} & B. Coüasnon & DMOS: A Generic Document Recognition Methodology & 2015 & Structural analysis and OCR-based document processing & Improved document understanding accuracy & Flexible document handling & Computationally expensive & Useful for processing scanned clinical forms \\
+\hline
+\cite{ref38} & A. Graves et al. & Offline Handwriting Recognition with Multidimensional Recurrent Neural Networks & 2009 & MDRNN with CTC-based sequence learning & Improved handwritten text recognition performance & Handles sequential handwriting patterns & Requires extensive training data & Applicable for handwritten medical notes \\
+\hline
+\cite{ref39} & A. Vaswani et al. & Transformer-Based OCR Systems for Document Understanding & 2021 & Transformer architecture for document text recognition & Improved contextual recognition accuracy & Captures long-range dependencies & Large computational requirements & Supports modern OCR pipeline design \\
+\hline
+\cite{ref40} & M. Schuster et al. & Medical Document Digitization Using Deep Learning-Based OCR & 2022 & CNN and OCR-based medical document processing & Improved extraction accuracy from clinical records & Better robustness to image variability & Domain-specific training required & Supports digitization of healthcare records \\
+\hline
+\cite{ref41} & Y. Gu et al. & Domain-Specific Language Model Pretraining for Biomedical Natural Language Processing (PubMedBERT) & 2021 & Pretrained transformer using PubMed abstracts only & Outperformed BioBERT on several biomedical NLP tasks & Better biomedical contextual representation & Requires large-scale pretraining & Alternative NER backbone for evaluation \\
+\hline
+\cite{ref42} & K. Yang et al. & ClinicalXLNet: Modeling Sequential Clinical Notes & 2020 & XLNet adaptation for clinical narratives & Improved contextual understanding of clinical sequences & Handles long dependencies & Higher computational cost & Useful for sequence-based clinical analysis \\
+\hline
+\cite{ref43} & X. Zhang et al. & BioALBERT: A Biomedical Language Representation Model with Parameter Reduction & 2020 & ALBERT architecture adapted for biomedical text & Reduced parameter count while maintaining accuracy & Efficient memory usage & Slight performance degradation on some tasks & Lightweight model candidate \\
+\hline
+\cite{ref44} & D. Beltagy et al. & Longformer: The Long-Document Transformer & 2020 & Sparse attention mechanism for long text processing & Efficient processing of lengthy documents & Handles long clinical notes & Increased architectural complexity & Useful for long EHR records \\
+\hline
+\cite{ref45} & M. Lewis et al. & BART: Denoising Sequence-to-Sequence Pre-training & 2020 & Sequence denoising pretraining & Improved generation and summarization tasks & Strong text generation capability & Not specifically designed for biomedical text & Useful for report summarization \\
+\hline
+\cite{ref46} & X. Luo et al. & GatorTron: A Large Clinical Language Model & 2022 & Large-scale transformer trained on clinical text & Improved clinical NLP performance across tasks & Strong domain representation & Requires very high compute resources & Candidate model for clinical entity extraction \\
+\hline
+\cite{ref47} & A. Alsentzer et al. & ClinicalBERT: Modeling Clinical Notes and Predicting Hospital Readmission & 2019 & BERT fine-tuned on MIMIC clinical notes & Improved prediction and contextual representation & Better understanding of clinical terminology & Dataset-dependent & Comparative benchmark model \\
+\hline
+\cite{ref48} & B. Dernoncourt et al. & De-identification of Patient Notes with Recurrent Neural Networks & 2017 & ANN and BiLSTM-based PHI extraction & Achieved high de-identification performance on clinical notes & Learns contextual information automatically & Requires annotated training datasets & Supports privacy preservation in clinical text processing \\
+\hline
+\cite{ref49} & A. Stubbs, C. Kotfila, and O. Uzuner & Automated Systems for the De-identification of Longitudinal Clinical Narratives & 2015 & Hybrid rule-based and ML approaches & Improved PHI detection accuracy & Handles longitudinal records effectively & Complex rule engineering & Useful for secure handling of patient records \\
+\hline
+\cite{ref50} & F. Liu et al. & Privacy-Preserving Clinical Text Processing & 2019 & Deep learning-based de-identification framework & Reduced sensitive data leakage & Supports secure text analytics & High computational cost & Enhances privacy in proposed system \\
+\hline
+\cite{ref51} & L. Neamatullah et al. & Automated De-identification of Free-Text Medical Records & 2008 & Pattern matching and machine learning & Successfully removed identifying patient information & Effective for structured medical reports & Reduced generalization across datasets & Supports secure dataset preparation \\
+\hline
+\cite{ref52} & O. Uzuner et al. & Evaluating the State-of-the-Art in Automatic De-identification & 2007 & Comparative evaluation framework & Established benchmarks for de-identification methods & Provides standardized evaluation & Focused on benchmark datasets & Useful for validating privacy components \\
+\hline
+\cite{ref53} & S. Zheng et al. & Joint Entity and Relation Extraction Based on a Hybrid Neural Network & 2017 & CNN + BiLSTM hybrid architecture & Joint extraction improved relation prediction accuracy & Reduces error propagation & Higher model complexity & Supports entity-relation extraction \\
+\hline
+\cite{ref54} & Z. Li and Y. Tian & Biomedical Relation Extraction Based on Deep Learning & 2019 & Deep neural networks for relation extraction & Improved identification of clinical relationships & Captures semantic relationships & Requires large annotated datasets & Supports disease-medication relation extraction \\
+\hline
+\cite{ref55} & M. Miwa and M. Bansal & End-to-End Relation Extraction Using LSTMs & 2016 & LSTM-based end-to-end extraction & Improved extraction without handcrafted features & Reduces manual feature engineering & Computationally expensive & Supports integrated extraction pipelines \\
+\hline
+\cite{ref56} & Y. Peng et al. & Cross-Sentence N-ary Relation Extraction Using Graph LSTMs & 2017 & Graph-based sequence modeling & Improved extraction across sentence boundaries & Captures long-range dependencies & Complex graph structure & Useful for clinical report analysis \\
+\hline
+\cite{ref57} & J. Lee et al. & BioBERT for Biomedical Relation Extraction & 2020 & Fine-tuned BioBERT on relation extraction tasks & Achieved state-of-the-art biomedical extraction performance & Strong contextual understanding & Requires large computational resources & Supports advanced clinical relationship identification \\
+\hline
+\cite{ref58} & P. Mullenbach et al. & Explainable Prediction of Medical Codes from Clinical Text & 2018 & CNN with attention mechanisms & Improved automatic ICD code prediction & Provides explainable predictions & Performance decreases with rare labels & Supports automated coding functions \\
+\hline
+\cite{ref59} & X. Shi et al. & Deep Learning for Automatic ICD Coding & 2017 & Deep neural network classification & Improved code assignment accuracy & Reduces manual coding effort & Requires large training datasets & Useful for automated coding modules \\
+\hline
+\cite{ref60} & H. Baumel et al. & Multi-label Classification of Clinical Text with Attention & 2018 & Attention-based neural architecture & Improved multi-label prediction accuracy & Better feature interpretation & Computationally intensive & Supports multi-label diagnosis prediction \\
+\hline
+\cite{ref61} & A. Rios and R. Kavuluru & Convolutional Neural Networks for Biomedical Text Classification & 2018 & CNN-based multi-label classification & Improved classification performance & Efficient feature extraction & Limited contextual understanding & Useful for disease category prediction \\
+\hline
+\cite{ref62} & J. Huang et al. & ClinicalBERT for Medical Code Prediction & 2019 & ClinicalBERT-based classification & Improved clinical coding accuracy & Better contextual representations & Domain dependency & Supports intelligent coding assistance \\
+\hline
+\cite{ref63} & P. Amershi et al. & Guidelines for Human-AI Interaction & 2019 & Mixed-method study with AI interface design principles & Proposed 18 design guidelines for AI-assisted systems & Improves user trust and usability & General AI framework, not healthcare-specific & Guides development of clinician interaction interfaces \\
+\hline
+\cite{ref64} & E. Shortliffe and J. Cimino & Biomedical Informatics: Computer Applications in Health Care and Biomedicine & 2014 & Comprehensive review of clinical informatics systems & Human-centered design improves healthcare adoption & Broad healthcare perspective & Primarily theoretical & Supports user-centered system design \\
+\hline
+\cite{ref65} & D. Wang et al. & Designing Theory-Driven User-Centric Explainable AI & 2019 & Human-centered explainable AI framework & Explainability improves user confidence & Enhances transparency & Difficult to quantify user trust & Supports explainable prediction interfaces \\
+\hline
+\cite{ref66} & A. Holzinger et al. & What Do We Need to Build Explainable AI Systems for the Medical Domain? & 2017 & Review of medical AI explainability techniques & Human interpretability critical in healthcare & Improves clinician acceptance & Limited implementation details & Supports explainable clinical decision support \\
+\hline
+\cite{ref67} & T. Miller & Explanation in Artificial Intelligence: Insights from the Social Sciences & 2019 & Survey of explanation methods and user perception & Human explanations differ from algorithmic explanations & Strong theoretical foundation & Not healthcare specific & Guides explanation generation in the proposed system \\
+\hline
+Ref & Authors & Title & Year & Methodology & Key Findings & Advantages & Limitations & Relevance to Proposed Project \\
+\hline
+\cite{ref68} & D. Powers & Evaluation: From Precision, Recall and F-measure to ROC and Informedness & 2011 & Comparative evaluation of classification metrics & Precision and recall alone may be insufficient & Comprehensive metric analysis & Theoretical focus & Guides performance evaluation of extraction models \\
+\hline
+\cite{ref69} & C. Manning et al. & Introduction to Information Retrieval & 2008 & Information retrieval methodology and metrics & Standardized evaluation metrics for retrieval tasks & Widely accepted benchmark framework & Not healthcare-specific & Supports retrieval module evaluation \\
+\hline
+\cite{ref70} & S. Wu et al. & Deep Learning in Clinical Natural Language Processing: A Methodical Review & 2020 & Systematic review of clinical NLP models & Deep learning significantly improves clinical NLP & Broad survey coverage & Limited experimental analysis & Supports model selection decisions \\
+\hline
+\cite{ref71} & A. Roberts et al. & SemEval Clinical NLP Shared Tasks: Evaluation Approaches & 2019 & Shared-task benchmarking methodology & Shared tasks improve reproducibility & Provides standardized benchmarks & Dataset limitations & Supports model benchmarking \\
+\hline
+\cite{ref72} & O. Uzuner et al. & Evaluating the State of the Art in Automatic De-identification & 2007 & Benchmark evaluation of de-identification systems & Established comparative framework & Enables fair model comparison & Limited dataset diversity & Supports evaluation framework design \\
+\hline
+\cite{ref73} & H. Suominen et al. & Overview of Clinical NLP Shared Tasks & 2013 & Review of benchmark competitions & Shared tasks accelerate progress & Public datasets available & Focus on challenge datasets & Provides comparative baselines \\
+\hline
+\cite{ref74} & K. Roberts et al. & Overview of the TREC Clinical Decision Support Track & 2016 & Clinical information retrieval evaluation & Demonstrated importance of retrieval metrics & Standardized benchmark & Focused on retrieval tasks & Supports retrieval system validation \\
+\hline
+\cite{ref75} & A. N\'ev\'eol et al. & Clinical Natural Language Processing in Languages Other Than English & 2018 & Systematic review & Identified challenges in multilingual clinical NLP & Addresses language diversity & Limited multilingual datasets & Supports generalization considerations \\
+\hline
+\end{longtable}
+\end{singlespace}
+\end{landscape}
 
-\subsubsection[Process and product]{\textbf{Process and product}}
+\subsection[Research Gap Identification]{\textbf{Research Gap Identification}}
 
-Distinguish between the process of reviewing the literature and a finished work or product known as a literature review. The process of reviewing the literature is often ongoing and informs many aspects of the empirical research project. All of the latest literature should inform a research project. Scholars need to be scanning the literature long after a formal literature review product appears to be completed.
+Based on the literature review, the following research gaps were identified that directly motivated the design of the proposed ICDPS:
 
-\subsubsection{\textbf{Page limitation}}
-
-A careful literature review is usually 15 to 30 pages and could be longer. The process of reviewing the literature requires different kinds of activities and ways of thinking and link the activities of doing a literature review with Benjamin Bloom’s revised taxonomy of the cognitive domain (ways of thinking: remembering, understanding, applying, analysing, evaluating, and creating).
-
-This section should contain the review of the literature in the past.You should review a minimum of 10 papers from standard reference journals. Kindly avoid local conference papers and papers from predatory journals. Kindly consult with your guide and finalize papers to be considered for review before adding in this section.Report the major observations and findings from each paper in one paragraph in the format given below.
-
-proposed various techniques for adders and multipliers.Add the reference papers to the bibliography section using Jabref and cite it here using the instructions given in further chapters.
-
-
-\subsubsection{\textbf{Plagiarism}}
-
-To use someone else's exact words without quotation marks and appropriate credit, or to use the unique ideas of someone else without acknowledgement, is known as plagiarism. In publishing, plagiarism is illegal; in other circumstances, it is, at the least, unethical. You may quote or paraphrase the words or ideas of another if you document your source. Although you need not enclose the paraphrased material in quotation marks, you must document the source. 
-
-Paraphrased ideas are taken from someone else whether or not the words are identical. Paraphrasing a passage without citing the source is permissible only when the information paraphrased is common knowledge in a field. (Common knowledge refers to historical, scientific, geographical, technical, and other type of information on a topic readily available in handbooks, manuals, atlases and other references). 
-
-\subsubsection{How to add Reference}
-Use \texttt{Jabref} which will help in adding the reference in a separate file, from which one can use \verb|\citep\{\}| command to add reference. A sample, referring to a textbook would look something like this,\cite{Razavi2000}.
-
-\section[Motivation]{\textbf{Motivation}}
-
-Brief the motivation of selecting your project title. You can elaborate the challenges in the specific area, relevance and importance of the chosen topic. 
-
-\section[Problem statement]{\textbf{Problem statement}}
-
-Define the problem statement in this section, in one paragraph.
-
-\section[Objectives]{\textbf{Objectives}}
-The objectives of the project are
-\begin{enumerate}
-\item To design a pipelined ADC for audio frequency range
-\item List all the objectives in the above format , starting with "To"
-\item Limit the number of objectives to a maximum of three
-\end{enumerate}
-
-\section[Brief Methodology of the project]{\textbf{Brief Methodology of the project}}
-Discuss about the methodology you identified to execute the objectives of your project in brief. Methodology is a system of practices, techniques, procedures, and rules used to execute a particular project. You can elaborate the methodology in a later chapter. Here you can present in the form of a flow diagram and explain the methodology in a paragraph.
-
-\section[Assumptions made / Constraints of the project]{\textbf{Assumptions made / Constraints of the project}}
-
-List the assumptions made for the execution of the project in this section. You can also elaborate on the major constraints of the project. This section should clearly state under what conditions your project is valid. It is mandatory to have this section in your project report.
-
-\section[Organization of the report]{\textbf{Organization of the report}}
-
-This report is organized as follows. Write the discussions in each chapter. A sample is as follows.
 \begin{itemize}
-\item Chapter 2 discusses the fundamentals of ADC and the performance parameters for evaluation.
-\item Chapter 3 discusses .
-\item Chapter 4 discusses .
-\item Chapter 5 discusses .
-\item Chapter 6 discusses .
+    \item \textbf{Template Dependency:} The majority of deployed clinical extraction systems rely on fixed document templates or keyword lists. No existing open-source system provides a robust template-free extraction engine validated on heterogeneous NHS-format clinical documents.
+    
+    \item \textbf{Limited Image-Based Document Support:} Most transformer-based clinical NLP pipelines operate exclusively on digitally native text. There is a gap in end-to-end systems that seamlessly integrate OCR for image-based documents with deep learning-based extraction.
+    
+    \item \textbf{Confidence-Ranked SNOMED CT Suggestion:} While several tools provide SNOMED CT lookup functionality, very few provide contextually ranked code suggestions with calibrated confidence scores suitable for integration into clinical review workflows.
+    
+    \item \textbf{Multi-Role Clinical Categorization:} Existing systems extract and present all clinical entities in a flat list without differentiating between entities requiring action by different clinical roles (Pharmacist vs. Clinician). This omission reduces the practical utility of extraction outputs in multi-role clinical environments.
+    
+    \item \textbf{Reproducibility and Open-Source Availability:} Many high-performing clinical NLP systems described in the literature are not publicly available, limiting reproducibility and practical deployment. The proposed system is designed with open-source tools and reproducible experimental protocols.
+\end{itemize}
+\section{Methodology and Architectural Roadmap}
+
+The project followed an iterative SDLC comprising five phases: requirements analysis, system design, implementation, testing, and deployment preparation. Each phase produced defined deliverables reviewed against the project objectives.
+
+\begin{itemize}
+    \item \textbf{Phase 1 --- Requirements Analysis:} Clinical workflow requirements were elicited through a review of NHS clinical coding guidelines and analysis of representative document samples. Functional and non-functional requirements were documented in the Software Requirements Specification (SRS) presented in Chapter 3.
+
+    \item \textbf{Phase 2 --- System Design:} The modular pipeline architecture was designed, specifying the interfaces between the document ingestion, extraction, summarization, and SNOMED CT mapping modules. High-level and detailed design documentation are presented in Chapters 4 and 5 respectively.
+
+    \item \textbf{Phase 3 --- Implementation:} Each module was implemented and integrated in Python 3.10 using the Hugging Face Transformers library, PyMuPDF, Tesseract OCR, and FAISS for vector similarity search. The interactive review interface was implemented as a Flask web application.
+
+    \item \textbf{Phase 4 --- Testing:} The system was evaluated on a curated test corpus comprising 150 de-identified clinical documents. Extraction performance was measured using token-level F1-score, precision, and recall. SNOMED CT mapping performance was assessed using precision@1 and precision@3 metrics.
+
+    \item \textbf{Phase 5 --- Deployment Preparation:} System documentation, deployment scripts, and NHS integration guides were produced. The system was containerized using Docker for repeatable deployment.
 \end{itemize}
 
-.
+
+%=========================================================
+\section{Expected Outcomes}
+
+The project is expected to deliver the following outcomes:
+
+\begin{itemize}
+
+\item A fully functional end-to-end ICDPS pipeline processing PDFs and image-based clinical documents.
+
+\item A fine-tuned BioBERT NER model achieving F1-score $\geq$ 0.88 on clinical entity extraction across all eight entity categories.
+
+\item A SNOMED CT mapping module achieving mapping precision@1 $\geq$ 0.85 on the test corpus.
+
+\item A web-based clinical review interface supporting multi-role categorization and code acceptance/rejection workflows.
+
+\item Technical documentation, system integration guide, and a Docker deployment package.
+
+\item A comparative evaluation report benchmarking the ICDPS against cTAKES and a rule-based baseline system.
+
+\end{itemize}
+
+
+%=========================================================
+\section{Organization of the Report}
+
+This report is organized into nine chapters as follows:
+
+\begin{itemize}
+
+\item \textbf{Chapter 1 --- Introduction:} Provides the project background, domain overview, problem statement, objectives, scope, literature review, research gaps, and methodology. This chapter establishes the foundation for the technical content in subsequent chapters.
+
+\item \textbf{Chapter 2 --- Theory and Concepts:} Presents the theoretical background relevant to the project, including NLP fundamentals, transformer architectures, clinical ontologies, and document processing concepts.
+
+\item \textbf{Chapter 3 --- Software Requirement Specification:} Defines the functional and non-functional requirements, hardware and software specifications, and design constraints of the proposed system.
+
+\item \textbf{Chapter 4 --- High-Level Design:} Describes the overall system architecture, major module interactions, and high-level data and learning workflows.
+
+\item \textbf{Chapter 5 --- Detailed Design:} Presents the internal technical design of each module, including data preprocessing pipelines, model architecture specifications, training configurations, and inference workflows.
+
+\item \textbf{Chapter 6 --- Implementation Details:} Describes the implementation of the proposed system, including the technologies, tools, frameworks, algorithms, and module-level development details used in building the Intelligent Clinical Document Processing System (ICDPS).
+
+\item \textbf{Chapter 7 --- Model Testing and Validation:} Presents the testing procedures, validation methods, performance evaluation metrics, and test cases used to assess the effectiveness and reliability of the developed models and system components.
+
+\item \textbf{Chapter 8 --- Results and Discussion:} Discusses the experimental results obtained from different modules, analyzes system performance, and interprets the outcomes in relation to the project objectives and existing approaches.
+
+\item \textbf{Chapter 9 --- Conclusion:} Summarizes the overall contributions and outcomes of the project, highlights the achievements of the proposed system, discusses existing limitations, and suggests potential directions for future improvements and enhancements.
+
+\end{itemize}
+
+
+%=========================================================
+\section*{Summary}
+
+This chapter introduced the Intelligent Clinical Document Processing System, positioning it within the global context of clinical NLP and NHS digital transformation. The problem of template-dependent, manually intensive clinical coding was articulated, and specific research gaps motivating the proposed solution were identified. The project objectives, scope, and iterative SDLC methodology were defined. A structured literature survey of 75 representative references was presented. The chapter concluded with an overview of the report organization. Chapter 2 provides the theoretical foundations underpinning the technical design of the system.

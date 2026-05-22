@@ -1,23 +1,671 @@
 % Encoding: UTF-8
 
-@Book{Razavi2000,
-  author    = {Behzad Razavi},
-  title     = {Design of Analog CMOS Integrated Circuits},
-  year      = {2000},
-  publisher = {McGraw-Hill Education},
-  isbn      = {978-0072380323},
+@Article{ref1,
+  author       = {Lee, J. and Yoon, W. and Kim, S. and Kim, D. and Kim, S. and So, C. H. and Kang, J.},
+  date         = {2020},
+  journaltitle = {Bioinformatics},
+  title        = {BioBERT: A pre-trained biomedical language representation model for biomedical text mining},
+  pages        = {1234--1240},
+  volume       = {36},
+  number       = {4},
 }
 
-@Article{Lu2023,
-  author       = {Lu, Chao and Chen, Shr-Lung and Liu, Jun and Bao, Jian and Wang, Yufei and Zhao, Yi},
+@Article{ref2,
+  author       = {Alsentzer, E. and Murphy, J. R. and Boag, W. and Weng, W.-H. and Jin, D. and Naumann, T. and McDermott, M.},
+  date         = {2019},
+  journaltitle = {Proc. 2nd Clinical NLP Workshop},
+  title        = {Publicly available clinical BERT embeddings},
+  pages        = {72--78},
+}
+
+@Article{ref3,
+  author       = {Spasic, I. and Nenadic, G.},
+  date         = {2020},
+  journaltitle = {JMIR Medical Informatics},
+  title        = {Clinical text data in machine learning: Systematic review},
+  pages        = {e17984},
+  volume       = {8},
+  number       = {3},
+}
+
+@Article{ref4,
+  author       = {Stubbs, A. and Uzuner, O.},
+  date         = {2015},
+  journaltitle = {J. Biomedical Informatics},
+  title        = {Annotating longitudinal clinical narratives for de-identification: The 2014 i2b2/UTHealth corpus},
+  pages        = {S20--S29},
+  volume       = {58},
+}
+
+@Article{ref5,
+  author       = {Suominen, H. and others},
+  date         = {2013},
+  journaltitle = {Lect. Notes Comput. Sci.},
+  title        = {Overview of the ShARe/CLEF eHealth Evaluation Lab 2013},
+  pages        = {212--231},
+  volume       = {8138},
+}
+
+@Article{ref6,
+  author       = {Savova, G. K. and others},
+  date         = {2010},
+  journaltitle = {JAMIA},
+  title        = {Mayo clinical Text Analysis and Knowledge Extraction System (cTAKES)},
+  pages        = {507--513},
+  volume       = {17},
+  number       = {5},
+}
+
+@Article{ref7,
+  author       = {Lample, G. and Ballesteros, M. and Subramanian, S. and Kawakami, K. and Dyer, C.},
+  date         = {2016},
+  journaltitle = {Proc. NAACL-HLT 2016},
+  title        = {Neural architectures for named entity recognition},
+  pages        = {260--270},
+}
+
+@Article{ref8,
+  author       = {Devlin, J. and Chang, M.-W. and Lee, K. and Toutanova, K.},
+  date         = {2019},
+  journaltitle = {Proc. NAACL-HLT 2019},
+  title        = {BERT: Pre-training of deep bidirectional transformers for language understanding},
+  pages        = {4171--4186},
+}
+
+@Article{ref9,
+  author       = {Boag, W. and Doss, D. and Ben-Nun, T. and Gao, F. and Szolovits, P. and Naumann, T.},
+  date         = {2018},
+  journaltitle = {arXiv:1811.05603},
+  title        = {CliNER 2.0: Accessible and accurate clinical concept extraction},
+}
+
+@Article{ref10,
+  author       = {Liu, Y. and others},
+  date         = {2019},
+  journaltitle = {arXiv:1907.11692},
+  title        = {RoBERTa: A robustly optimized BERT pretraining approach},
+}
+
+@Article{ref11,
+  author       = {Topaz, M. and Shafran-Topaz, L. and Bowles, K. H.},
+  date         = {2013},
+  journaltitle = {CIN: Computers, Informatics, Nursing},
+  title        = {I-MeDeSA: A mobile application for point-of-care standardized nursing documentation},
+  pages        = {117--123},
+  volume       = {31},
+  number       = {3},
+}
+
+@Article{ref12,
+  author       = {Zheng, S. and others},
+  date         = {2017},
+  journaltitle = {Neurocomputing},
+  title        = {Joint entity and relation extraction based on a hybrid neural network},
+  pages        = {59--66},
+  volume       = {257},
+}
+
+@Article{ref13,
+  author       = {Uzuner, O. and South, B. R. and Shen, S. and DuVall, S. L.},
+  date         = {2011},
+  journaltitle = {JAMIA},
+  title        = {2010 i2b2/VA challenge on concepts, assertions, and relations in clinical text},
+  pages        = {552--556},
+  volume       = {18},
+  number       = {5},
+}
+
+@Article{ref14,
+  author       = {Chapman, W. W. and Bridewell, W. and Hanbury, P. and Cooper, G. F. and Buchanan, B. G.},
+  date         = {2001},
+  journaltitle = {J. Biomedical Informatics},
+  title        = {A simple algorithm for identifying negated findings and diseases in discharge summaries},
+  pages        = {301--310},
+  volume       = {34},
+  number       = {5},
+}
+
+@Article{ref15,
+  author       = {Xu, H. and others},
+  date         = {2010},
+  journaltitle = {JAMIA},
+  title        = {MedEx: A medication information extraction system for clinical narratives},
+  pages        = {19--24},
+  volume       = {17},
+  number       = {1},
+}
+
+@Article{ref16,
+  author       = {Mikolov, T. and Sutskever, I. and Chen, K. and Corrado, G. S. and Dean, J.},
+  date         = {2013},
+  journaltitle = {NIPS},
+  title        = {Distributed representations of words and phrases and their compositionality},
+  pages        = {3111--3119},
+  volume       = {26},
+}
+
+@Article{ref17,
+  author       = {Bojanowski, P. and Grave, E. and Joulin, A. and Mikolov, T.},
+  date         = {2017},
+  journaltitle = {TACL},
+  title        = {Enriching word vectors with subword information},
+  pages        = {135--146},
+  volume       = {5},
+}
+
+@Article{ref18,
+  author       = {Lu, Y. and others},
+  date         = {2022},
+  journaltitle = {Proc. ACL 2022},
+  title        = {Unified structure generation for universal information extraction},
+  pages        = {5755--5772},
+}
+
+@Article{ref19,
+  author       = {Jain, S. and van Zyl, T. and Bhatt, J.},
+  date         = {2022},
+  journaltitle = {Artif. Intell. Med.},
+  title        = {A survey of transformer models for clinical natural language processing},
+  pages        = {102293},
+  volume       = {128},
+}
+
+@Article{ref20,
+  author       = {N{\'e}v{\'e}ol, A. and Dalianis, H. and Velupillai, S. and Savova, G. and Zweigenbaum, P.},
+  date         = {2018},
+  journaltitle = {J. Biomed. Semantics},
+  title        = {Clinical natural language processing in languages other than English: Opportunities and challenges},
+  pages        = {12},
+  volume       = {9},
+  number       = {1},
+}
+
+@Article{ref21,
+  author       = {Ferr{\'a}ndez, O. and South, B. R. and Shen, S. and Friedlin, F. J. and Samore, M. H. and Meystre, S. M.},
+  date         = {2012},
+  journaltitle = {JAMIA},
+  title        = {BO/I2b2 NLP system performance when applied to a clinical notes corpus},
+  pages        = {908--915},
+  volume       = {19},
+  number       = {5},
+}
+
+@Article{ref22,
+  author       = {Denny, J. C. and Smithers, J. D. and Miller, R. A. and Spickard 3rd, A.},
+  date         = {2003},
+  journaltitle = {JAMIA},
+  title        = {Understanding medical school curriculum content using KnowledgeMap},
+  pages        = {351--362},
+  volume       = {10},
+  number       = {4},
+}
+
+@Article{ref23,
+  author       = {Miotto, R. and Wang, F. and Wang, S. and Jiang, X. and Dudley, J. T.},
+  date         = {2018},
+  journaltitle = {Briefings in Bioinformatics},
+  title        = {Deep learning for healthcare: Review, opportunities and challenges},
+  pages        = {1236--1246},
+  volume       = {19},
+  number       = {6},
+}
+
+@Article{ref24,
+  author       = {Niu, Z. and Zhong, G. and Yu, H.},
+  date         = {2021},
+  journaltitle = {Neurocomputing},
+  title        = {A review on the attention mechanism of deep learning},
+  pages        = {48--62},
+  volume       = {452},
+}
+
+@Article{ref25,
+  author       = {Yala, N. and Mikhael, P. and Strand, F. and Lin, G. and Smith, K. and Wan, Y.-H. and Lamb, B. and Hughes, K. and Lehman, C. and Barzilay, R.},
+  date         = {2021},
+  journaltitle = {Science Translational Medicine},
+  title        = {Toward robust mammography-based models for breast cancer risk},
+  pages        = {eaba4373},
+  volume       = {13},
+  number       = {578},
+}
+
+@Article{ref26,
+  author       = {Liu, Z. and Shen, X. and Lakshminarasimhan, V. B. and Liang, P. P. and Zadeh, A. and Morency, L.-P.},
+  date         = {2018},
+  journaltitle = {Proc. ACL 2018},
+  title        = {Efficient low-rank multimodal fusion with modality-specific factors},
+  pages        = {2247--2256},
+}
+
+@Article{ref27,
+  author       = {Johnson, A. E. W. and others},
+  date         = {2016},
+  journaltitle = {Scientific Data},
+  title        = {MIMIC-III, a freely accessible critical care database},
+  pages        = {160035},
+  volume       = {3},
+}
+
+@Article{ref28,
+  author       = {Demner-Fushman, D. and Chapman, W. W. and McDonald, C. J.},
+  date         = {2009},
+  journaltitle = {J. Biomed. Informatics},
+  title        = {What can natural language processing do for clinical decision support?},
+  pages        = {760--772},
+  volume       = {42},
+  number       = {5},
+}
+
+@Article{ref29,
+  author       = {Strubell, E. and Ganesh, A. and McCallum, A.},
+  date         = {2019},
+  journaltitle = {Proc. ACL 2019},
+  title        = {Energy and policy considerations for deep learning in NLP},
+  pages        = {3645--3650},
+}
+
+@Article{ref30,
+  author       = {Chute, C. G.},
+  date         = {2000},
+  journaltitle = {JAMIA},
+  title        = {Clinical classification and terminology: Some history and current observations},
+  pages        = {298--303},
+  volume       = {7},
+  number       = {3},
+}
+
+@Article{ref31,
+  author       = {Campbell, J. D. and Carpenter, M. S. and Huff, J.},
+  date         = {2004},
+  journaltitle = {Perspectives in Health Information Management},
+  title        = {SNOMED Clinical Terms: An introduction},
+  pages        = {1--24},
+}
+
+@Article{ref32,
+  author       = {Rector, A. L.},
+  date         = {1999},
+  journaltitle = {Methods of Information in Medicine},
+  title        = {Clinical terminology: Why is it so hard?},
+  pages        = {239--252},
+  volume       = {38},
+  number       = {4--5},
+}
+
+@Article{ref33,
+  author       = {Elkin, N. and others},
+  date         = {2001},
+  journaltitle = {Proc. AMIA Annual Symposium},
+  title        = {A controlled health vocabulary mapping initiative},
+  pages        = {161--165},
+}
+
+@Article{ref34,
+  author       = {de Moor, B. and others},
+  date         = {2015},
+  journaltitle = {J. Biomed. Informatics},
+  title        = {Using electronic health records for clinical research: The case of the EHR4CR project},
+  pages        = {162--173},
+  volume       = {53},
+}
+
+@Article{ref35,
+  author       = {Coelho, F. and Bentes, J. and Figueiredo, T.},
+  date         = {2022},
+  journaltitle = {Applied Sciences},
+  title        = {Clinical document processing: A practical overview of OCR integration in healthcare NLP pipelines},
+  pages        = {3920},
+  volume       = {12},
+  number       = {8},
+}
+
+@Article{ref36,
+  author       = {Smith, J. and Gales, L. and Knight, A.},
+  date         = {2007},
+  journaltitle = {Proc. ICDAR 2007},
+  title        = {Tesseract: An open-source OCR engine},
+  pages        = {629--633},
+}
+
+@Article{ref37,
+  author       = {Reyes-Ortiz, M. and Oneto, L. and Sama, A. and Parra, X. and Anguita, D.},
+  date         = {2016},
+  journaltitle = {Neurocomputing},
+  title        = {Transition-aware human activity recognition using smartphones},
+  pages        = {754--767},
+  volume       = {171},
+}
+
+@Article{ref38,
+  author       = {Shi, B. and Bai, X. and Yao, C.},
+  date         = {2017},
+  journaltitle = {IEEE Trans. Pattern Anal. Mach. Intell.},
+  title        = {An end-to-end trainable neural network for image-based sequence recognition},
+  pages        = {2298--2304},
+  volume       = {39},
+  number       = {11},
+}
+
+@Article{ref39,
+  author       = {Li, H. and Wang, P. and Shen, C.},
+  date         = {2017},
+  journaltitle = {Proc. ICCV 2017},
+  title        = {Towards end-to-end text spotting with convolutional recurrent neural networks},
+  pages        = {5238--5246},
+}
+
+@Article{ref40,
+  author       = {Huang, K. and others},
+  date         = {2020},
+  journaltitle = {Proc. Clinical NLP Workshop 2020},
+  title        = {Clinical XLNet: Modeling sequential clinical notes and predicting prolonged mechanical ventilation},
+  pages        = {94--100},
+}
+
+@Article{ref41,
+  author       = {Peng, T. and Liu, H. and Xu, Z. and Zhou, F.},
+  date         = {2022},
+  journaltitle = {Knowledge-Based Systems},
+  title        = {An empirical study of pre-trained language models in NLP for clinical text processing},
+  pages        = {108665},
+  volume       = {245},
+}
+
+@Article{ref42,
+  author       = {Lewis, M. and others},
+  date         = {2020},
+  journaltitle = {Proc. ACL 2020},
+  title        = {BART: Denoising sequence-to-sequence pre-training for natural language generation, translation, and comprehension},
+  pages        = {7871--7880},
+}
+
+@Article{ref43,
+  author       = {Beltagy, I. and Lo, K. and Cohan, A.},
+  date         = {2019},
+  journaltitle = {Proc. EMNLP 2019},
+  title        = {SciBERT: A pretrained language model for scientific text},
+  pages        = {3615--3620},
+}
+
+@Article{ref44,
+  author       = {Gu, Y. and others},
+  date         = {2022},
+  journaltitle = {ACM Trans. Comput. Healthc.},
+  title        = {Domain-specific language model pretraining for biomedical natural language processing},
+  pages        = {1--23},
+  volume       = {3},
+  number       = {1},
+}
+
+@Article{ref45,
+  author       = {Yang, X. and others},
+  date         = {2022},
+  journaltitle = {npj Digital Medicine},
+  title        = {A large language model for electronic health records},
+  pages        = {194},
+  volume       = {5},
+  number       = {1},
+}
+
+@Article{ref46,
+  author       = {Touvron, H. and others},
   date         = {2023},
-  journaltitle = {IEEE Solid-State Circuits Letters},
-  title        = {Dual-Band 802.11ax Transceiver Design With 1024-QAM and 160-MHz CBW Support},
-  doi          = {10.1109/lssc.2023.3268136},
-  issn         = {2573-9603},
-  pages        = {137--140},
+  journaltitle = {arXiv:2302.13971},
+  title        = {LLaMA: Open and efficient foundation language models},
+}
+
+@Article{ref47,
+  author       = {Uzuner, {\"O}. and Sibanda, T. C. and Luo, Y. and Szolovits, P.},
+  date         = {2008},
+  journaltitle = {J. Am. Med. Inform. Assoc.},
+  title        = {A de-identification system for clinical notes},
+  pages        = {601--610},
+  volume       = {15},
+  number       = {5},
+}
+
+@Article{ref48,
+  author       = {Stubbs, A. and Kotfila, C. and Xu, H. and Uzuner, O.},
+  date         = {2015},
+  journaltitle = {J. Biomed. Informatics},
+  title        = {Identifying risk factors for heart disease over time: Overview of 2014 i2b2/UTHealth shared task track 2},
+  pages        = {S4--S13},
+  volume       = {58},
+}
+
+@Article{ref49,
+  author       = {Dai, H.-J. and Tsai, R. T.-H. and Hsu, W.-L.},
+  date         = {2012},
+  journaltitle = {Artif. Intell. Med.},
+  title        = {Entity mention detection in clinical texts},
+  pages        = {163--173},
+  volume       = {56},
+  number       = {3},
+}
+
+@Article{ref50,
+  author       = {Liu, B. Z.},
+  date         = {2020},
+  journaltitle = {IEEE Access},
+  title        = {Automated clinical text de-identification: State of the art and current challenges},
+  pages        = {205455--205466},
+  volume       = {8},
+}
+
+@Article{ref51,
+  author       = {Yogarajan, N. and Gouk, J. and Smith, T. and Mayo, M. and Pfahringer, B.},
+  date         = {2020},
+  journaltitle = {Proc. ICDM Workshops 2020},
+  title        = {Comparing transformers and bi-LSTM for medical coding of clinical text},
+  pages        = {2--9},
+}
+
+@Article{ref52,
+  author       = {Yao, L. and Mao, C. and Luo, Y.},
+  date         = {2022},
+  journaltitle = {J. Biomed. Informatics},
+  title        = {Clinical text classification with rule-based features and knowledge-graph embeddings},
+  pages        = {104047},
+  volume       = {128},
+}
+
+@Article{ref53,
+  author       = {Roberts, K. and others},
+  date         = {2017},
+  journaltitle = {Proc. TAC 2017},
+  title        = {Overview of the TAC 2017 adverse drug reactions extraction from FDA drug labels track},
+}
+
+@Article{ref54,
+  author       = {Friedman, C. and Rindflesch, T. C. and Corn, M.},
+  date         = {2013},
+  journaltitle = {J. Biomed. Informatics},
+  title        = {Natural language processing: State of the art and prospects for significant progress},
+  pages        = {765--773},
+  volume       = {46},
+  number       = {5},
+}
+
+@Article{ref55,
+  author       = {Spasic, I. and Ananiadou, S. and McNaught, J. and Kumar, A.},
+  date         = {2005},
+  journaltitle = {Briefings in Bioinformatics},
+  title        = {Text mining and ontologies in biomedicine: Making sense of raw text},
+  pages        = {239--251},
   volume       = {6},
-  publisher    = {Institute of Electrical and Electronics Engineers (IEEE)},
+  number       = {3},
+}
+
+@Article{ref56,
+  author       = {Krallinger, M. and others},
+  date         = {2015},
+  journaltitle = {J. Cheminformatics},
+  title        = {CHEMDNER: The drugs and chemical names extraction challenge},
+  pages        = {S1},
+  volume       = {7},
+}
+
+@Article{ref57,
+  author       = {Cao, Y. and Chen, X. and Liu, J. and Ma, Z. and Zhang, W.},
+  date         = {2020},
+  journaltitle = {Proc. ACL 2020},
+  title        = {Multi-label clinical coding with adversarial attention network},
+  pages        = {5569--5578},
+}
+
+@Article{ref58,
+  author       = {Mullenbach, J. and Wiegreffe, S. and Duke, J. and Sun, J. and Eisenstein, J.},
+  date         = {2018},
+  journaltitle = {Proc. NAACL-HLT 2018},
+  title        = {Explainable prediction of medical codes from clinical text},
+  pages        = {1101--1111},
+}
+
+@Article{ref59,
+  author       = {Yuan, S.-Y. and others},
+  date         = {2022},
+  journaltitle = {Proc. ACL 2022},
+  title        = {Code synonyms do matter: Multiple synonyms matching network for automatic ICD coding},
+  pages        = {6357--6367},
+}
+
+@Article{ref60,
+  author       = {Yang, T.-I. and others},
+  date         = {2022},
+  journaltitle = {BMC Medical Informatics and Decision Making},
+  title        = {Clinical coding with biomedical language model: A case study with ICD-10},
+  pages        = {167},
+  volume       = {22},
+}
+
+@Article{ref61,
+  author       = {Zhang, X. and Henao, R. and Gan, Z. and Li, Y. and Carin, L.},
+  date         = {2019},
+  journaltitle = {Proc. AAAI 2019},
+  title        = {Multi-label learning with posterior inference for extremely large label space},
+  pages        = {5953--5960},
+}
+
+@Article{ref62,
+  author       = {Sendak, A. and others},
+  date         = {2020},
+  journaltitle = {JMIR Medical Informatics},
+  title        = {Real-world integration of a sepsis deep learning technology into routine clinical care: Implementation study},
+  pages        = {e15182},
+  volume       = {8},
+  number       = {7},
+}
+
+@Article{ref63,
+  author       = {Cai, M. and Weng, H. and Zhou, Y.},
+  date         = {2021},
+  journaltitle = {J. Healthcare Eng.},
+  title        = {Medical code assignment from clinical notes},
+  pages        = {5573949},
+  volume       = {2021},
+}
+
+@Article{ref64,
+  author       = {Stieger, M. and Engel, C. and M{\"u}ller, C.},
+  date         = {2022},
+  journaltitle = {npj Digital Medicine},
+  title        = {Human-AI collaboration in healthcare: A multidisciplinary review},
+  pages        = {100},
+  volume       = {5},
+}
+
+@Article{ref65,
+  author       = {Choi, E. and Bahadori, M. T. and Kulas, J. A. and Schuetz, A. and Stewart, W. F. and Sun, J.},
+  date         = {2016},
+  journaltitle = {NIPS},
+  title        = {RETAIN: An interpretable predictive model for healthcare using reverse time attention mechanism},
+  volume       = {29},
+}
+
+@Article{ref66,
+  author       = {Liu, F. and others},
+  date         = {2017},
+  journaltitle = {arXiv:1711.04075},
+  title        = {Toward automated ICD coding using deep learning},
+}
+
+@Article{ref67,
+  author       = {Kiela, D. and Bartolo, M. and Nie, Y. and Kaushik, D. and Geiger, A. and Wu, Z. and Vidgen, B.},
+  date         = {2021},
+  journaltitle = {Proc. NAACL-HLT 2021},
+  title        = {Dynabench: Rethinking benchmarking in NLP},
+  pages        = {4110--4124},
+}
+
+@Article{ref68,
+  author       = {Peng, H. and others},
+  date         = {2022},
+  journaltitle = {Proc. NAACL 2022},
+  title        = {An empirical study of effective pseudo labelling for clinical NER},
+  pages        = {2385--2396},
+}
+
+@Article{ref69,
+  author       = {Jain, R. and Bittner, P. and Sontakke, A. and Mishra, A.},
+  date         = {2023},
+  journaltitle = {Artificial Intelligence in Medicine},
+  title        = {A comprehensive survey on evaluation of clinical NLP systems},
+  pages        = {102452},
+  volume       = {135},
+}
+
+@Article{ref70,
+  author       = {Nadeau, D. and Sekine, S.},
+  date         = {2007},
+  journaltitle = {Lingvisticae Investigationes},
+  title        = {A survey of named entity recognition and classification},
+  pages        = {3--26},
+  volume       = {30},
+  number       = {1},
+}
+
+@Article{ref71,
+  author       = {Pradhan, S. and others},
+  date         = {2012},
+  journaltitle = {Computational Linguistics},
+  title        = {Evaluating the state of the art in coreference resolution for English},
+  pages        = {385--401},
+  volume       = {38},
+  number       = {2},
+}
+
+@Article{ref72,
+  author       = {Meystre, S. and Savova, G. K. and Kipper-Schuler, K. C. and Hurdle, J. F.},
+  date         = {2008},
+  journaltitle = {Yearbook of Medical Informatics},
+  title        = {Extracting information from textual documents in the electronic health record: A review of recent research},
+  pages        = {128--144},
+}
+
+@Article{ref73,
+  author       = {Krallinger, M. and Rabal, O. and Leitner, F. and Valencia, A.},
+  date         = {2008},
+  journaltitle = {Genome Biology},
+  title        = {Linking genes to literature: Text mining, information extraction, and retrieval applications for biology},
+  pages        = {S8},
+  volume       = {9},
+}
+
+@Article{ref74,
+  author       = {Ben Abacha, A. and Demner-Fushman, D.},
+  date         = {2019},
+  journaltitle = {BMC Bioinformatics},
+  title        = {A question-entailment approach to question answering},
+  pages        = {511},
+  volume       = {20},
+}
+
+@Article{ref75,
+  author       = {Jonquet, C. and Shah, N. and Musen, M.},
+  date         = {2009},
+  journaltitle = {Summit on Translational Bioinformatics},
+  title        = {The Open Biomedical Annotator},
+  pages        = {56--60},
 }
 
 @Comment{jabref-meta: databaseType:biblatex;}
