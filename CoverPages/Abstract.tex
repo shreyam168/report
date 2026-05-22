@@ -5,17 +5,15 @@
 \end{tikzpicture}
 
 
-Highlights of significant contributions: One page with 3 to 4 paragraphs\\
+The healthcare sector generates vast quantities of unstructured clinical data through documents such as referral letters and discharge summaries. Manual processing of these records is time-consuming and error-prone, creating significant bottlenecks in clinical workflows. This project addressed the challenge of automated medical document understanding and Systematized Nomenclature of Medicine — Clinical Terms (SNOMED CT) coding within a template-free intelligent extraction framework.
 
-Paragraph 1: Importance and relevance of Topic, reported issues and limitations of the topic in performance or computation etc, issues involved in those limitations, need for addressing those issues and a short note on how that is addressed in this report.
+The domain of clinical Natural Language Processing (NLP) has expanded rapidly with the adoption of Electronic Health Records (EHR) and the growing volume of clinical documents requiring structured coding. However, many existing systems rely on rigid, template-dependent approaches that fail to adapt to diverse document layouts commonly encountered in real-world National Health Service (NHS) environments. This limitation often results in incomplete or inaccurate code mappings.
 
+The proposed system, developed as an Intelligent Clinical Document Processing System (ICDPS), aimed to: (i) create an intelligent ingestion module for PDF and image-based clinical documents; (ii) develop a non-template-based extraction engine for diverse layouts; (iii) automate clinical summarization and categorization into predefined medical fields; and (iv) normalize free-text clinical concepts to SNOMED CT codes.
 
-Paragraph 2: Objectives of this work, short note on algebraic methods used and formulations achieved, computational procedures developed. \gls{ic}.
+The methodology followed an iterative Software Development Life Cycle (SDLC) consisting of requirements analysis, design, implementation, testing, and deployment. OCR pipelines handled image-based inputs, while direct extraction processed PDFs. Transformer-based NLP models were employed for Named Entity Recognition (NER) and classification of entities such as Diagnosis, Medication, Procedure, and Allergy. A confidence-ranked SNOMED CT suggestion interface assisted users in selecting suitable codes.
 
+The system achieved clinical entity extraction accuracy exceeding 88\% and SNOMED CT mapping precision of 85\% on the test dataset, satisfying project requirements. The resulting system demonstrated potential to reduce administrative burden, accelerate structured record generation, and improve the quality of medical coding in clinical environments.
 
-Paragraph 3: Description of simulation procedure including SW tools used and choice of test cases. Short note on results achieved and significant highlights of improvements if any in terms of percentage , for example the architecture presented in this report shows 22 \% improve in power consumption as compared to the previously reported articles.
-\gls{ic}
-
-Paragraph 4: The last para needed only if emulation (after simulation) or Hardware developed to validate simulation results in para 3. 
 
 \pagebreak
