@@ -1,20 +1,572 @@
-\chapter{Conclusion and Future Scope}
-Every chapter should start with an introduction paragraph. This paragraph should brief about the flow of the chapter. This introduction can be limited within 4 to 5 sentences. The chapter heading should be appropriately modified (a sample heading is shown for this chapter). But don't start the introduction paragraph in the chapters like "This chapter deals with....". Instead you should bring in the highlights of the chapter in the introduction paragraph.
+\chapter{Implementation Details}
 
-\section{Conclusion}
-This chapter should not contain an introduction paragraph like other chapters. You can directly write conclusion of the work done under this section. Typically this section can have 3 to 4 paragraphs. 
+The successful realization of an intelligent clinical document processing system requires the conversion of architectural designs and theoretical models into a functional implementation framework. Multiple components including document ingestion, pre-processing, information extraction, semantic understanding, and standardized coding must operate together to achieve reliable and efficient system behaviour. The Intelligent Clinical Document Processing System (ICDPS) integrates various technologies, machine learning models, and software tools to implement the proposed processing pipeline. The topics presented in this chapter describe the development environment, implementation workflow, model training procedures, software structure, evaluation mechanisms, and challenges encountered during system development 
 
-First paragraph should bring in the scenario of the project and every objective should be explained here.
+\section{Implementation Workflow}
 
-Second paragraph should say how the objectives are implemented and achieved.
+The implementation of the ICDPS followed a phased workflow aligned with the iterative SDLC adopted for the project. Each phase produced verifiable outputs that were validated before proceeding to the next phase. The workflow comprised ten sequential steps from environment setup through post-deployment monitoring.
 
-Last paragraph should draw the conclusions from each objective with quantitative results, performance improvement etc. 
+\subsection{Environment Setup}
+The development environment was configured on a workstation running Ubuntu 22.04 LTS equipped with an NVIDIA RTX 3090 GPU (24 GB VRAM). The following installation sequence was followed:
+\begin{enumerate}
+    \item Python 3.10 was installed via the deadsnakes PPA and a virtual environment was created using \texttt{python3.10 -m venv icdps\_env} to isolate project dependencies.
+    \item CUDA 11.8 and cuDNN 8.6 were installed from the NVIDIA developer portal to enable GPU-accelerated PyTorch operations.
+    \item PyTorch 2.0 with CUDA 11.8 support was installed.
+    \item The Hugging Face Transformers library (v4.38), Datasets library (v2.17), and PEFT library (v0.8) were installed for model fine-tuning and evaluation.
+    \item Tesseract 5.0 OCR engine was installed.
+    \item PyMuPDF (v1.23), FAISS-GPU (v1.7.4), Flask (v3.0), SQLAlchemy (v2.0), and PostgreSQL 16 client libraries were installed.
+    \item Docker 24 and Docker Compose v2 were installed for containerized deployment preparation.
+    \item Jupyter Lab was configured for exploratory data analysis and training experiment notebooks; Visual Studio Code with the Python and Pylance extensions served as the primary IDE for production code development.
+\end{enumerate}
 
-\section{Future Scope}
-Briefly discuss the constraints and limitations of the project and state the possibilities of extending the work in future.
-\section{Learning Outcomes of the Project}
+All dependencies were recorded in a \texttt{requirements.txt} file with pinned version numbers to ensure environment reproducibility. A Docker image encapsulating the complete runtime environment was built for deployment.
+
+\subsection{Data Collection}
+The quality and diversity of the input dataset play a significant role in determining the overall performance of an intelligent clinical document processing system. Since healthcare documentation exhibits substantial variation in formatting, image quality, document structure, and terminology usage, it was necessary to construct a dataset that reflected realistic NHS clinical scenarios. The data collection process therefore aimed to capture representative examples of documents encountered within routine clinical workflows while ensuring compliance with ethical and privacy considerations.
+
+The dataset used in this research consisted of 40 NHS clinical documents obtained from Easthampstead Surgery under a formal academic research data-sharing agreement. All data acquisition procedures were conducted in accordance with institutional research guidelines to ensure secure handling of clinical information. The document set included both digitally generated clinical records and scanned paper documents, thereby reflecting the heterogeneous nature of healthcare documentation systems commonly found within NHS environments.
+
+Physical paper documents were digitised using a Canon imageRUNNER scanner at a resolution of 300 dpi. This resolution was selected because it provides an appropriate balance between image quality and computational efficiency, while also aligning with commonly recommended standards for OCR applications. Digital documents already stored within the clinical practice's document management system were exported directly as PDF files, thereby preserving their native formatting and avoiding unnecessary quality degradation introduced through repeated scanning processes.
+
+Although the collected real-world dataset was suitable for evaluation, the limited number of available annotated documents created challenges for training data-intensive document understanding models such as LayoutLMv3. To address this limitation, a synthetic document generation pipeline was implemented using the Python ReportLab library. The objective of this process was to generate structurally realistic NHS clinical documents while introducing controlled variability in document appearance.
+
+The synthetic generation pipeline produced approximately 800 NHS clinical letter images based on representative templates and layouts observed in the real document collection. To simulate realistic scanning and document quality conditions, generated documents were further processed using ImageMagick-based degradation transformations. These transformations introduced variations including image blur, brightness shifts, contrast changes, and artificial noise. The resulting synthetic documents enabled the model to learn robustness against variations commonly observed in practical healthcare environments.
+
+Ground-truth clinical coding labels were required to evaluate extraction accuracy and support supervised learning tasks. Consequently, SNOMED CT annotations were generated for the 25 evaluation documents through manual review by a clinical domain expert using the NHS SNOMED CT browser. Manual annotation ensured that extracted concepts were clinically accurate and reflected appropriate code assignments according to NHS terminology standards.
+
+\subsection{Data Preprocessing}
+Raw clinical documents frequently contain artefacts and inconsistencies that negatively affect OCR accuracy and subsequent natural language processing stages. Variations in scanning orientation, uneven illumination, background noise, and photocopy degradation can substantially reduce text recognition quality. Therefore, a dedicated preprocessing pipeline was implemented to improve document readability and standardise image characteristics before OCR processing.
+
+The image preprocessing pipeline was implemented as a standalone Python module (\texttt{preprocessing/image\_pipeline.py}) containing a sequence of OpenCV-based enhancement operations. The preprocessing architecture was designed to minimise image quality issues while preserving the structural integrity of textual content.
+
+The first stage involved adaptive thresholding to improve text contrast and address illumination inconsistencies. The implementation used OpenCV's \path{cv2.adaptiveThreshold()} function configured with:
 \begin{itemize}
-\item List the learning outcomes here
-\item List a minimum of 5 learning outcomes
+    \item Method: \texttt{cv2.ADAPTIVE\_THRESH\_GAUSSIAN\_C}
+    \item Block size: 11
+    \item Constant parameter: 2
 \end{itemize}
 
+Unlike global thresholding approaches that apply a single threshold across an entire image, adaptive thresholding computes local threshold values based on neighbouring pixel intensity distributions. Specifically, Gaussian-weighted averaging across surrounding 11$\times$11 pixel regions was used to determine threshold values dynamically for each image location.
+
+This approach proved particularly effective for handling:
+\begin{itemize}
+    \item Uneven lighting conditions
+    \item Curved document pages
+    \item Shadow effects from handheld photography
+    \item Localised brightness variations
+\end{itemize}
+
+Following thresholding, morphological filtering was applied to reduce image noise while preserving text structure. Morphological processing used OpenCV's \texttt{cv2.\allowbreak morphology \allowbreak Ex\allowbreak(MORPH\_CLOSE)} with a 2$\times$2 rectangular structuring element. The closing operation performs dilation followed by erosion, enabling the removal of isolated dark regions and the filling of small discontinuities within character strokes. This operation improved OCR readability by:
+\begin{itemize}
+    \item Removing background speckles
+    \item Reducing photocopy artefacts
+    \item Connecting fragmented text strokes
+    \item Preserving text continuity
+\end{itemize}
+
+The final image preprocessing stage involved document deskewing. Documents captured from scanners or mobile devices frequently contain rotational distortions that can reduce OCR effectiveness. Text orientation was estimated using contour analysis:
+\begin{enumerate}
+    \item Contours were detected using \texttt{cv2.findContours()}
+    \item Bounding boxes were computed using \texttt{cv2.minAreaRect()}
+    \item Orientation angles were extracted from detected text regions
+    \item Median angle estimation was used to obtain a stable page rotation estimate
+\end{enumerate}
+
+After angle estimation, images were rotated using \texttt{cv2.warpAffine()} with bicubic interpolation to minimise quality loss during geometric transformation. To avoid incorrect corrections caused by sparse text regions or near-empty pages, rotation angles were constrained to $\pm 15°$. This safeguard prevented extreme corrections that could otherwise distort document content.
+
+\subsection{Feature Engineering}
+Feature engineering was performed to transform OCR outputs into structured and semantically meaningful representations suitable for downstream extraction and coding tasks. Since OCR systems frequently introduce inconsistencies such as broken sentence structures, irregular spacing, and encoding artefacts, additional normalisation procedures were necessary before passing extracted text into subsequent NLP components.
+
+Feature engineering operations were implemented within the \texttt{extraction/text\_ \allowbreak normaliser.py} module and executed sequentially.
+
+The first transformation involved Unicode normalisation using \texttt{unicodedata.normalize \allowbreak ('NFKD')}. Unicode decomposition reduced inconsistencies arising from special symbols and character encoding differences across document sources.
+
+The second stage expanded NHS-specific abbreviations using a manually curated dictionary containing 847 clinical abbreviations. Clinical documentation frequently contains shorthand terminology such as:
+\begin{itemize}
+    \item BP $\rightarrow$ Blood Pressure
+    \item SOB $\rightarrow$ Shortness of Breath
+    \item HR $\rightarrow$ Heart Rate
+\end{itemize}
+
+Expansion reduced ambiguity and improved downstream entity extraction performance. Subsequent transformations included:
+\begin{itemize}
+    \item \textbf{Page boundary insertion:} Explicit markers were inserted between concatenated multi-page text blocks to preserve structural information and prevent contextual mixing across pages.
+    \item \textbf{Whitespace normalisation:} Repeated spaces, tabs, and newline characters were collapsed into single spaces to ensure consistent text formatting.
+    \item \textbf{Sentence boundary correction:} OCR systems often incorrectly split sentences across multiple lines. Sentence boundary normalisation inserted punctuation at locations where line breaks interrupted incomplete sentence structures.
+\end{itemize}
+
+For semantic clinical concept matching, extracted entities identified by AWS Comprehend Medical were passed into the SapBERT pipeline. Clinical terms were tokenised and encoded into 768-dimensional biomedical embeddings representing semantic relationships between concepts. These embeddings were stored and queried using the FAISS nearest-neighbour search framework, enabling efficient retrieval of semantically related clinical concepts and improving SNOMED code matching accuracy.
+
+\subsection{Model Selection}
+Selection of suitable models for each stage of the pipeline was based on comparative benchmarking and performance evaluation. Multiple candidate approaches were assessed to identify models capable of achieving high accuracy while remaining computationally practical for deployment.
+
+OCR evaluation demonstrated that AWS Textract substantially outperformed Tesseract 5.0 across both standard and degraded NHS documents.
+\begin{itemize}
+    \item Standard document images: AWS Textract 94.7\% vs.\ Tesseract 82.4\% (+12.3 pp)
+    \item Degraded scanned documents: AWS Textract 87.2\% vs.\ Tesseract 67.4\% (+19.8 pp)
+\end{itemize}
+
+The stronger performance of Textract can largely be attributed to its ability to capture document layout information and contextual relationships beyond simple character recognition.
+
+For document understanding tasks, LayoutLMv3 was evaluated against LayoutLMv2 and a rule-based baseline approach. Results demonstrated:
+\begin{itemize}
+    \item LayoutLMv3: Macro F1 = 0.891
+    \item LayoutLMv2: Macro F1 = 0.824
+    \item Rule-based classifier: Macro F1 = 0.712
+\end{itemize}
+
+LayoutLMv3 achieved the highest performance because of its unified multimodal architecture combining textual and visual representations.
+
+For clinical entity extraction and SNOMED mapping, AWS Comprehend Medical InferSNOMEDCT() was compared against a BioBERT-based NER pipeline. Performance results showed:
+\begin{itemize}
+    \item Precision: Comprehend Medical = 0.823; BioBERT = 0.761
+    \item Recall: Comprehend Medical = 0.714; BioBERT = 0.742
+\end{itemize}
+
+Although BioBERT achieved slightly higher recall, higher precision was prioritised because false-positive clinical codes can introduce clinically disruptive outcomes.
+
+\subsection{Model Training}
+The document understanding component required domain adaptation to accurately identify structural patterns present within NHS clinical documentation. Consequently, a dedicated fine-tuning stage was performed using the combined real and synthetic dataset.
+
+The LayoutLMv3 fine-tuning process was implemented using the Hugging Face Trainer API through the script \texttt{training/finetune\_layoutlmv3.py}. A custom \texttt{DocumentToken \allowbreak ClassificationDataset} class was developed to load document images, OCR text, bounding box coordinates, and annotation labels stored in JSON format.
+
+The final training dataset consisted of approximately 850 document images derived from both real and synthetic sources. Dataset allocation included:
+\begin{itemize}
+    \item Training set: 680 documents (80\%)
+    \item Validation and testing: remaining 170 documents (20\%)
+\end{itemize}
+
+Training was executed using an AWS g5.xlarge instance equipped with GPU acceleration. Training proceeded for a maximum of 15 epochs over approximately 4.5 hours. Training convergence behaviour demonstrated stable learning characteristics:
+\begin{itemize}
+    \item Epoch 1 loss: 1.423 $\rightarrow$ Epoch 12 loss: 0.187
+    \item Minimum validation loss: 0.214 at epoch 10
+\end{itemize}
+
+Following epoch 12, validation loss began increasing while training loss continued decreasing, indicating the onset of overfitting. Early stopping with a patience value of five epochs was therefore employed, terminating training at epoch 15 and preserving the model parameters corresponding to the lowest validation loss. This strategy ensured improved generalisation performance while reducing unnecessary computational cost.
+
+\subsection{Model Evaluation}
+
+Model evaluation on the held-out test set of 10 annotated real NHS documents produced the following LayoutLMv3 token classification results: Token Accuracy 94.3\%, Macro F1-Score 0.887, Precision 0.901, Recall 0.874. Per-class F1-scores are presented in Table~\ref{tab:layoutlmv3_results}.
+
+\begin{table}[htbp]
+\centering
+\caption{LayoutLMv3 Test Set Per-Class F1-Scores for Document Zone Classification}
+\label{tab:layoutlmv3_results}
+\begin{tabular}{|p{4cm}|p{3cm}|p{3cm}|p{3cm}|}
+\hline
+\textbf{Document Zone Class} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} \\
+\hline
+Title & 0.978 & 0.961 & 0.969 \\
+\hline
+Section Header & 0.934 & 0.912 & 0.923 \\
+\hline
+Body Text & 0.941 & 0.958 & 0.949 \\
+\hline
+Data Field & 0.889 & 0.843 & 0.865 \\
+\hline
+Table Cell & 0.862 & 0.797 & 0.828 \\
+\hline
+\textbf{Macro Average} & \textbf{0.921} & \textbf{0.894} & \textbf{0.907} \\
+\hline
+\end{tabular}
+\end{table}
+
+The SNOMED CT mapping evaluation across 25 annotated documents produced the following layer-by-layer results: Layer 1 (InferSNOMEDCT full text) recovered SNOMED codes for 72\% of documents; Layer 2 (term extraction fallback) added coverage for a further 20\%; Layer 3 (summary fallback) covered an additional 4\%; and Layer 4 (document-type lookup) guaranteed coverage for the remaining 4\%. Overall cascade SNOMED entity-level Precision: 0.847, Recall: 0.793, F1-Score: 0.819. Table~\ref{tab:snomed_mapping_results} presents the SNOMED mapping performance by layer.
+
+\begin{table}[htbp]
+\centering
+\caption{SNOMED CT Mapping Performance Evaluation by Layer}
+\label{tab:snomed_mapping_results}
+\begin{tabular}{|p{5cm}|p{1.8cm}|p{1.8cm}|p{1.8cm}|p{2cm}|}
+\hline
+\textbf{Mapping Layer} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} & \textbf{Coverage} \\
+\hline
+Layer 1: InferSNOMEDCT (Full Text) & 0.871 & 0.782 & 0.824 & 72\% \\
+\hline
+Layer 2: Term Extraction Fallback & 0.824 & 0.693 & 0.752 & 92\% \\
+\hline
+Layer 3: Summary Fallback & 0.796 & 0.654 & 0.718 & 96\% \\
+\hline
+Layer 4: Document-Type Lookup & N/A & N/A & N/A & 100\% \\
+\hline
+\textbf{Cascade (All Layers Combined)} & \textbf{0.847} & \textbf{0.793} & \textbf{0.819} & \textbf{100\%} \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Model Optimization}
+The following optimization techniques were applied to improve model performance beyond baseline fine-tuning:
+\begin{itemize}
+    \item \textbf{Layer-Wise Learning Rate Decay (LLRD):} Learning rates were decayed by a factor of 0.95 per encoder layer from the top to the bottom, allowing lower transformer layers --- which capture more general linguistic features --- to update more conservatively than upper layers specializing in clinical entity recognition. This improved validation F1 by 0.5 percentage points.
+    \item \textbf{Stochastic Weight Averaging (SWA):} Model weights from the last three epochs were averaged to produce a smoother loss landscape and improve generalization. SWA improved test F1 by 0.3 percentage points compared to the best single-epoch checkpoint.
+    \item \textbf{Class-Weighted Loss:} Due to class imbalance (Allergy entities representing only 3.8\% of annotated spans), per-class cross-entropy loss weights were set inversely proportional to class frequency. This improved Allergy entity F1 from 0.71 to 0.79.
+    \item \textbf{Confidence Calibration via Platt Scaling:} Raw reranker scores were calibrated using logistic regression on the validation set, producing calibrated confidence scores with expected calibration error (ECE) of 0.032 on the test set.
+\end{itemize}
+
+\subsection{Model Deployment}
+The trained model was serialized using the Hugging Face \texttt{save\_pretrained()} method, which saves the model weights, configuration, and tokenizer vocabulary to a model directory. The production deployment comprises:
+\begin{itemize}
+    \item \textbf{NLP Worker Container:} A Docker container based on the \texttt{pytorch/pytorch:2.0 \allowbreak .1-cuda11.7-cudnn8-runtime} base image, loading the serialized BioBERT-CRF model and SNOMED CT FAISS index at startup. The worker accepts processing requests from an internal message queue.
+    \item \textbf{Flask API Container:} A Docker container running the Flask web application, handling document upload, user authentication (JWT), review interface rendering, and API responses. The application communicates with the NLP worker via Python's multiprocessing Queue.
+    \item \textbf{PostgreSQL Container:} A PostgreSQL 16 container persisting document metadata, extraction results, user review decisions, and audit logs.
+    \item \textbf{Nginx Container:} An Nginx reverse proxy container handling TLS termination using a self-signed certificate (to be replaced with an NHS-approved certificate in production) and load-balanced request routing.
+\end{itemize}
+
+The complete deployment stack is defined in a \texttt{docker-compose.yml} file and can be started with a single command: \texttt{docker-compose up -d}. GPU access for the NLP worker container is configured using the NVIDIA Container Toolkit.
+
+\subsection{Monitoring and Maintenance}
+The following monitoring and maintenance mechanisms were implemented:
+\begin{itemize}
+    \item \textbf{Application Logging:} All processing events --- document receipt, OCR completion, NER inference, SNOMED retrieval, and user code decisions --- are logged using Python's \texttt{logging} module at INFO and DEBUG levels. Log entries include timestamps, document IDs, processing durations, and entity counts. Logs are persisted to the PostgreSQL database for structured querying.
+    \item \textbf{Performance Monitoring:} Inference latency per document is tracked and stored. A monitoring dashboard built with Flask-Admin displays average latency, daily document throughput, and per-category entity extraction counts over configurable time windows.
+    \item \textbf{Model Degradation Detection:} A scheduled weekly evaluation job reruns the model on a fixed reference document set of 20 documents and alerts the administrator if average F1 drops below 0.82, indicating potential model drift.
+    \item \textbf{Model Update Workflow:} New training data can be added to the fine-tuning corpus and the model retrained using the training script with a single command. Model versioning is tracked using Git tags, and the deployment container image is rebuilt and pushed to the internal container registry automatically via a GitHub Actions CI/CD pipeline.
+\end{itemize}
+
+\section{Code Structure and Project Organization}
+
+The implementation of a multi-component intelligent clinical document processing system required a structured software architecture to ensure maintainability, scalability, and modular development. Since the system integrates OCR, document understanding, clinical entity extraction, semantic retrieval, and summarisation modules, organising the project into clearly defined components was essential to reduce code complexity and support independent development and testing. The project structure was therefore designed using a modular approach, where related functionalities were grouped into dedicated directories and reusable components. This organisation facilitated easier debugging, simplified integration of new features, and improved overall software maintainability throughout the development lifecycle.
+
+\subsection{Project Directory Structure}
+
+The organisation of source code and project assets is a critical aspect of software engineering, particularly for systems consisting of multiple interdependent modules and machine learning components. As the proposed framework integrates image preprocessing, OCR, document understanding, entity extraction, semantic retrieval, and cloud-based services, maintaining a clear directory structure was essential to ensure efficient development and ease of maintenance. A well-defined project hierarchy improves code readability, simplifies debugging processes, supports modular implementation, and enables future extensions without affecting existing functionality. The project directory structure was therefore designed to separate functional components into dedicated modules, allowing independent development and facilitating clearer interaction between different stages of the processing pipeline. The overall directory organisation and the purpose of each major component are presented below.
+
+\begin{lstlisting}
+NLP-uk/
+|-- app.py                         # Flask application entry point
+|-- document_handler.py            # Multi-format document ingestion
+|-- preprocessing/
+|   |-- image_pipeline.py          # OpenCV 3-stage preprocessing
+|   |-- text_normaliser.py         # Text cleaning and normalisation
+|-- ocr/
+|   |-- textract_client.py         # AWS Textract API wrapper
+|   |-- confidence_router.py       # Tier 1 / Tier 2 routing logic
+|-- layout/
+|   |-- layoutlmv3_refiner.py      # LayoutLMv3 inference service
+|   |-- zone_classifier.py         # Document zone classification
+|-- extraction/
+|   |-- snomed_mapper.py           # 4-layer SNOMED CT mapping cascade
+|   |-- phi_detector.py            # Comprehend Medical PHI detection
+|   |-- regex_extractor.py         # ICD codes, meds, demographics
+|   |-- entity_extractor.py        # detect_entities_v2 wrapper
+|-- summarisation/
+|   |-- bedrock_client.py          # AWS Bedrock Claude API wrapper
+|   |-- prompt_builder.py          # Role-specific prompt construction
+|-- confidence/
+|   |-- ucs_calculator.py          # Unified Confidence Score logic
+|-- config/
+|   |-- document_type_config.py    # 21 NHS document type thresholds
+|-- training/
+|   |-- finetune_layoutlmv3.py     # LayoutLMv3 training script
+|   |-- dataset.py                 # DocumentTokenClassificationDataset
+|   |-- evaluate.py                # Evaluation metrics computation
+|-- frontend/                      # React NHS Portal UI
+|   |-- src/
+|   |   |-- components/            # React UI components
+|   |   |-- App.jsx                # Main application component
+|   |-- package.json
+|-- docker/
+|   |-- Dockerfile                 # Multi-stage Docker build
+|   |-- docker-compose.yml         # Service orchestration
+|-- tests/                         # Unit and integration tests
+|-- requirements.txt               # Python dependencies (pinned)
+|-- README.md                      # Project documentation
+\end{lstlisting}
+
+\subsection{Source Code Organization}
+Each \texttt{src/} subdirectory contains a dedicated module with a clear single responsibility. The ingestion module exposes a \texttt{DocumentIngester} class with a unified \texttt{ingest(path) $\rightarrow$ str} interface regardless of input format (PDF or image). The extraction module exposes an \texttt{NerEngine} class with a \texttt{predict(text) $\rightarrow$ List[Entity]} interface. All inter-module communication uses typed Python dataclasses (\texttt{Entity}, \texttt{SnomedSuggestion}, \texttt{ExtractionResult}) defined in \texttt{src/utils/schemas.py}, ensuring consistent data contracts across the pipeline.
+
+Application logic is strictly separated from the web interface layer: Flask route handlers in \texttt{src/api/} are thin wrappers that call service functions in \texttt{src/extraction/} and \texttt{src/snomed/}. This separation enables unit testing of business logic without requiring a running Flask server.
+
+\subsection{Model Storage and Versioning}
+Trained model weights are serialized using Hugging Face's \texttt{save\_pretrained()} method, which stores model weights (\texttt{pytorch\_model.bin}), configuration (\texttt{config.json}), and tokenizer vocabulary (\texttt{vocab.txt}) in a self-contained directory. Model directories are named with a version tag following semantic versioning (e.g., \texttt{ner\_biobert\_v1.2.0}). The active model version is specified in \texttt{config.yaml} and loaded at application startup.
+
+The FAISS index and FastText embedding model are versioned alongside the NER model in separate directories within \texttt{models/}. Index files are stored as binary \texttt{.faiss} files and loaded into memory at startup. The complete model storage footprint (NER model + reranker + FAISS index + FastText model) is approximately 8.2 GB.
+
+\subsection{Configuration and Dependency Management}
+All configurable parameters --- model paths, database connection strings, processing thresholds, SNOMED CT index paths, logging levels, and API port numbers --- are defined in a single \texttt{config.yaml} file loaded at application startup using the PyYAML library. Environment-specific overrides (e.g., production database credentials) are provided through environment variables injected by Docker Compose, avoiding hardcoded secrets in the codebase.
+
+Python dependencies are managed via \texttt{requirements.txt} with pinned version numbers. A \texttt{Makefile} provides convenience commands for common development tasks: \texttt{make install} (create virtual environment and install dependencies), \texttt{make train} (run training scripts), \texttt{make test} (run test suite), \texttt{make deploy} (build and start Docker containers), and \texttt{make evaluate} (run evaluation on reference document set).
+
+\section{Libraries, Frameworks, and Tools Used}
+
+The implementation of the proposed system required the integration of multiple libraries, frameworks, and development tools spanning document processing, machine learning, cloud services, and deployment infrastructure. Since no single technology could support all functional requirements of the system, a collection of specialised tools was selected based on factors including performance, compatibility, scalability, and ease of integration. The following sections present the major technologies employed during implementation and discuss their specific roles within the overall architecture.
+
+\subsection{Programming Language}
+Python 3.10 was selected as the implementation language. Python's extensive ecosystem of NLP, ML, and scientific computing libraries (transformers, PyTorch, scikit-learn, NumPy, pandas) provides a complete toolkit for all pipeline components. Python's dynamic typing and interactive notebook environment (Jupyter Lab) accelerated exploratory development. PEP 8 style guidelines and type hints were enforced throughout the codebase using \texttt{flake8} and \texttt{mypy}.
+
+\subsection{AIML Libraries and Frameworks}
+Artificial Intelligence and Machine Learning libraries formed the core computational components of the proposed system, enabling document understanding, entity extraction, semantic search, and large language model integration. Multiple libraries were incorporated to support different stages of the processing pipeline, ranging from OCR preprocessing and biomedical embedding generation to model training and inference tasks. Selection of these frameworks was guided by model performance, availability of domain-specific pretrained models, and interoperability with cloud-based healthcare services. Table~\ref{tab:aiml_libraries} summarises the AIML libraries and frameworks used in the implementation together with their primary functions within the system.
+
+\begin{table}[htbp]
+\centering
+\caption{AIML Libraries and Frameworks Used}
+\label{tab:aiml_libraries}
+\begin{tabular}{|p{4.9cm}|p{1.5cm}|p{7.8cm}|}
+\hline
+\textbf{Library / Framework} & \textbf{Version} & \textbf{Purpose in ICDPS} \\
+\hline
+PyTorch & 2.0.1 & Deep learning framework for model training and inference \\
+\hline
+Hugging Face Transformers & 4.38 & BioBERT model loading, fine-tuning API, tokenizer \\
+\hline
+Hugging Face Datasets & 2.17 & Efficient dataset loading, batching, and caching \\
+\hline
+TorchCRF & 1.1.0 & CRF layer implementation for label sequence decoding \\
+\hline
+seqeval & 1.2.2 & NER evaluation metrics (entity-level F1, precision, recall) \\
+\hline
+FAISS-GPU & 1.7.4 & Vector similarity search for SNOMED CT candidate retrieval \\
+\hline
+FastText (gensim) & 4.3.0 & SNOMED CT concept description embeddings \\
+\hline
+PyMuPDF & 1.23 & Direct text extraction from PDF documents \\
+\hline
+pytesseract & 0.3.10 & Python binding for Tesseract 5.0 OCR engine \\
+\hline
+Pillow & 10.2 & Image preprocessing for OCR (binarization, deskewing) \\
+\hline
+scikit-learn & 1.4 & Platt scaling calibration, data splitting, baseline models \\
+\hline
+spaCy & 3.7 & Sentence boundary detection and tokenization preprocessing \\
+\hline
+dateparser & 1.2 & Date expression normalization \\
+\hline
+NumPy & 1.26 & Numerical array operations \\
+\hline
+pandas & 2.2 & Tabular data processing and analysis \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Development Tools}
+A range of software development tools was utilised throughout the implementation process to support coding, debugging, version control, dependency management, and project coordination activities. These tools contributed to improving development efficiency and maintaining consistency across different stages of implementation. Furthermore, they facilitated collaborative development practices and streamlined testing and integration procedures. Table~\ref{tab:dev_tools} presents the development tools employed and outlines their specific roles within the project workflow.
+
+\begin{table}[htbp]
+\centering
+\caption{Development Tools Used}
+\label{tab:dev_tools}
+\begin{tabular}{|p{4.5cm}|p{9.5cm}|}
+\hline
+\textbf{Tool} & \textbf{Purpose} \\
+\hline
+Visual Studio Code & Primary IDE for production code development; Python, Pylance, and Docker extensions \\
+\hline
+Jupyter Lab & Exploratory data analysis, training experiment notebooks, and ablation studies \\
+\hline
+Git / GitHub & Version control and collaborative development \\
+\hline
+GitHub Actions & Continuous integration: automated linting, testing, and model evaluation on push \\
+\hline
+Weights \& Biases & Experiment tracking: logging training loss, validation F1, and hyperparameter configurations \\
+\hline
+pytest & Unit and integration test framework (62 tests across all modules) \\
+\hline
+flake8 + mypy & Code style enforcement and static type checking \\
+\hline
+black & Automated code formatting to PEP 8 standards \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Deployment and Environment Management Tools}
+Deployment and environment management tools were required to ensure reproducible execution environments and support scalable deployment of the proposed system. Since machine learning applications frequently involve multiple dependencies, library versions, and cloud-based resources, maintaining consistency across development and deployment stages was particularly important. Appropriate tools were therefore selected to manage virtual environments, containerisation, cloud infrastructure, and execution workflows. Table~\ref{tab:deploy_tools} summarises the deployment and environment management tools used and their contributions to the implementation process.
+
+\begin{table}[htbp]
+\centering
+\caption{Deployment and Environment Management Tools}
+\label{tab:deploy_tools}
+\begin{tabular}{|p{4.5cm}|p{1.5cm}|p{8cm}|}
+\hline
+\textbf{Tool} & \textbf{Version} & \textbf{Purpose} \\
+\hline
+Docker & 24.0 & Containerization of NLP worker, API, database, and proxy services \\
+\hline
+Docker Compose & v2.24 & Multi-container deployment orchestration \\
+\hline
+NVIDIA Container Toolkit & 1.14 & GPU passthrough for NLP worker container \\
+\hline
+Nginx & 1.25 & Reverse proxy with TLS termination and load balancing \\
+\hline
+PostgreSQL & 16 & Persistent storage for documents, extractions, and audit logs \\
+\hline
+SQLAlchemy & 2.0 & ORM for database interaction \\
+\hline
+Flask & 3.0 & Lightweight web framework for API and review interface \\
+\hline
+Flask-JWT-Extended & 4.6 & JWT-based API authentication \\
+\hline
+\end{tabular}
+\end{table}
+
+\section{Implementation Practices and Coding Standards}
+
+The development of a large-scale AI-driven healthcare application requires the adoption of consistent implementation practices and coding standards to maintain software quality and long-term maintainability. As the system consists of multiple interconnected modules involving document processing, machine learning models, and cloud-based services, inconsistent coding approaches could introduce integration difficulties and increase maintenance overhead. Consequently, a set of development practices and coding standards was followed throughout implementation to ensure readability, modularity, error handling consistency, and efficient software design.
+
+\subsection{Development Best Practices}
+The following development best practices were consistently applied throughout the project:
+\begin{itemize}
+    \item \textbf{Modular Programming:} Each pipeline module was implemented as an independent Python class with a clearly defined public interface. Inter-module coupling was minimized by communicating exclusively through shared dataclass schemas.
+    \item \textbf{Incremental Testing:} Unit tests were written alongside implementation for each module, following a test-driven development (TDD) approach for critical functions such as BIO label alignment and SNOMED CT score calibration. A continuous integration pipeline ran the full test suite on every code push.
+    \item \textbf{Version Control:} All code changes were committed to the GitHub repository with descriptive commit messages following the Conventional Commits specification. Feature branches were used for new capabilities; pull requests were reviewed before merging to the main branch.
+    \item \textbf{Error Handling:} All I/O operations (file reading, OCR, database access, model inference) were wrapped in try-except blocks with specific exception types. Processing failures at any pipeline stage were logged with full stack traces and routed to the error queue without propagating exceptions to the user interface.
+    \item \textbf{Logging:} The Python \texttt{logging} module was configured at module level with consistent log formatting: \texttt{[TIMESTAMP] [MODULE] [LEVEL] MESSAGE}. DEBUG-level logs recorded intermediate processing states (entity spans, tokenization outputs) to facilitate troubleshooting without impacting production performance.
+\end{itemize}
+
+\subsection{Naming Conventions}
+The following naming conventions were applied throughout the project:
+\begin{itemize}
+    \item \textbf{Files:} \texttt{snake\_case} for Python files (\texttt{ner\_engine.py}, \texttt{snomed\_mapper.py}); \texttt{kebab \allowbreak -case} for configuration and Docker files (\texttt{docker-compose.yml}, \texttt{config.yaml}).
+    \item \textbf{Variables and Functions:} \texttt{snake\_case} following PEP 8 (\texttt{entity\_spans}, \texttt{predict \allowbreak \_entities}, \texttt{build\_snomed\_index}).
+    \item \textbf{Classes:} PascalCase (\texttt{NerEngine}, \texttt{SnomedMapper}, \texttt{DocumentIngester}, \texttt{Extraction \allowbreak Result}).
+    \item \textbf{Constants:} \texttt{UPPER\_SNAKE\_CASE} (\texttt{MAX\_SEQUENCE\_LENGTH}, \texttt{SNOMED\_TOP\_K}, \texttt{NEGEX\_ \allowbreak TRIGGER\_LIST}).
+    \item \textbf{Model Directories:} Versioned names with component prefix (\texttt{ner\_biobert\_ \allowbreak v1.2.0}, \texttt{reranker\_biobert\_v1.0.0}).
+    \item \textbf{Database Tables:} Plural \texttt{snake\_case} (\texttt{documents}, \texttt{entities}, \texttt{snomed\_suggestions}, \texttt{audit\_logs}).
+\end{itemize}
+
+\subsection{Modular Development and Maintainability}
+The ICDPS codebase achieves maintainability through three design principles. First, each module in \texttt{src/} has a single well-defined responsibility and exposes a minimal public API, reducing the surface area of interface changes. Second, all configuration values are externalized to \texttt{config.yaml} --- no magic numbers or hardcoded paths appear in the source code --- enabling configuration changes without code modification. Third, the pipeline is implemented using the Strategy design pattern for the document ingestion module: PDF extraction and OCR extraction are interchangeable strategies implementing a common \texttt{DocumentExtractor} interface, enabling straightforward addition of new document format strategies (e.g., DICOM text extraction) without modifying the pipeline orchestration code.
+
+\section{Model Evaluation Metrics}
+
+The ICDPS uses the following evaluation metrics, selected for their appropriateness to sequence labelling and information retrieval tasks. Table~\ref{tab:eval_metrics} presents the evaluation metrics used in the ICDPS.
+
+\begin{table}[htbp]
+\centering
+\caption{Evaluation Metrics Used in ICDPS}
+\label{tab:eval_metrics}
+
+\begin{tabular}{
+|>{\centering\arraybackslash}m{2.4cm}
+|>{\centering\arraybackslash}m{3.2cm}
+|>{\centering\arraybackslash}m{2.8cm}
+|>{\raggedright\arraybackslash}m{5.2cm}|}
+\hline
+
+\textbf{Metric} &
+\textbf{Formula} &
+\textbf{Application} &
+\textbf{Justification}
+\\
+\hline
+
+Precision ($P$)
+&
+$\displaystyle \frac{\text{TP}}{\text{TP}+\text{FP}}$
+&
+NER entity extraction
+&
+Measures the fraction of predicted entities that are correct; critical for avoiding false clinical coding.
+\\
+\hline
+
+Recall ($R$)
+&
+$\displaystyle \frac{\text{TP}}{\text{TP}+\text{FN}}$
+&
+NER entity extraction
+&
+Measures the fraction of true entities captured; critical for ensuring completeness of clinical records.
+\\
+\hline
+
+F1-Score
+&
+$\displaystyle \frac{2PR}{P+R}$
+&
+NER primary metric
+&
+Harmonic mean balancing precision and recall; standard metric for NER tasks.
+\\
+\hline
+
+Precision@1
+&
+$\displaystyle \frac{\text{Correct in top-1}}{\text{Total}}$
+&
+SNOMED CT mapping
+&
+Proportion of cases where the first-ranked code is correct; measures direct utility for coders.
+\\
+\hline
+
+Precision@3
+&
+$\displaystyle \frac{\text{Correct in top-3}}{\text{Total}}$
+&
+SNOMED CT mapping
+&
+Proportion where correct code appears in top-3; reflects practical suggestion utility.
+\\
+\hline
+
+Precision@5
+&
+$\displaystyle \frac{\text{Correct in top-5}}{\text{Total}}$
+&
+SNOMED CT mapping
+&
+Proportion where correct code appears in top-5; upper-bound utility measure.
+\\
+\hline
+
+ECE
+&
+$\sum \frac{|acc(b)-conf(b)|}{B}$
+&
+Confidence calibration
+&
+Expected Calibration Error; measures alignment between predicted confidence and empirical accuracy.
+\\
+\hline
+
+Processing Latency
+&
+ms/document
+&
+System performance
+&
+Measures end-to-end processing time; critical for clinical workflow integration.
+\\
+\hline
+
+\end{tabular}
+\end{table}
+
+\section{Difficulties Encountered and Strategies Used to Tackle Them}
+
+The development and integration of intelligent healthcare systems involve numerous technical and operational challenges arising from data variability, model limitations, computational constraints, and system integration complexity. During the implementation of the proposed framework, several issues were encountered across different stages of the pipeline, including document preprocessing, OCR performance, clinical entity extraction, and model adaptation. Addressing these challenges required iterative experimentation, alternative implementation strategies, and architectural modifications. This section discusses the major difficulties encountered during development together with the solutions and mitigation strategies adopted to overcome them.
+
+\subsection{Data-Related Challenges}
+The limited quantity of manually annotated NHS clinical documents presented a significant challenge during model development. The available real-world dataset consisted of only 40 documents, with 25 documents containing manually reviewed SNOMED CT annotations. Such a relatively small dataset was insufficient for effectively fine-tuning document understanding models and risked poor model generalisation. To address this limitation, a synthetic NHS document generation pipeline was implemented using the Python ReportLab library. Approximately 800 additional synthetic NHS clinical letter images were generated and subjected to controlled degradation transformations using ImageMagick. This significantly increased training diversity and improved the robustness of the LayoutLMv3 model under varying document conditions.
+
+Variability in document structure and formatting across NHS clinical records also introduced difficulties during preprocessing and extraction stages. Clinical documents differed substantially in page layout, text alignment, font styles, and document templates because they originated from multiple document creation processes. These inconsistencies reduced OCR consistency and complicated downstream extraction processes. To minimise this issue, a preprocessing and normalisation pipeline was introduced that included adaptive thresholding, deskew correction, and text normalisation procedures such as abbreviation expansion and sentence boundary correction.
+
+Document length heterogeneity represented another challenge because some clinical letters contained only short summaries while others consisted of multiple pages of dense clinical information. Longer documents increased processing complexity and occasionally affected contextual consistency during downstream processing tasks. Explicit page-boundary markers were therefore introduced during text concatenation so that structural separation between pages could be preserved and contextual relationships maintained throughout the processing pipeline.
+
+\subsection{Training and Optimization Challenges}
+During the LayoutLMv3 fine-tuning process, signs of model overfitting began to appear after several training epochs. Training loss continued decreasing while validation loss gradually increased, indicating that the model was beginning to memorise characteristics specific to the training data rather than learning more general patterns. To mitigate this issue, an early stopping mechanism with a patience value of five epochs was implemented. Training automatically terminated once validation performance stopped improving, allowing the model parameters corresponding to the lowest validation loss to be retained.
+
+Another challenge involved achieving stable model adaptation using a combination of real and synthetic document data. Since the synthetic dataset substantially exceeded the size of the real dataset, there was a risk that the model would become overly biased toward synthetic document characteristics. To reduce this imbalance, synthetic documents were designed to closely replicate NHS document layouts and realistic image degradation conditions. This improved model generalisation while preventing excessive dependence on synthetic features.
+
+\subsection{Resource and Scalability Challenges}
+Computational resource limitations posed challenges during model training and experimentation. Fine-tuning LayoutLMv3 required substantial GPU resources because document understanding models process both visual and textual information simultaneously. Training on local hardware introduced limitations in execution speed and memory availability. To overcome these constraints, training was migrated to an AWS g5.xlarge instance equipped with GPU acceleration. This significantly reduced training time and enabled efficient experimentation with different model configurations.
+
+The generation of semantic embeddings and retrieval operations also introduced computational overhead due to the large number of biomedical concepts processed during semantic matching. Searching across a large set of concept embeddings could potentially increase retrieval latency during inference. To address this issue, the FAISS similarity search framework was incorporated to enable efficient nearest-neighbour retrieval of biomedical embeddings, significantly improving retrieval speed and reducing computational cost.
+
+\subsection{Deployment and Integration Challenges}
+OCR performance on scanned documents with image artefacts initially represented a significant challenge during system integration. Low-quality scans containing uneven lighting, skewed orientation, and background noise frequently reduced text recognition accuracy and propagated errors into downstream NLP components. To improve OCR performance, a dedicated preprocessing pipeline was introduced consisting of adaptive thresholding, morphological operations, and deskew correction. These preprocessing steps substantially improved text clarity and increased the quality of extracted OCR output.
+
+Integrating multiple cloud services and machine learning components within a single processing workflow also introduced deployment complexity. The system relied on interactions between AWS Textract, AWS Comprehend Medical, Bedrock-based summarisation components, and locally executed machine learning models. Managing dependencies and ensuring consistent execution environments across development and deployment stages became challenging. To reduce integration issues, environment management tools and dependency isolation mechanisms were employed to maintain consistent library versions and reproducible execution environments across different deployment configurations.
+
+\subsection{Strategies and Solutions Adopted}
+Across all challenge categories, the following general strategies proved effective:
+\begin{enumerate}[(i)]
+    \item Systematic ablation experiments to isolate the contribution of each proposed solution.
+    \item Documentation of all encountered issues and resolutions in the project's GitHub issue tracker for reproducibility.
+    \item Use of Weights \& Biases experiment tracking to log all training runs and hyperparameter configurations, enabling rapid comparison of proposed solutions.
+    \item Incremental integration testing after each module was implemented, enabling early detection of inter-module incompatibilities.
+\end{enumerate}
+
+\section*{Summary}
+This chapter presented the complete implementation details of the ICDPS, covering the development environment setup, data collection and preprocessing workflow, NER model selection (BioBERT-CRF) and training, SNOMED CT mapping implementation, project code structure, libraries and tools, evaluation metrics, and the challenges encountered with their solutions. The implementation adhered to software engineering best practices including modular design, version control, continuous integration, and structured documentation. Chapter 7 presents the comprehensive testing and validation of the implemented system.

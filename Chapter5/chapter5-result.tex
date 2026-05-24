@@ -1,110 +1,354 @@
-\chapter{Results \& Discussions}
-Every chapter should start with an introduction paragraph. This paragraph should brief about the flow of the chapter. This introduction can be limited within 4 to 5 sentences. The chapter heading should be appropriately modified (a sample heading is shown for this chapter).But don't start the introduction paragraph in the chapters like "This chapter deals with....". Instead you should bring in the highlights of the chapter in the introduction paragraph.
-\section{Contents of this chapter}
-All the results obtained for your objectives should be discussed in this chapter. This chapter should contain the following sections as per the project.
-\begin{enumerate}
-\item Simulation results
-\item Experimental results
-\item Performance Comparison
-\item Inferences drawn from the results obtained
-\end{enumerate}
-All the figures should be properly explained by bringing the scenarios of the design done in the project. A detailed discussion of results obtained should be done in this chapter.
+\chapter{Detailed Design}
 
-\section{Tables in thesis}
-\begin{itemize}
-	\item All Table Caption should be in Sentence Case, TNR 10 Pt. It should be of the Format:
-	\begin{itemize}
-		\item Table 1.1 Results of the experiment ….(Centered)
-	\end{itemize}
-	\item It should be cited as Table 1.1.
-	\item Caption should appear above the Table.
-	\item Table Header and the entries should be of Font TNR 10 Pt, Justified.
-	\item For wider Table, the page orientation can be Landscape.
-	\item For Larger Table, it can run to pages and the header should be repeated for each page of the Table.
-	\item Table must be adjusted to fit in the page and no single row is left out for a new page.	
-\end{itemize}
+The implementation of an intelligent clinical document processing system requires detailed technical specifications describing the internal structure and operation of individual system components. Effective processing of clinical information depends on multiple interconnected stages including data preparation, model design, semantic mapping, and inference workflows. The proposed Intelligent Clinical Document Processing System (ICDPS) incorporates specialized modules designed to process heterogeneous clinical data while ensuring accurate extraction and standardized coding. The topics presented in this chapter describe the dataset organization, preprocessing mechanisms, model architectures, training configurations, and technical workflows that collectively support the implementation of the proposed system.
 
-Sample Table \ref{c5:tab1} is given below for your reference,
+\section{Dataset and Data Organisation}
 
-\begin{table}[htb]
-\fontsize{10}{12}\selectfont
-\caption{Country List}
-\label{c5:tab1}
-\begin{tabular}{|p{3cm}|c|c|c|}
-	%\hline
-	%\multicolumn{4}{|c|}{Country List} \\
-	\hline
-	\textbf{Country Name     or Area Name}& \textbf {ISO ALPHA 2 Code} & \textbf {ISO ALPHA 3 Code} & \textbf{ISO numeric Code}\\
-	\hline
-	\textbf{Afghanistan}   & AF    & AFG &   004\\\hline
-	\textbf{Aland Islands}&   AX  & ALA   & 248\\\hline
-	\textbf{Albania} & AL & ALB&  008\\\hline
-	\textbf{Algeria}    &DZ & DZA&  012\\\hline
-	\textbf{American Samoa}&   AS  & ASM&016\\\hline
-	\textbf{Andorra}& AD  & AND   & 020\\\hline
-	\textbf{Angola}& AO  & AGO& 024\\
-	\hline
+Clinical datasets serve as the foundation for the development and evaluation of intelligent healthcare systems, as the quality and characteristics of input data directly influence model behaviour and overall system performance. Effective organization of clinical documents is essential for ensuring consistency in preprocessing, training, validation, and testing workflows. The proposed Intelligent Clinical Document Processing System (ICDPS) utilizes structured datasets to support document understanding, information extraction, and standardized coding tasks. The concepts presented in this section describe the dataset characteristics and organizational strategies adopted for system development, fine-tuning, and performance evaluation.
+
+\subsection{Dataset Description}
+The primary dataset comprises 40 real-world clinical documents obtained from Easthampstead Surgery, London, United Kingdom. These documents represent the full spectrum encountered in a typical NHS primary care workflow: outpatient correspondence, specialist referral letters, hospital discharge summaries, NHS 111 reports, Accident and Emergency summaries, ambulance service reports, diabetic eye screening reports, and out-of-hours primary care reports. The dataset includes both digitally generated PDF documents and scanned document images produced from photographed or photocopied clinical letters.
+
+Each document contains structured data fields (patient NHS number, date of birth, consultant name, department) and unstructured free-text clinical narrative sections describing presenting complaints, diagnoses, management plans, medication prescriptions, and follow-up recommendations. The dataset is annotated with ground-truth SNOMED CT codes for 25 documents, enabling quantitative evaluation of SNOMED mapping accuracy. Table~\ref{tab:dataset_characteristics} summarises the key dataset characteristics.
+
+\begin{table}[htbp]
+\centering
+\caption{Dataset Characteristics Summary}
+\label{tab:dataset_characteristics}
+\begin{tabular}{|p{4.5cm}|p{10cm}|}
+\hline
+\textbf{Characteristic} & \textbf{Description} \\
+\hline
+Total Documents & 40 clinical documents \\
+\hline
+Source Institution & Easthampstead Surgery, London, UK \\
+\hline
+Document Formats & Native PDF (digital); JPEG/PNG/TIFF (scanned images) \\
+\hline
+Page Range & 1 to 8 pages per document (mean 3.2 pages) \\
+\hline
+Annotated Documents & 25 documents with ground-truth SNOMED CT codes \\
+\hline
+Document Types & 10 categories (discharge, specialist, NHS 111, A\&E, ambulance, etc.) \\
+\hline
+Noise Characteristics & Skewed scans, inconsistent lighting, varying print quality \\
+\hline
+Clinical Content & Diagnoses, medications, investigations, referrals, procedures \\
+\hline
 \end{tabular}
 \end{table}
 
-%\begin{table}[htp]
-%\fontsize{10}{12}\selectfont
-%\centering
-%\caption{Data units, sources, and dates} \label{c5:tab2}
-%\begin{tabular}{| *4{>{\arraybackslash}m{1in}|} @{}m{0pt}@{}}
-%	\hline
-%	\textbf{Variable} & \textbf{Dates} & \textbf{Units} &
-%	\textbf{Source}  &\\[2ex] 
-%	\hline
-%	\textbf{Nominal Physical Capital Stock} & 1950-1990 & Billions
-%			US\$ & Nehru and Dhareshwar (1993) &\\[0ex]
-%	\hline
-%	\textbf{Total Population} & 1950-1990 & Billions & Nehru and
-%			Dhareshwar (1993) &\\[0ex]
-%	\hline
-%	\textbf{Nominal GDP} & 1950-1990 & Billions  US\$ & PWT &\\[5ex]
-%	\hline
-%	\textbf{Real GDP per capita} & 1950-1990 & 2005 US\$ per capita & PWT &\\[5ex]
-%	\hline
-%\end{tabular}
-%\end{table}
+\subsection{Data Collection and Sources}
+The dataset was obtained through collaboration with Easthampstead Surgery under an academic research agreement governing data handling, anonymisation, and use within the project scope. All documents were de-identified prior to use, with patient names, NHS numbers, dates of birth, addresses, and other PHI replaced with synthetic identifiers, consistent with NHS Information Governance requirements.
 
-\section{Math equation in thesis}
-All equation should be written using equation editor or using an equivalent tool.
+Document collection involved scanning physical paper documents at 300 dpi using an NHS-compliant document scanner and exporting digital documents from the practice's document management system in PDF format. Scanned copies were also created by photographing physical documents under controlled lighting conditions to simulate real-world mobile capture scenarios, replicating the noisy, skewed, low-contrast image conditions encountered in NHS front-line environments. This deliberate inclusion of varied image quality ensured that the ICDPS preprocessing and OCR pipeline was validated against authentic clinical document variability.
+
+\subsection{Dataset Structure and Characteristics}
+The dataset exhibits significant structural heterogeneity, reflecting the diversity of document templates, fonts, layouts, and printing systems used across different NHS trusts. Document layouts range from highly structured, template-based discharge summaries with clearly delineated data fields to largely unstructured free-text specialist letters with minimal visual formatting. This variability motivated the multi-tier extraction architecture, as a fixed-template approach would fail across the diverse layout space.
+
+Content analysis of the 40 documents identified the following clinical entity categories: diagnostic conditions (62\% of documents), medications with dosages (78\%), physiological measurements (45\%), clinical procedures (38\%), anatomical locations (71\%), and temporal references (83\%). The class distribution of SNOMED CT codes in the annotated subset is dominated by disorder/finding concepts (58\%) and drug substance concepts (29\%), with procedure (9\%) and body structure (4\%) concepts forming the minority. Table~\ref{tab:document_type_distribution} presents the distribution of document types.
+
+\begin{table}[htbp]
+\centering
+\caption{Distribution of Document Types in the ICDPS Dataset}
+\label{tab:document_type_distribution}
+\begin{tabular}{|p{8cm}|p{2cm}|p{3cm}|}
+\hline
+\textbf{Document Type} & \textbf{Count} & \textbf{Percentage (\%)} \\
+\hline
+Hospital Discharge Summaries & 8 & 20.0 \\
+\hline
+Specialist Clinical Letters & 9 & 22.5 \\
+\hline
+NHS 111 Reports & 5 & 12.5 \\
+\hline
+Accident and Emergency Reports & 4 & 10.0 \\
+\hline
+Ambulance Service Reports & 4 & 10.0 \\
+\hline
+Private Specialist Letters & 3 & 7.5 \\
+\hline
+Diabetic Eye Screening Reports & 3 & 7.5 \\
+\hline
+Out-of-Hours Primary Care Reports & 2 & 5.0 \\
+\hline
+External Provider Reports (Eye/ENT) & 2 & 5.0 \\
+\hline
+\textbf{Total} & \textbf{40} & \textbf{100.0} \\
+\hline
+\end{tabular}
+\end{table}
+
+\section{Preprocessing Pipeline Design}
+
+Data preprocessing plays a critical role in improving document quality prior to Optical Character Recognition (OCR) and directly influences the accuracy of downstream clinical entity extraction and coding. Clinical documents frequently contain variations in scan quality, skewed pages, uneven lighting, handwritten notes, stamps, and background artefacts that reduce OCR performance. Therefore, a structured preprocessing pipeline was implemented to improve document readability and ensure consistent input quality before processing with Amazon Textract.
+
+\subsection{Data Cleaning}
+The initial stage involved inspection and cleaning of collected clinical documents to remove unnecessary or corrupted content. Preprocessing operations were performed on each document before OCR execution. Blank or nearly empty pages were identified and removed to prevent unnecessary OCR processing overhead. Documents were standardised into RGB image format to maintain compatibility with OpenCV image operations and Amazon Textract input requirements. Image dimensions and resolution were also normalised to provide consistent quality across documents and reduce variations caused by different scanning devices.
+
+Additionally, pages containing excessive artefacts, incomplete scans, or severe distortions were identified during preprocessing. Documents with extreme quality degradation that could significantly affect OCR performance were excluded from quantitative evaluation.
+
+\subsection{Noise Reduction and Handling Missing Information}
+Clinical documents commonly contain noise sources such as handwritten annotations, photocopy marks, ink stamps, paper texture variations, and scanning artefacts. Such factors can introduce OCR errors and negatively impact downstream extraction tasks. To minimise these effects, OpenCV-based image enhancement techniques were applied.
+
+Morphological filtering operations were used to suppress isolated noise regions while preserving text structures and connected character components. Adaptive thresholding with Gaussian weighting was employed to convert documents into cleaner binary representations while handling non-uniform illumination conditions caused by handheld document capture or uneven scanning environments. These preprocessing operations improve text contrast and increase OCR readability.
+
+Cases where OCR failed to extract specific information were handled conservatively. Missing fields were represented using null values rather than generating estimated content. Similarly, the LLM-based summarisation stage was explicitly instructed to indicate when information was unavailable rather than infer or fabricate clinical values.
+
+\subsection{Text Transformation and Normalization}
+Following noise reduction, image transformations were performed to improve OCR consistency. Documents were converted into grayscale representations and subjected to adaptive binarisation to enhance foreground text visibility. Page skew correction was applied by estimating the dominant text orientation and rotating pages to align text horizontally. Rotation limits were imposed to avoid excessive corrections on pages containing limited text content.
+
+After OCR extraction, text-level normalisation operations were applied before further NLP processing. Multi-page document outputs were merged into unified text representations while preserving page boundaries. Repeated headers and footer content generated during OCR extraction were removed to reduce redundancy. Unicode text was normalised into a consistent format for compatibility with downstream processing components. Basic sentence boundary corrections were also applied where OCR line breaks interrupted sentence continuity.
+
+These preprocessing and normalisation stages collectively improved text quality and reduced noise propagation into downstream modules, thereby enhancing the performance of entity extraction, medical coding, and summarisation components.
+
+\subsection{Tokenization and Label Alignment}
+Clinical text is tokenized using the BioBERT WordPiece tokenizer with a maximum sequence length of 512 tokens. For fine-tuning, BIO labels from the i2b2 annotation format are aligned to the subword token sequence using the following rule: the first subword token of each annotated word receives the B- or I- label; subsequent subword tokens of the same word receive the X label (indicating continuation) and are excluded from loss computation during training.
+
+For documents exceeding 512 tokens, a sliding window approach with a window size of 512 tokens and a stride of 256 tokens is applied. Duplicate predictions in the overlap region (tokens 257--512 of the first window and tokens 1--256 of the second window) are resolved by retaining the prediction from the window where the token appears in the non-overlapping region, unless the overlap-region confidence is more than 15\% higher, in which case the higher-confidence prediction is retained.
+
+\subsection{Data Augmentation}
+To address class imbalance in the Allergy and Dosage categories, two augmentation strategies are applied:
+\begin{enumerate}[(i)]
+    \item \textbf{Entity Synonym Replacement:} Identified entities are replaced with clinical synonyms from SNOMED CT synonym lists, generating new training examples with the same annotations.
+    \item \textbf{Back-Translation:} Selected sentences containing underrepresented entities are translated to French and back to English using a neural machine translation model, producing paraphrased variants that preserve clinical meaning.
+\end{enumerate}
+
+\section{NER Model Architecture Design}
+The effectiveness of clinical information extraction largely depends on the architecture of the underlying Named Entity Recognition (NER) model and its ability to capture contextual relationships within complex medical text. Clinical narratives contain domain-specific terminology, abbreviations, and varying contextual dependencies that require models capable of understanding semantic meaning beyond simple pattern matching. Transformer-based language representations combined with sequence modelling techniques provide a robust approach for identifying clinically relevant entities while preserving contextual information. The proposed architecture integrates contextual embedding generation, sequence-level prediction mechanisms, and contextual assertion analysis to improve extraction accuracy and reliability.
+\subsection{BioBERT Encoder}
+The NER encoder is BioBERT-base (cased), comprising 12 transformer encoder layers, 12 attention heads per layer, a hidden dimension of 768, and a total of 110 million parameters. The model processes tokenized input and produces a sequence of contextual embeddings of dimension 768 for each token. The \texttt{[CLS]} token embedding is not used for NER; only the per-token embeddings are passed to the classification head.
+
+\subsection{CRF Classification Head}
+A linear classification layer maps each 768-dimensional token embedding to a vector of logits over the label vocabulary (17 labels: B- and I- for each of 8 entity types, plus O). A Conditional Random Field (CRF) layer is applied on top of the linear layer to enforce label sequence constraints. The CRF layer learns a transition score matrix $T$ where $T[i][j]$ represents the learned score of transitioning from label $i$ to label $j$. During inference, the Viterbi algorithm decodes the optimal label sequence.
+
+The CRF layer enforces the following hard constraints:
 \begin{itemize}
-	\item Equations should be numbered as : 1.1, 1.2 ...
-	\item Equation should be Centered, 12 Pt, TNR. 
-	\item Equation number should be right Justified
-	\item It should be cited as Eqn. 1.1.
-   \item If the sentence starts by citing an equation, then it should be written as Equation 1.1 For example, Equation 5.1 states the Pythagoras theorem.
-
-	
+    \item I-TYPE labels cannot follow O labels without an intervening B-TYPE label.
+    \item I-TYPE labels of one entity type cannot follow B-TYPE or I-TYPE labels of a different entity type.
+    \item B-TYPE and I-TYPE labels of the same entity type can follow each other without restriction.
 \end{itemize}
 
-For example in Eqn. \ref{eqn:pythag thm}, The well known Pythagorean theorem $x^2 + y^2 = z^2$ was 
-proved to be invalid for other exponents. 
-Meaning the next equation has no integer solutions:
+\subsection{Negation Detection Module}
+The negation detection module is implemented as a rule-enhanced neural classifier. For each extracted entity, a context window of $\pm 5$ tokens around the entity span is extracted from the tokenized document. A linear classifier operating on the BioBERT embeddings of the context window tokens predicts one of three assertion states: Affirmed, Negated, or Uncertain. The classifier is initialized with NegEx trigger phrase lists and fine-tuned on the i2b2 2010 assertion status annotations.
 
+\section{SNOMED CT Mapping Module Design}
+Standardized representation of extracted clinical concepts is essential for ensuring semantic interoperability and consistent interpretation of healthcare information across different systems. Mapping free-text medical entities to standardized terminology systems presents challenges because of variations in wording, contextual ambiguity, and the large number of available medical concepts. Efficient retrieval and ranking mechanisms are therefore required to identify the most appropriate standardized concepts while maintaining accuracy and computational efficiency. The proposed SNOMED CT mapping framework employs semantic representation, candidate retrieval techniques, and confidence-based ranking mechanisms to generate reliable coding suggestions.
+\subsection{Concept Embedding Index Construction}
+The SNOMED CT concept description index is constructed as follows:
+\begin{enumerate}[(i)]
+    \item All active concepts in the UK SNOMED CT release are extracted.
+    \item For each concept, its preferred term, fully specified name, and all active synonyms are concatenated into a description string.
+    \item FastText embeddings are computed for each description string using a character $n$-gram model ($n = 3$--$6$) pre-trained on a biomedical text corpus.
+    \item The resulting embedding vectors (dimension 300) are indexed in a FAISS \texttt{IndexFlatIP} (inner product) index for exact search, and a FAISS \texttt{IndexIVFPQ} index for approximate search.
+\end{enumerate}
+
+\subsection{Candidate Retrieval and Reranking}
+For each affirmed entity, the following two-stage retrieval process is performed:
+\begin{itemize}
+    \item \textbf{Stage 1 --- Candidate Retrieval:} The entity text is encoded using the FastText model to produce a query vector. The top-50 nearest neighbours (by inner product similarity) are retrieved from the FAISS index, producing 50 candidate SNOMED CT concepts.
+    \item \textbf{Stage 2 --- Reranking:} The 50 candidates are reranked using a cross-encoder model --- a fine-tuned BioBERT model that takes as input the concatenation of the entity span (with its surrounding context) and the SNOMED CT concept description, and outputs a relevance score. The top-5 candidates by reranking score are returned as the final suggestions with associated confidence scores.
+\end{itemize}
+
+\subsection{Confidence Score Calibration}
+Raw reranker scores are calibrated to produce reliable probability estimates using Platt scaling, fitting a logistic regression model on the reranker scores and binary relevance labels from a held-out validation set. Calibrated confidence scores are verified to be within 5\% of empirical accuracy across five confidence deciles on the validation set.
+
+\section{Model Architecture and Experimental Setup}
+
+The ICDPS integrates multiple AI/ML model components, each addressing a distinct processing challenge. This section presents the architecture of each model component and the experimental setup adopted for training and evaluation.
+
+\subsection{Model Selection}
+Model selection was guided by three criteria: (i) clinical domain suitability, favouring models pre-trained on biomedical or clinical text; (ii) service integration feasibility, preferring managed AWS services; and (iii) published performance benchmarks on comparable tasks. Table~\ref{tab:model_selection} presents the candidate models considered and the selection rationale for each pipeline component.
+
+\begin{table}[htbp]
+\centering
+\caption{Model Selection Analysis for ICDPS Components}
+\label{tab:model_selection}
+
+\begin{tabular}{
+|>{\raggedright\arraybackslash}p{2.7cm}
+|>{\raggedright\arraybackslash}p{4.5cm}
+|>{\raggedright\arraybackslash}p{7cm}|}
+\hline
+
+\textbf{Component} &
+\textbf{Candidates Considered} &
+\textbf{Selected Model and Rationale}
+\\
+\hline
+
+OCR Engine
+&
+AWS Textract; Tesseract 5; Google Cloud Vision
+&
+AWS Textract --- superior table/form extraction; per-word confidence scoring; HIPAA-eligible
+\\
+\hline
+
+Layout Understanding
+&
+LayoutLMv3; LayoutXLM; DocFormer
+&
+LayoutLMv3 --- state-of-the-art on PubLayNet/FUNSD; multi-modal text + layout + image
+\\
+\hline
+
+Medical NER
+&
+AWS Comprehend Medical; BioBERT; spaCy scispaCy
+&
+AWS Comprehend Medical --- managed HIPAA-eligible; native InferSNOMEDCT API
+\\
+\hline
+
+Clinical LLM
+&
+AWS Bedrock Claude Sonnet; GPT-4; Llama 3
+&
+AWS Bedrock Claude Sonnet --- best instruction following; lowest hallucination rate; HIPAA-eligible
+\\
+\hline
+
+Concept Embedding
+&
+SapBERT; BioBERT-NER; ClinicalBERT
+&
+SapBERT --- purpose-designed for medical entity normalisation on SNOMED concepts
+\\
+\hline
+
+Vector Search
+&
+FAISS; Pinecone; Milvus
+&
+FAISS --- open-source; GPU-accelerated; sub-100 ms retrieval
+\\
+\hline
+
+\end{tabular}
+\end{table}
+
+\subsection{Model Architecture Design}
+
+\textbf{LayoutLMv3 Architecture:} LayoutLMv3 is a unified multi-modal pre-trained model for document understanding. The model architecture consists of a shared transformer encoder with 12 layers, 12 attention heads, and a hidden dimension of 768 (LayoutLMv3-base). Text tokens are represented as WordPiece embeddings summed with 1D position embeddings and 2D spatial layout embeddings derived from word bounding box coordinates. Image patches are encoded using a linear projection of 16$\times$16 pixel patches from the document page image. Cross-modal attention between text token representations and image patch representations enables the model to associate text with its visual context on the page. In the ICDPS, LayoutLMv3 is fine-tuned for token classification into five layout-semantic categories: Title, Section Header, Body Text, Data Field, and Table Cell.
+
+\textbf{AWS Comprehend Medical NER:} The \texttt{InferSNOMEDCT()} API operates on a clinical BERT-based sequence labeller pre-trained on MIMIC-III clinical notes, PubMed abstracts, and UMLS metathesaurus concept descriptions. The model applies a CRF output layer to produce entity span labels in BIO format. Each detected entity is associated with a SNOMED CT concept ID, a description string, a clinical category, and a detection confidence score.
+
+\textbf{AWS Bedrock Claude Sonnet:} Claude Sonnet provides a 200,000-token context window, enabling processing of multi-page clinical documents without truncation. Three role-differentiated system prompts are constructed at runtime: a Clinician System Prompt for structured clinical summaries covering findings, diagnoses, and recommended actions; a Patient System Prompt for plain-English explanation avoiding medical jargon; and a Pharmacist System Prompt focusing on medication details, dosages, and contraindications.
+
+\subsection{Training Configuration}
+The LayoutLMv3 fine-tuning training configuration was established through a preliminary hyperparameter grid search. Table~\ref{tab:training_config} presents the final training configuration adopted.
+
+\subsection{Experimental Workflow}
+The experimental workflow followed structured training, evaluation, and hyperparameter refinement cycles. In each cycle: (i) LayoutLMv3 was fine-tuned on the augmented training dataset; (ii) the fine-tuned model was evaluated on the validation set using token-level accuracy, precision, recall, and F1-score for each zone class; (iii) training and validation loss curves were inspected for overfitting; (iv) hyperparameters were adjusted based on validation performance; and (v) the best checkpoint by macro F1-score was retained. For SNOMED mapping, layer-by-layer ablation experiments quantified the marginal contribution of each fallback layer to overall SNOMED code recall. UCS weighting coefficients were validated through threshold sensitivity analysis across the full confidence threshold range $[0.60, 0.80]$ for all 21 document type categories.
+\begin{table}[htbp]
+\centering
+\caption{LayoutLMv3 Fine-Tuning Training Configuration}
+\label{tab:training_config}
+\begin{tabular}{|p{5cm}|p{8cm}|}
+\hline
+\textbf{Hyperparameter} & \textbf{Value} \\
+\hline
+Base Model & \texttt{microsoft/layoutlmv3-base} (Hugging Face Hub) \\
+\hline
+Task & Token Classification --- document layout segmentation \\
+\hline
+Training Epochs & 15 (early stopping patience: 5 epochs) \\
+\hline
+Batch Size & 8 (gradient accumulated over 4 steps; effective batch = 32) \\
+\hline
+Optimiser & AdamW \\
+\hline
+Initial Learning Rate & $2 \times 10^{-5}$ \\
+\hline
+Learning Rate Schedule & Cosine annealing with warm-up (warmup ratio = 0.1) \\
+\hline
+Weight Decay & 0.01 \\
+\hline
+Dropout Rate & 0.1 \\
+\hline
+Max Input Sequence Length & 512 tokens \\
+\hline
+Image Resolution & $224 \times 224$ pixels (ViT patch size $16 \times 16$) \\
+\hline
+Hardware & NVIDIA A10G GPU (AWS g5.xlarge) \\
+\hline
+Training Duration & Approximately 4.5 hours for 15 epochs \\
+\hline
+Framework & PyTorch 2.1 + Hugging Face Transformers 4.37 \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Validation Strategy}
+The primary validation strategy for SNOMED CT mapping accuracy employs leave-one-out cross-validation (LOOCV) across the 25 annotated documents, reporting precision, recall, and F1-score at the entity-code pair level. LOOCV was selected because the small dataset size makes $k$-fold partitions unstable for minority document categories. For LayoutLMv3 zone classification, stratified 5-fold cross-validation on the synthetic training dataset reports token-level macro F1-score. OCR accuracy is evaluated using character error rate (CER) and word error rate (WER) computed against manually verified ground-truth transcriptions of 15 representative document pages.
+
+\section{Inference and Post-Processing Design}
+The effectiveness of an intelligent clinical document processing system depends not only on model performance but also on the mechanisms used to optimize prediction quality and transform raw outputs into meaningful structured information. Efficient inference workflows require techniques that improve computational performance while maintaining accuracy and model stability during processing. Additional post-processing operations are necessary to refine extracted entities, remove inconsistencies, and ensure that generated outputs satisfy clinical and semantic requirements. The components presented in this section describe the optimization strategies, inference mechanisms, output refinement procedures, and structured data representation techniques adopted within the proposed Intelligent Clinical Document Processing System (ICDPS).
+\subsection{Optimisation Techniques}
+Gradient-based optimisation for LayoutLMv3 fine-tuning uses AdamW, which decouples weight decay from the adaptive gradient update mechanism, providing superior regularisation for transformer models. Weight decay of 0.01 is applied to all parameters except bias terms and layer normalisation parameters. Learning rate warm-up over the first 10\% of training steps prevents early instability. Cosine annealing reduces the learning rate smoothly from its peak to near-zero, enabling fine-grained convergence. Gradient clipping with maximum norm 1.0 prevents exploding gradients. Mixed-precision training (FP16) reduces GPU memory consumption by approximately 40\% and enables a larger effective batch size. Early stopping with patience of 5 validation epochs prevents overfitting.
+
+\subsection{Loss Functions and Evaluation Logic}
+The LayoutLMv3 token classification objective uses weighted cross-entropy loss with class weights inversely proportional to class frequency, addressing the imbalance between dominant Body Text tokens and sparse Table Cell or Section Header tokens. The weighted loss $\mathcal{L}_w$ is:
 \begin{equation}
-\label{eqn:pythag thm}
-	x^n + y^n = z^n
+\mathcal{L}_w = -\sum_{c} \left[ w_c \cdot y_c \cdot \log(p_c) \right] \quad \text{where} \quad w_c = \frac{N_{\text{total}}}{N_{\text{classes}} \cdot N_c}
+\label{eq:weighted_loss}
 \end{equation}
 
-The mass-energy equivalence is described by the famous equation in Eqn. \ref{eqn:mass-eng}
+The Unified Confidence Score (UCS) is computed using document-type-dependent weighted linear combinations. For standard NHS documents (discharge summaries, specialist letters):
 \begin{equation}
-\label{eqn:mass-eng}
-	E=mc^2
+\text{UCS} = 0.40 \times \text{textract\_conf} + 0.20 \times \text{snomed\_conf} + 0.40 \times \text{llm\_conf}
+\label{eq:ucs_standard}
 \end{equation}
 
-discovered in 1905 by Albert Einstein. 
+For ambulance and NHS 111 reports, where all-caps tables render SNOMED mapping unreliable:
+\begin{equation}
+\text{UCS} = 0.50 \times \text{textract\_conf} + 0.50 \times \text{llm\_conf}
+\label{eq:ucs_ambulance}
+\end{equation}
 
-\section{Interpretation of results}
+The UCS is compared against document-type-specific thresholds defined in \texttt{config/\allowbreak document\_type\_\allowbreak config.py}, which defines 21 NHS document categories with per-type review thresholds ranging from 0.62 to 0.72.
 
-\vspace{2.5cm}
+\subsection{Inference Pipeline}
+The production inference pipeline is implemented as a Python class (\texttt{Icdps\-Inference\-Pipeline}) that encapsulates the complete processing workflow. The pipeline accepts a document path as input and executes the following steps in sequence: document format detection, text extraction (direct or OCR), text normalization, sliding-window tokenization, NER inference, entity span decoding, negation detection, role categorization, summarization, SNOMED CT candidate retrieval, and reranking. The pipeline returns a structured JSON object containing the document metadata, extracted entities, summary, and SNOMED CT suggestions.
 
- \textbf{The chapters should not end with figures, instead bring the paragraph explaining about the figure at the end followed by a summary paragraph.}
+\subsection{Post-Processing Rules}
+The following post-processing rules are applied to the raw NER output:
+\begin{itemize}
+    \item \textbf{Contiguous Entity Merging:} Adjacent entities of the same type separated only by whitespace or the conjunction ``and'' are merged into a single entity span (e.g., ``left'' + ``ventricular'' + ``hypertrophy'' $\rightarrow$ ``left ventricular hypertrophy'').
+    \item \textbf{Minimum Entity Length Filter:} Entity spans of fewer than 2 non-whitespace characters are discarded as likely tokenization artefacts.
+    \item \textbf{Duplicate Entity Deduplication:} Identical entity text appearing more than once in the document is deduplicated; only the first occurrence with its associated SNOMED CT suggestion is retained in the structured output. All occurrences are annotated in the document view.
+    \item \textbf{Negated Entity Exclusion:} Entities with negation status Negated are excluded from SNOMED CT code suggestion. They are retained in the display but are clearly marked and do not appear in the exported coding report.
+\end{itemize}
 
-After elaborating the various sections of the chapter (From Chapter 2 onwards), a summary paragraph should be written discussing the highlights of that particular chapter. This summary paragraph should not be numbered separately. This paragraph should connect the present chapter to the next chapter.
+\subsection{Output Schema}
+The inference pipeline produces a structured JSON output conforming to the following schema:
+\begin{verbatim}
+{
+  "document_id": string,
+  "document_type": string,
+  "extraction_timestamp": ISO8601,
+  "entities": [{
+    "entity_id": string,
+    "text": string,
+    "category": string,
+    "assertion": string,
+    "role_action": string,
+    "start_char": int,
+    "end_char": int,
+    "snomed_suggestions": [{
+      "concept_id": string,
+      "preferred_term": string,
+      "confidence": float
+    }]
+  }],
+  "summary": string,
+  "processing_metadata": {
+    "model_version": string,
+    "processing_time_ms": int
+  }
+}
+\end{verbatim}
 
-
-
+\section*{Summary}
+This chapter presented the detailed technical design of the ICDPS, covering dataset organization and characteristics, the text preprocessing and augmentation pipeline, the BioBERT-CRF NER model architecture, the two-stage SNOMED CT candidate retrieval and reranking system, and the inference pipeline with post-processing rules. The detailed design established the precise technical specifications required to implement the system, providing a clear bridge between the high-level architectural blueprint in Chapter 4 and the implementation described in Chapter 6. Key design decisions --- including sliding-window inference for long documents, CRF-enforced label constraints, and confidence score calibration --- are justified in terms of their contribution to system accuracy and reliability.
