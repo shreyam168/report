@@ -1,0 +1,56 @@
+\chapter{Conclusion}
+
+The development of intelligent healthcare systems has created significant opportunities for improving the processing and utilization of unstructured clinical information. Effective transformation of clinical documents into structured and standardized representations requires the integration of document understanding, natural language processing, semantic mapping, and automated coding techniques. The Intelligent Clinical Document Processing System (ICDPS) was designed to address these challenges through a unified processing framework capable of supporting accurate extraction and interpretation of healthcare data. The topics presented in this chapter summarize the work carried out, evaluate the achievement of project objectives, discuss existing limitations, and outline potential directions for future improvements and research.
+
+\section{Conclusion}
+
+This project addressed a critical and growing challenge in modern healthcare: the absence of a robust, template-free, automated system for extracting structured clinical information from heterogeneous NHS-format clinical documents and mapping it to standardized SNOMED CT codes. The manual clinical coding process --- slow, expensive, and prone to inconsistency --- represented a significant administrative bottleneck with direct implications for patient care quality, clinical record completeness, and healthcare analytics.
+
+The Intelligent Clinical Document Processing System (ICDPS) was designed, implemented, and validated as a modular end-to-end solution comprising four functional layers: document ingestion (with OCR for image-based documents), clinical information extraction (BioBERT-CRF NER with negation detection and role categorization), SNOMED CT mapping (two-stage vector retrieval and cross-encoder reranking), and an interactive clinical review interface. The system was implemented in Python 3.10 using the Hugging Face Transformers library, PyMuPDF, Tesseract 5.0, FAISS, and Flask, and deployed as a containerized Docker application.
+
+The key results achieved by the ICDPS are:
+\begin{itemize}
+    \item NER extraction micro-F1 of 0.887 on the i2b2 held-out test set across eight clinical entity categories, exceeding the 0.85 target defined in NFR-03.
+    \item SNOMED CT mapping precision@1 of 0.854, precision@3 of 0.906, and precision@5 of 0.934 on the held-out mapping test set, meeting the 0.85 target defined in NFR-04.
+    \item Generalization F1 of 0.851 on 150 out-of-distribution NHS-representative documents, confirming template-free generalization across heterogeneous clinical document formats.
+    \item End-to-end processing latency of 1.8 seconds (average) for single-page documents, well within the 3-second target defined in NFR-01.
+    \item Batch throughput of 112 documents per hour, exceeding the 100 documents per hour target defined in NFR-02.
+    \item Successful deployment as a multi-container Docker application with a functional web-based clinical review interface supporting multi-role (Pharmacist and Clinician) workflow categorization.
+\end{itemize}
+
+The project demonstrated that transformer-based NLP, combined with semantic vector search and confidence-ranked ontology suggestion, can provide a clinically useful level of automation for SNOMED CT coding workflows. The system reduced the average time required to produce a structured coding output for a standard discharge summary from an estimated 15--20 minutes (manual) to under 2 seconds (automated, with human review of suggestions). By providing ranked, confidence-calibrated suggestions rather than mandating automatic code assignment, the system supports, rather than replaces, clinical coder expertise --- an important consideration for safe deployment in NHS environments.
+
+All seven project objectives defined in Section 1.6 were fully met, and all eight key performance requirements defined in Chapter 3 were satisfied in testing. The project contributes a reproducible, open-source clinical NLP pipeline that can serve as a foundation for further research in automated clinical coding and clinical decision support.
+
+\section{Limitations}
+
+The following limitations of the current ICDPS implementation are acknowledged:
+\begin{itemize}
+    \item \textbf{Language Restriction:} The current system supports English-language documents only. Clinical documents in Welsh, which constitutes approximately 20\% of NHS Wales clinical correspondence, are not supported. Extension to multilingual clinical NLP would require fine-tuning on multilingual clinical corpora.
+    \item \textbf{Handwritten Text:} The OCR pipeline handles only printed text. Handwritten clinical annotations, which persist in some legacy clinical settings, are not processed. Dedicated handwriting recognition models would be required to support this document type.
+    \item \textbf{Allergy Entity Performance:} The Allergy entity F1-score of 0.790 falls below the performance of other categories. The limited representation of allergy entities in the i2b2 training corpus constrains the model's ability to generalize to the full diversity of allergy expression patterns encountered in clinical practice.
+    \item \textbf{SNOMED CT Compositional Expressions:} The current mapping module handles simple atomic SNOMED CT concepts but does not support compositional expressions --- descriptions requiring combinations of multiple SNOMED CT concepts using description logic --- which are required for precise coding of complex clinical scenarios.
+    \item \textbf{Offline Operation:} The system operates as an offline batch processing solution and does not provide real-time integration with live EHR systems. Real-time processing would require an asynchronous API architecture with response times below 500 milliseconds, necessitating model optimization beyond the current implementation.
+    \item \textbf{Training Data Domain:} Fine-tuning was performed exclusively on US-based clinical corpora (i2b2/BIDMC). While generalization to NHS document formats was demonstrated on the out-of-distribution test set, fine-tuning on NHS-specific annotated documents would further improve performance on NHS clinical writing styles and terminology conventions.
+    \item \textbf{Clinical Validation:} The system has not undergone formal clinical validation by qualified clinical coders against NHS coding standards. Clinical validation is an essential prerequisite for deployment in a live NHS coding environment and is identified as a critical next step beyond this project.
+\end{itemize}
+
+\section{Future Enhancements}
+
+The following enhancements are proposed for future development of the ICDPS:
+\begin{itemize}
+    \item \textbf{Real-Time EHR Integration:} Develop an asynchronous REST API adapter enabling direct integration with NHS EHR platforms (e.g., EMIS, SystmOne). This would require optimizing inference latency to below 500 milliseconds through model quantization (INT8 or FP16) and ONNX Runtime deployment.
+    \item \textbf{NHS-Specific Fine-Tuning:} Collaborate with NHS clinical coding departments to collect and annotate a representative corpus of NHS clinical documents under appropriate data governance frameworks. Fine-tuning on NHS-annotated data is expected to yield a 3--5 percentage point F1 improvement for NHS-specific document types.
+    \item \textbf{Active Learning Integration:} Implement an active learning pipeline that identifies uncertain NER predictions and routes them to human annotators for labelling. Periodically retraining the model on the resulting annotations would incrementally improve performance without requiring large-scale manual annotation campaigns.
+    \item \textbf{ICD-10 and LOINC Coding Support:} Extend the ontology mapping module to support ICD-10-CM (for diagnosis coding in insurance and billing contexts) and LOINC (for laboratory observation coding), using the same vector retrieval and cross-encoder reranking architecture with ontology-specific embedding indices.
+    \item \textbf{Compositional SNOMED CT Coding:} Develop a post-coordination module that assembles compositional SNOMED CT expressions from multiple extracted entities (e.g., ``severe left-sided chest pain on exertion'' $\rightarrow$ \{finding site: left hemithorax\} + \{severity: severe\} + \{associated with: exertion\}), addressing a significant gap in the current mapping capability.
+    \item \textbf{Multilingual Support:} Extend the pipeline to support Welsh and other NHS-relevant languages using multilingual transformer models (e.g., XLM-RoBERTa) fine-tuned on clinical corpora in the target languages.
+    \item \textbf{Clinical Validation Study:} Conduct a prospective clinical validation study in collaboration with NHS clinical coding departments, comparing ICDPS-assisted coding outcomes against unassisted coding in terms of coding accuracy, inter-rater agreement, and coder time per document.
+    \item \textbf{Mobile and Low-Resource Deployment:} Develop a lightweight model variant using knowledge distillation to enable deployment on mobile or low-resource clinical devices, expanding the system's applicability in point-of-care settings.
+\end{itemize}
+
+\section*{Summary}
+
+This chapter concluded the Major Project Report for the Intelligent Clinical Document Processing System with SNOMED CT Coding. The project successfully developed, implemented, and validated an intelligent, template-free clinical NLP pipeline that extracts structured clinical information from heterogeneous PDF and image-format clinical documents and maps extracted entities to ranked SNOMED CT code suggestions with calibrated confidence scores. All seven project objectives and eight key performance requirements were met. The system demonstrated clinically useful extraction accuracy (F1 = 0.887), reliable SNOMED CT suggestion quality (P@1 = 0.854), and robust performance under diverse document conditions and peak load scenarios.
+
+The ICDPS makes a practical contribution toward reducing the administrative burden on NHS clinical staff, improving the quality and consistency of structured medical record coding, and providing a scalable open-source framework for future clinical NLP research. The limitations identified --- particularly the absence of NHS-specific training data and formal clinical validation --- define a clear roadmap for advancing this work toward production-grade NHS deployment.

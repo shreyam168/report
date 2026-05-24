@@ -239,6 +239,6 @@ Performance was consistently high across most specialties. The lowest F1-score w
 \subsection{Adversarial and Stress Testing}
 Stress testing was performed by simulating peak load conditions using the Locust load testing framework. Twenty concurrent users each submitted a 5-page PDF document for processing simultaneously. Under this load, the average end-to-end processing latency was 8.7 seconds per document, and no requests failed or returned errors. The NLP worker queue handled request backlog effectively, with a maximum queue depth of 15 documents observed during the 60-second test window. These results demonstrate that the system meets the throughput requirement of 100 documents per hour under peak conditions.
 
-\section*{Summary}
+\section* {Summary}
 
 This chapter presented the comprehensive testing and validation of the ICDPS across four testing levels: unit, integration, system, and performance. The NER model achieved an entity-level F1-score of 0.887 on the i2b2 test set, meeting the NFR-03 target of 0.85. The SNOMED CT mapping module achieved precision@1 of 0.854, meeting the NFR-04 target of 0.85. System-level testing on 150 NHS-representative out-of-distribution documents yielded F1 of 0.851, confirming reasonable generalization. Robustness, bias, and stress testing established the system's reliability and suitability for clinical deployment. Chapter 8 presents the consolidated results and discusses their implications in relation to project objectives.
