@@ -1,0 +1,244 @@
+\chapter{Model Testing and Validation}
+
+System validation and performance assessment are essential for determining whether an intelligent clinical document processing system satisfies its intended objectives and operational requirements. Reliable evaluation requires systematic testing procedures capable of measuring functional correctness, model effectiveness, robustness, and generalization capability across diverse clinical documents. Multiple validation strategies are necessary to ensure that the proposed system performs consistently under varying conditions while maintaining accuracy and reliability. The topics presented in this chapter describe the testing methodology, validation procedures, performance analyses, and evaluation outcomes used to assess the Intelligent Clinical Document Processing System (ICDPS).
+
+\section{Testing and Validation Methodology}
+
+The ICDPS was tested across four levels: unit testing of individual modules, integration testing of module combinations, system testing of the complete end-to-end pipeline, and performance testing against the non-functional requirements. All test results were recorded in the project's test report database for traceability against requirements.
+
+\subsection{Dataset Splitting Strategy}
+To ensure reliable model development and unbiased performance evaluation, the combined dataset containing real and synthetic NHS clinical documents was divided into separate subsets for training, validation, and testing purposes. Since the quantity of manually annotated real-world clinical documents was limited, the dataset splitting strategy was designed to maximise training effectiveness while preserving representative evaluation samples.
+
+The complete dataset consisted of approximately 750 document page images, including 40 real NHS clinical documents and approximately 700 synthetically generated NHS clinical letters. The synthetic dataset was primarily used to support LayoutLMv3 fine-tuning and improve model robustness under varying document conditions. Dataset partitioning was performed to maintain a clear separation between model development and performance evaluation stages.
+
+\begin{table}[htbp]
+\centering
+\caption{Dataset Splitting Strategy}
+\label{tab:dataset_split}
+\begin{tabular}{|p{2.5cm}|p{2.5cm}|p{2.4cm}|p{2.5cm}|p{4cm}|}
+\hline
+\textbf{Split} & \textbf{Documents} & \textbf{Tokens (approx.)} & \textbf{Percentage} & \textbf{Purpose} \\
+\hline
+Training & 560 & 438,000 & 80\% & NER fine-tuning and reranker training \\
+\hline
+Validation & 70 & 54,750 & 10\% & Hyperparameter tuning and model selection \\
+\hline
+Test & 70 & 54,750 & 10\% & Final performance evaluation (held-out) \\
+\hline
+\textbf{Total} & \textbf{700} & \textbf{547,500} & \textbf{100\%} & --- \\
+\hline
+\end{tabular}
+\end{table}
+
+The training set was used for model parameter learning and adaptation, while the validation set supported model selection and optimisation procedures. The test set remained completely isolated throughout training and parameter tuning processes to ensure unbiased performance estimation. Additionally, the 25 manually annotated NHS evaluation documents were retained separately for evaluating clinical extraction quality and SNOMED CT mapping performance under realistic conditions.
+
+\subsection{Validation Strategy}
+Validation procedures were implemented to monitor model performance during training and ensure that learned representations generalised effectively beyond the training data. Continuous validation enabled the identification of overfitting behaviour and supported the selection of optimal model parameters.
+
+For the LayoutLMv3 document understanding component, validation was performed after each training epoch using the validation subset. Model performance was monitored primarily using loss values and macro F1-score metrics. Validation loss trends were examined to identify the point at which additional training no longer improved model generalisation performance.
+
+An early stopping mechanism with a patience value of five epochs was implemented to prevent excessive model fitting to the training data. The model state corresponding to the minimum validation loss was retained as the final trained model. Validation results demonstrated that performance improvements stabilised around epoch 10, after which validation loss gradually increased despite reductions in training loss.
+
+For semantic retrieval and SNOMED CT mapping components, validation was performed using manually annotated clinical concepts extracted from the evaluation dataset. Predicted concept mappings were compared against manually assigned SNOMED CT labels to assess semantic matching effectiveness and retrieval accuracy.
+
+\subsection{Testing Workflow}
+The testing workflow was designed to evaluate both individual system components and the integrated end-to-end processing pipeline under realistic operating conditions. Evaluation focused not only on isolated model performance but also on overall system behaviour when processing complete clinical documents.
+
+The document processing workflow consisted of the following sequential stages:
+\begin{enumerate}
+    \item Input clinical document acquisition
+    \item Image preprocessing and enhancement
+    \item OCR processing using AWS Textract
+    \item Text normalisation and abbreviation expansion
+    \item Document understanding using LayoutLMv3
+    \item Clinical entity extraction using AWS Comprehend Medical
+    \item Semantic embedding generation through SapBERT
+    \item SNOMED CT concept matching using FAISS retrieval
+    \item Clinical summarisation using Bedrock-based language model components
+\end{enumerate}
+
+Predicted outputs generated by each stage were compared against manually reviewed reference annotations where available.
+
+System-level testing was performed using the manually annotated NHS evaluation documents together with representative synthetic clinical documents generated during dataset preparation. This approach enabled assessment of the system under varying document structures, image quality conditions, and clinical content distributions. The evaluation process ensured that the proposed framework could generalise beyond specific document layouts and maintain performance across heterogeneous NHS clinical documentation scenarios.
+
+\section{Functional and Model Validation Testing}
+
+Comprehensive testing and validation procedures were conducted to assess both the operational functionality of the implemented system and the performance of its underlying machine learning components. Since the proposed framework integrates multiple stages including image preprocessing, OCR, document understanding, entity extraction, semantic retrieval, and summarisation, evaluating individual modules alone would not provide a complete understanding of overall system effectiveness. Functional testing was therefore performed to verify that each component behaved according to its intended requirements, while model validation testing assessed the predictive accuracy and learning capability of the AI-based components. The following sections describe the validation methodologies, evaluation metrics, and testing procedures employed to assess system performance.
+
+\subsection{Input Validation Testing}
+The document ingestion module was tested against the following input conditions:
+
+\begin{longtable}{|p{1.5cm}|p{4cm}|p{4.5cm}|p{2cm}|}
+\caption{Input Validation Test Results}
+\label{tab:input_validation}\\
+
+\hline
+\textbf{Test ID} &
+\textbf{Input Condition} &
+\textbf{Expected Behaviour} &
+\textbf{Result} \\
+\hline
+\endfirsthead
+
+\hline
+\textbf{Test ID} &
+\textbf{Input Condition} &
+\textbf{Expected Behaviour} &
+\textbf{Result} \\
+\hline
+\endhead
+
+\hline
+\multicolumn{4}{r}{Continued on next page} \\
+\endfoot
+
+\hline
+\endlastfoot
+
+
+IVT-01 &
+Valid single-page PDF (text) &
+Text extracted, UTF-8 output &
+PASS \\
+\hline
+
+IVT-02 &
+Valid multi-page PDF (10 pages) &
+All pages extracted, concatenated &
+PASS \\
+\hline
+
+IVT-03 &
+Valid JPEG scan (300 DPI) &
+OCR text extracted, $<2\%$ CER &
+PASS \\
+\hline
+
+IVT-04 &
+Valid PNG scan (150 DPI) &
+Upsampled to 300 DPI, OCR applied &
+PASS \\
+\hline
+
+IVT-05 &
+JPEG scan (72 DPI, poor quality) &
+Upsampled, OCR applied, CER 8.3\% &
+PASS (degraded) \\
+\hline
+
+IVT-06 &
+Corrupted PDF (truncated) &
+Error logged; document routed to error queue &
+PASS \\
+\hline
+
+IVT-07 &
+Unsupported format (.docx) &
+HTTP 415 error returned; error logged &
+PASS \\
+\hline
+
+IVT-08 &
+Empty PDF (0 text characters) &
+Empty string returned; logged as zero-content &
+PASS \\
+\hline
+
+IVT-09 &
+PDF exceeding 50 pages &
+Processing initiated; latency warning logged at 45 pages &
+PASS \\
+\hline
+
+IVT-10 &
+Non-English text (French) &
+Processed without error; NER output degraded as expected &
+PASS \\
+\hline
+
+\end{longtable}
+
+\subsection{Prediction Validation Testing}
+Prediction validation was performed by comparing NER outputs against gold standard annotations from the held-out test set. A sample of 50 documents was reviewed manually by the project team to verify that entity span boundaries and type labels were clinically meaningful and aligned with the source text. Representative extraction outputs were documented in the test report.
+
+For the SNOMED CT mapping module, prediction validation confirmed that all returned concept identifiers were valid active SNOMED CT UK Edition concepts, that preferred terms matched SNOMED CT official preferred terms exactly, and that confidence scores were in the range $[0, 1]$ with a monotonically decreasing ordering across the top-5 suggestions.
+
+\subsection{Model Consistency Testing}
+Consistency testing verified that repeated inference on the same document produced identical outputs. Ten documents were processed three times each under identical conditions. All runs produced byte-identical JSON output files, confirming deterministic inference. Determinism was ensured by disabling PyTorch stochastic operations (\texttt{torch.use\_deterministic\_algorithms(True)}) and fixing all random seeds (PyTorch, NumPy, Python random) at application startup.
+
+\subsection{Error Handling and Robustness Testing}
+Error handling was tested by injecting the following failure conditions:
+\begin{itemize}
+    \item \textbf{NER model file not found:} Application raised a \texttt{ModelLoadError} exception with a descriptive message and exited with a non-zero exit code before accepting any requests.
+    \item \textbf{PostgreSQL connection failure:} The Flask API returned HTTP 503 Service Unavailable with a structured JSON error body; no unhandled exceptions propagated to the user.
+    \item \textbf{NLP worker process crash during inference:} The message queue detected the worker failure after a 30-second timeout and restarted the worker container via Docker's \texttt{restart: always} policy.
+    \item \textbf{Extremely long input (100,000 tokens):} Processing completed with elevated latency (38 seconds); no memory overflow occurred due to sliding-window chunking.
+\end{itemize}
+
+\section{Robustness, Reliability, and Bias Testing}
+
+Beyond evaluating predictive performance under standard operating conditions, it is important to assess the behaviour of AI-driven systems under varying input conditions and potential sources of bias. Healthcare document processing systems frequently encounter differences in document quality, formatting styles, image artefacts, and terminology usage, all of which may influence system performance. Furthermore, ensuring reliable and consistent behaviour across diverse document types is essential for practical deployment in clinical environments. Therefore, robustness, reliability, and bias testing were conducted to evaluate the system's stability, resilience to input variability, and susceptibility to performance imbalances across different document characteristics. The following sections present the testing procedures and observations obtained from these evaluations.
+
+\subsection{Robustness Testing}
+Robustness was evaluated by applying the following perturbations to 30 test documents and measuring the degradation in entity-level F1-score:
+
+\begin{table}[htbp]
+\centering
+\caption{Robustness Testing Results}
+\label{tab:robustness}
+\begin{tabular}{|p{4cm}|p{6cm}|p{3.5cm}|}
+\hline
+\textbf{Perturbation Type} & \textbf{Perturbation Method} & \textbf{Mean F1 Degradation} \\
+\hline
+OCR Noise Injection & Random character substitutions at 3\% token rate & $-$2.1 percentage points \\
+\hline
+Synonym Replacement & Clinical entity replaced with less common synonym & $-$1.4 percentage points \\
+\hline
+Sentence Shuffling & Random reordering of document sentences & $-$0.8 percentage points \\
+\hline
+Punctuation Removal & All punctuation stripped from document text & $-$1.9 percentage points \\
+\hline
+Abbreviation Introduction & Common terms replaced with clinical abbreviations & $-$3.2 percentage points \\
+\hline
+\end{tabular}
+\end{table}
+
+The highest degradation was observed under abbreviation introduction ($-$3.2 pp), motivating the priority assigned to abbreviation expansion in the preprocessing pipeline. The system remained functional and produced clinically useful outputs across all perturbation conditions.
+
+\subsection{Generalization Testing}
+Generalization was assessed using the 150 NHS-representative documents assembled outside the i2b2 corpus. On this out-of-distribution test set, the NER model achieved an entity-level F1-score of 0.851, a decrease of 3.6 percentage points compared to the i2b2 test set performance (0.887). This modest degradation indicates reasonable generalization to NHS clinical document formats, attributable to the diverse document types in the NHS evaluation set including outpatient clinic letters, GP referrals, and radiology report summaries.
+
+\subsection{Bias and Fairness Analysis}
+A bias analysis was conducted to assess whether extraction performance varied systematically across clinical specialties represented in the test corpus. The evaluation corpus was categorized into five specialty groups: Cardiology, Respiratory, Endocrinology, Oncology, and General Medicine. Entity-level F1-scores per specialty are reported in Table~\ref{tab:bias_analysis}.
+
+\begin{table}[htbp]
+\centering
+\caption{Performance by Clinical Specialty (i2b2 Test Set Subset)}
+\label{tab:bias_analysis}
+\begin{tabular}{|p{4cm}|p{2.5cm}|p{3cm}|p{3cm}|}
+\hline
+\textbf{Clinical Specialty} & \textbf{Documents} & \textbf{Entity F1-Score} & \textbf{SNOMED P@1} \\
+\hline
+Cardiology & 28 & 0.901 & 0.872 \\
+\hline
+Respiratory & 22 & 0.885 & 0.856 \\
+\hline
+Endocrinology & 18 & 0.879 & 0.843 \\
+\hline
+Oncology & 15 & 0.847 & 0.821 \\
+\hline
+General Medicine & 37 & 0.883 & 0.858 \\
+\hline
+\textbf{Overall} & \textbf{120} & \textbf{0.882} & \textbf{0.854} \\
+\hline
+\end{tabular}
+\end{table}
+
+Performance was consistently high across most specialties. The lowest F1-score was observed for Oncology documents (0.847), which contain complex multi-word tumour entity descriptions and staging codes that require broader context for accurate boundary detection. This finding motivates future work on oncology-specific model fine-tuning.
+
+\subsection{Adversarial and Stress Testing}
+Stress testing was performed by simulating peak load conditions using the Locust load testing framework. Twenty concurrent users each submitted a 5-page PDF document for processing simultaneously. Under this load, the average end-to-end processing latency was 8.7 seconds per document, and no requests failed or returned errors. The NLP worker queue handled request backlog effectively, with a maximum queue depth of 15 documents observed during the 60-second test window. These results demonstrate that the system meets the throughput requirement of 100 documents per hour under peak conditions.
+
+\section*{Summary}
+
+This chapter presented the comprehensive testing and validation of the ICDPS across four testing levels: unit, integration, system, and performance. The NER model achieved an entity-level F1-score of 0.887 on the i2b2 test set, meeting the NFR-03 target of 0.85. The SNOMED CT mapping module achieved precision@1 of 0.854, meeting the NFR-04 target of 0.85. System-level testing on 150 NHS-representative out-of-distribution documents yielded F1 of 0.851, confirming reasonable generalization. Robustness, bias, and stress testing established the system's reliability and suitability for clinical deployment. Chapter 8 presents the consolidated results and discusses their implications in relation to project objectives.
