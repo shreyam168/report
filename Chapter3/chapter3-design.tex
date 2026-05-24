@@ -1,27 +1,207 @@
-\chapter{Analysis/Design of Pipelined Analog to Digital converter}
+\chapter{Software Requirement Specification}
 
-Every chapter should start with an introduction paragraph. This paragraph should brief about the flow of the chapter. This introduction can be limited within 4 to 5 sentences. The chapter heading should be appropriately modified (a sample heading is shown for this chapter).But don't start the introduction paragraph in the chapters like "This chapter deals with....". Instead you should bring in the highlights of the chapter in the introduction paragraph. 
-\section{Contents of this Chapter}
-This chapter should contain the following sections and subsections in detail.
-\begin{enumerate}
-\item Specifications for the Design
-\item Pre analysis work for the design or Models used
-\item Design methodology in detail
-\item Design Equations
-\item Experimental techniques (if any)
-\end{enumerate}
-Apart from the aforementioned sections, you can add sections as per the requirements of the project in consultation with your guide.
+The successful development of an intelligent healthcare document processing system requires a clear definition of functional behaviour, performance expectations, operational constraints, and resource requirements. Accurate specification of system requirements establishes a structured foundation for subsequent design, implementation, testing, and deployment activities. The Intelligent Clinical Document Processing System (ICDPS) incorporates multiple components including document processing, information extraction, semantic understanding, and standardized clinical coding, each requiring clearly defined operational specifications. The requirements presented in this chapter serve as a formal reference for system development and ensure that the proposed solution satisfies the intended objectives and operational needs.
 
-\section{Paraphrasing}
-When you paraphrase a written passage, you rewrite it to state the essential ideas in your own words. Because you do not quote your source word for word when paraphrasing, it is unnecessary to enclose the paraphrased material in quotation marks. However, the paraphrased material must be properly referenced because the ideas are taken from someone else whether or not the words are identical. 
 
-Ordinarily, the majority of the notes you take during the research phase of writing your report will paraphrase the original material. Paraphrase only the essential ideas. Strive to put original ideas into your own words without distorting them."
+\section{Overall Description}
 
-\section{Quotations}
-When you have borrowed words, facts, or idea of any kind from someone else's work, acknowledge your debt by giving your source credit in footnote (or in running text as cited reference). Otherwise, you will be guilty of plagiarism. Also, be sure you have represented the original material honestly and accurately. Direct word to word quotations are enclosed in quotation marks."
+Understanding the operational environment and overall characteristics of the proposed system is essential for defining its intended behaviour and usage. The Intelligent Clinical Document Processing System (ICDPS) interacts with users, processing modules, and supporting resources to transform unstructured clinical information into meaningful structured outputs. High-level system characteristics such as functionalities, user interactions, operating conditions, and constraints collectively determine the scope and capabilities of the proposed solution. The concepts presented here provide a broad view of the system architecture and establish the context within which subsequent requirement specifications are defined.
 
-\vspace{0.75cm}
+\subsection{Product Perspective}
+The ICDPS is a standalone server-side application that integrates with clinical document repositories through a RESTful API. It is not embedded within any specific EHR system but is designed to operate as an intermediary processing layer between document storage systems and clinical coding interfaces. The system receives clinical documents as inputs, processes them through the NLP pipeline, and returns structured extraction results and SNOMED CT code suggestions through the API.
 
- \textbf{The chapters should not end with figures, instead bring the paragraph explaining about the figure at the end followed by a summary paragraph.}
+The system operates within a secure clinical network environment. All data in transit is encrypted using TLS 1.3. Processed documents and extraction results are stored in a relational database (PostgreSQL) for audit and review purposes. The system does not transmit patient data to external services; all processing occurs on-premise.
 
-After elaborating the various sections of the chapter (From Chapter 2 onwards), a summary paragraph should be written discussing the highlights of that particular chapter. This summary paragraph should not be numbered separately. This paragraph should connect the present chapter to the next chapter.  
+\subsection{Product Functions}
+The ICDPS provides the following major functionalities:
+\begin{itemize}
+    \item \textbf{Document Ingestion:} Accept PDF and image-format clinical documents via API upload or batch directory processing.
+    \item \textbf{Text Extraction:} Extract machine-readable text from PDFs using direct extraction; apply OCR to image-based documents.
+    \item \textbf{Named Entity Recognition:} Identify and classify clinical entities in extracted text across eight predefined categories.
+    \item \textbf{Clinical Summarization:} Generate extractive summaries of clinical documents highlighting key findings.
+    \item \textbf{Role-Based Categorization:} Assign extracted entities to clinical role action categories (Pharmacist, Clinician, Radiologist, etc.).
+    \item \textbf{SNOMED CT Suggestion:} Retrieve and rank candidate SNOMED CT codes for each extracted entity, presenting the top-5 suggestions with confidence scores.
+    \item \textbf{Interactive Review Interface:} Provide a web-based interface for authorized clinicians and coders to review, accept, modify, or reject suggested codes.
+    \item \textbf{Audit Logging:} Record all processing events and user actions for compliance and quality assurance purposes.
+\end{itemize}
+
+\subsection{User Characteristics}
+The ICDPS is intended for two primary user categories:
+\begin{itemize}
+    \item \textbf{Clinical Coders:} Staff responsible for assigning SNOMED CT codes to clinical documents. Typically possess clinical coding training but may have limited technical expertise. Interact with the system via the web-based review interface.
+    \item \textbf{System Administrators:} Technical staff responsible for system configuration, monitoring, and maintenance. Possess technical expertise and access system management functions via command-line and configuration interfaces.
+\end{itemize}
+
+\subsection{Constraints}
+The following constraints apply to the ICDPS:
+\begin{itemize}
+    \item \textbf{Data Privacy:} All processing must comply with the UK General Data Protection Regulation (UK GDPR) and NHS Data Security and Protection Toolkit requirements. Personally identifiable patient data must not be transmitted outside the clinical network.
+    \item \textbf{Hardware Dependency:} Optimal NER performance requires a CUDA-compatible GPU with at least 8 GB VRAM. CPU-only operation is supported but with reduced inference speed.
+    \item \textbf{SNOMED CT Licensing:} SNOMED CT is licensed by SNOMED International. Use of SNOMED CT requires a valid SNOMED CT licence. The system incorporates the UK Edition of SNOMED CT, requiring an NHS licence.
+    \item \textbf{Language Limitation:} The current version supports English-language documents only. Multilingual support is identified as a future enhancement.
+    \item \textbf{OCR Accuracy:} OCR performance is dependent on document scan quality. Documents with resolution below 150 DPI may exhibit degraded extraction quality.
+\end{itemize}
+
+\section{Specific Requirements}
+
+The successful implementation of the proposed system requires a detailed specification of the functional and operational requirements that define expected system behavior. These requirements establish the capabilities, performance expectations, resource needs, and implementation constraints necessary for developing an effective and reliable clinical document processing framework. Defining these requirements helps ensure that the system aligns with user needs and provides a structured basis for system design, development, testing, and validation.
+
+\subsection{Functional Requirements}
+Functional requirements define the core services and operations that the Intelligent Clinical Document Processing System must perform to satisfy user needs and system objectives. These requirements describe the expected behavior of the system, including document ingestion, text extraction, entity recognition, SNOMED CT mapping, user interaction, and output generation functionalities. Table~\ref{tab:functional_requirements} presents the detailed functional requirements along with their corresponding priority levels that guide system implementation and development decisions.
+
+\begin{longtable}{|p{1.4cm}|p{9.8cm}|p{2cm}|}
+\caption{Functional Requirements}
+\label{tab:functional_requirements} \\
+\hline
+\textbf{FR ID} & \textbf{Requirement Description} & \textbf{Priority} \\
+\hline
+\endfirsthead
+\hline
+\textbf{FR ID} & \textbf{Requirement Description} & \textbf{Priority} \\
+\hline
+\endhead
+\hline
+\endfoot
+FR-01 & The system shall accept clinical documents in PDF, JPEG, PNG, and TIFF formats via REST API upload. & High \\
+\hline
+FR-02 & The system shall extract machine-readable text from PDFs using direct text extraction without OCR. & High \\
+\hline
+FR-03 & The system shall apply OCR to image-format documents using the Tesseract 5.0 engine to generate UTF-8 text. & High \\
+\hline
+FR-04 & The system shall identify and classify clinical entities in extracted text across the following categories: Diagnosis, Medication, Dosage, Procedure, Anatomy, Allergy, Lab Result, and Temporal Expression. & High \\
+\hline
+FR-05 & The system shall assign a negation status (affirmed/negated/uncertain) to each identified entity. & High \\
+\hline
+FR-06 & The system shall generate an extractive clinical summary comprising the most clinically significant sentences from the document. & Medium \\
+\hline
+FR-07 & The system shall assign each extracted entity to a role-specific action category (Pharmacist Action, Clinician Review, Radiologist Review, or General Information). & High \\
+\hline
+FR-08 & The system shall retrieve the top-5 SNOMED CT concept candidates for each affirmed entity using vector similarity search, ranked by confidence score. & High \\
+\hline
+FR-09 & The system shall present SNOMED CT suggestions with the concept identifier, preferred term, and confidence score through the review interface. & High \\
+\hline
+FR-10 & The system shall allow authorized users to accept, modify, or reject SNOMED CT suggestions through the web interface. & High \\
+\hline
+FR-11 & The system shall log all processing events and user code selection actions with timestamps for audit purposes. & Medium \\
+\hline
+FR-12 & The system shall support batch processing of multiple documents submitted as a directory archive. & Medium \\
+\hline
+FR-13 & The system shall return processing results in JSON format through the REST API. & High \\
+\hline
+FR-14 & The system shall provide an exportable structured report in CSV format summarizing extracted entities and accepted SNOMED CT codes. & Medium \\
+\hline
+\end{longtable}
+
+\subsection{Non-Functional Requirements}
+Non-functional requirements define the quality attributes and operational characteristics of the proposed system. Unlike functional requirements, which specify the services and functionalities provided by the system, non-functional requirements describe the expected performance, reliability, security, and operational behavior of the system under different conditions. These requirements establish measurable criteria that ensure the Intelligent Clinical Document Processing System (ICDPS) operates efficiently, maintains consistent performance, and satisfies user and system expectations. Table~\ref{tab:nonfunctional_requirements} presents the non-functional requirements considered for the proposed system.
+
+\begin{longtable}{|p{1.4cm}|p{2.6cm}|p{9.2cm}|}
+\caption{Non-Functional Requirements}
+\label{tab:nonfunctional_requirements} \\
+\hline
+\textbf{NFR ID} & \textbf{Category} & \textbf{Requirement Description} \\
+\hline
+\endfirsthead
+\hline
+\textbf{NFR ID} & \textbf{Category} & \textbf{Requirement Description} \\
+\hline
+\endhead
+\hline
+\endfoot
+NFR-01 & Performance & The system shall complete NER processing of a single-page clinical document within 3 seconds on hardware meeting the minimum specification. \\
+\hline
+NFR-02 & Throughput & The system shall support batch processing of at least 100 documents per hour during standard operation. \\
+\hline
+NFR-03 & Accuracy & The NER module shall achieve a token-level F1-score of at least 0.85 on the system test corpus across all eight entity categories. \\
+\hline
+NFR-04 & SNOMED Precision & The SNOMED CT mapping module shall achieve a precision@1 value of at least 0.85 on the SNOMED test dataset. \\
+\hline
+NFR-05 & Security & All API communications shall use TLS 1.3 encryption. User authentication shall use JWT tokens with a 24-hour expiry period. \\
+\hline
+NFR-06 & Availability & The system shall maintain 99\% uptime during scheduled operational hours (08:00--20:00 weekdays). \\
+\hline
+NFR-07 & Usability & The review interface shall be usable by clinical coders with minimal technical training. \\
+\hline
+NFR-08 & Maintainability & The system shall support modular architecture and documented APIs for easier updates and maintenance. \\
+\hline
+NFR-09 & Portability & The system shall be containerized using Docker and deployable on compatible Linux environments. \\
+\hline
+\end{longtable}
+
+\subsection{Performance Requirements}
+Performance requirements define the expected operational efficiency and responsiveness of the proposed system under normal working conditions. These requirements ensure that the Intelligent Clinical Document Processing System (ICDPS) can process clinical documents within acceptable time limits while maintaining consistent performance and scalability. The NER module is expected to process approximately 500 tokens per second on a system equipped with an NVIDIA A100 GPU. The SNOMED CT candidate retrieval module should return the top-5 concept suggestions within 200 milliseconds for each entity query to support efficient code recommendation. In addition, the web-based review interface should load and display extraction results for a single clinical document within 2 seconds on a standard clinical workstation. The system should also maintain stable performance for larger documents containing up to 50 pages or approximately 25,000 tokens, ensuring reliable operation across varying document sizes.
+
+\subsection{Software Requirements}
+Software requirements specify the software components, frameworks, development environments, and supporting technologies necessary for implementing and operating the proposed system. These software resources provide the foundation required for document processing, machine learning model execution, database management, and system deployment. Table~\ref{tab:software_requirements} summarizes the software requirements and specifications considered for the development and execution of the ICDPS.
+
+\begin{table}[htbp]
+\centering
+\caption{Software Requirements}
+\label{tab:software_requirements}
+\begin{tabular}{|p{4.5cm}|p{9cm}|}
+\hline
+\textbf{Category} & \textbf{Specification} \\
+\hline
+Operating System & Ubuntu 22.04 LTS (Server), Windows 10+ (Client browser) \\
+\hline
+Programming Language & Python 3.10 \\
+\hline
+NLP Framework & Hugging Face Transformers 4.38, PyTorch 2.0 \\
+\hline
+OCR Engine & Tesseract 5.0 with LSTM models \\
+\hline
+PDF Processing & PyMuPDF 1.23 \\
+\hline
+Vector Search & FAISS 1.7 \\
+\hline
+Web Framework & Flask 3.0 \\
+\hline
+Database & PostgreSQL 16 \\
+\hline
+Containerization & Docker 24, Docker Compose 2 \\
+\hline
+Development IDE & PyCharm / Visual Studio Code \\
+\hline
+Version Control & Git / GitHub \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Hardware Requirements}
+The performance and efficiency of the proposed system are significantly influenced by the underlying hardware infrastructure used during development and deployment. Hardware requirements define the minimum and recommended computational resources needed for processing clinical documents, executing transformer-based models, and supporting large-scale data operations. Table~\ref{tab:hardware_requirements} presents the hardware specifications required for effective implementation and system execution.
+
+\begin{table}[htbp]
+\centering
+\caption{Hardware Requirements}
+\label{tab:hardware_requirements}
+\begin{tabular}{|p{3.6cm}|p{5.5cm}|p{4.2cm}|}
+\hline
+\textbf{Component} & \textbf{Minimum Specification} & \textbf{Recommended Specification} \\
+\hline
+Processor & Intel Core i7 (8 cores) & Intel Xeon (16+ cores) \\
+\hline
+RAM & 16 GB DDR4 & 64 GB DDR4 \\
+\hline
+GPU & NVIDIA GTX 1080 (8 GB VRAM) & NVIDIA A100 (40 GB VRAM) \\
+\hline
+Storage & 500 GB SSD & 2 TB NVMe SSD \\
+\hline
+Network & 1 Gbps Ethernet & 10 Gbps Ethernet \\
+\hline
+Operating System & Ubuntu 22.04 LTS & Ubuntu 22.04 LTS \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Design Constraints}
+Design constraints define the technical and operational limitations that influence the architecture, implementation, and deployment of the proposed Intelligent Clinical Document Processing System (ICDPS). The following are the design constraints of ICDPS:
+\begin{itemize}
+    \item \textbf{Platform Dependency:} The NER module requires CUDA-compatible GPU hardware for production-grade throughput. CPU-only deployment is limited to low-volume testing scenarios.
+    \item \textbf{Memory Constraints:} Loading the BioBERT model requires approximately 1.5 GB of GPU VRAM. Simultaneous processing of multiple documents requires proportional VRAM scaling.
+    \item \textbf{SNOMED CT Index Size:} The FAISS index for SNOMED CT concept descriptions occupies approximately 3.5 GB of disk space and 6 GB of RAM when loaded.
+    \item \textbf{Network Security:} The system must operate within a network that enforces NHS Data Security and Protection Toolkit controls, restricting external API calls.
+    \item \textbf{SNOMED CT Licence Compliance:} The system must not distribute SNOMED CT content beyond the licensed deployment site.
+\end{itemize}
+
+\section*{Summary}
+This chapter defined the comprehensive software requirements for the ICDPS, covering 14 functional requirements, 9 non-functional requirements, and detailed hardware and software specifications. The constraints identified --- particularly those related to data privacy, GPU dependency, and SNOMED CT licensing --- establish the operational boundary within which the system must be designed and deployed. Chapter 4 translates these requirements into a high-level architectural design.
