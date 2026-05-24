@@ -128,47 +128,142 @@ NFR-09 & Portability & The system shall be containerized using Docker and deploy
 \hline
 \end{longtable}
 
-\begin{table}[htbp]
-\centering
-\caption{Software Requirements}
-\label{tab:software_requirements}
-\begin{tabular}{|p{4.5cm}|p{9cm}|}
-\hline
-\textbf{Category} & \textbf{Specification} \\
-\hline
-Operating System & Ubuntu 22.04 LTS (Server), Windows 10+ (Client browser) \\
-\hline
-Programming Language & Python 3.10 \\
-\hline
-NLP Framework & Hugging Face Transformers 4.38, PyTorch 2.0 \\
-\hline
-OCR Engine & Tesseract 5.0 with LSTM models \\
-\hline
-PDF Processing & PyMuPDF 1.23 \\
-\hline
-Vector Search & FAISS 1.7 \\
-\hline
-Web Framework & Flask 3.0 \\
-\hline
-Database & PostgreSQL 16 \\
-\hline
-Containerization & Docker 24, Docker Compose 2 \\
-\hline
-Development IDE & PyCharm / Visual Studio Code \\
-\hline
-Version Control & Git / GitHub \\
-\hline
-\end{tabular}
-\end{table}
-
 \subsection{Performance Requirements}
 Performance requirements define the expected operational efficiency and responsiveness of the proposed system under normal working conditions. These requirements ensure that the Intelligent Clinical Document Processing System (ICDPS) can process clinical documents within acceptable time limits while maintaining consistent performance and scalability. The NER module is expected to process approximately 500 tokens per second on a system equipped with an NVIDIA A100 GPU. The SNOMED CT candidate retrieval module should return the top-5 concept suggestions within 200 milliseconds for each entity query to support efficient code recommendation. In addition, the web-based review interface should load and display extraction results for a single clinical document within 2 seconds on a standard clinical workstation. The system should also maintain stable performance for larger documents containing up to 50 pages or approximately 25,000 tokens, ensuring reliable operation across varying document sizes.
 
 \subsection{Software Requirements}
 Software requirements specify the software components, frameworks, development environments, and supporting technologies necessary for implementing and operating the proposed system. These software resources provide the foundation required for document processing, machine learning model execution, database management, and system deployment. Table~\ref{tab:software_requirements} summarizes the software requirements and specifications considered for the development and execution of the ICDPS.
 
+\begin{longtable}{|p{4.5cm}|p{9cm}|}
+\caption{Software Requirements}
+\label{tab:software_requirements}\\
+
+\hline
+\textbf{Category} &
+\textbf{Specification} \\
+\hline
+\endfirsthead
+
+\hline
+\textbf{Category} &
+\textbf{Specification} \\
+\hline
+\endhead
+
+\hline
+\multicolumn{2}{r}{Continued on next page} \\
+\endfoot
+
+\hline
+\endlastfoot
+
+
+Operating System &
+Ubuntu 22.04 LTS (Server), Windows 10+ (Client browser) \\
+\hline
+
+Programming Language &
+Python 3.10 \\
+\hline
+
+NLP Framework &
+Hugging Face Transformers 4.38, PyTorch 2.0 \\
+\hline
+
+OCR Engine &
+Tesseract 5.0 with LSTM models \\
+\hline
+
+PDF Processing &
+PyMuPDF 1.23 \\
+\hline
+
+Vector Search &
+FAISS 1.7 \\
+\hline
+
+Web Framework &
+Flask 3.0 \\
+\hline
+
+Database &
+PostgreSQL 16 \\
+\hline
+
+Containerization &
+Docker 24, Docker Compose 2 \\
+\hline
+
+Development IDE &
+PyCharm / Visual Studio Code \\
+\hline
+
+Version Control &
+Git / GitHub \\
+\hline
+
+\end{longtable}
+
 \subsection{Hardware Requirements}
 The performance and efficiency of the proposed system are significantly influenced by the underlying hardware infrastructure used during development and deployment. Hardware requirements define the minimum and recommended computational resources needed for processing clinical documents, executing transformer-based models, and supporting large-scale data operations. Table~\ref{tab:hardware_requirements} presents the hardware specifications required for effective implementation and system execution.
+
+\begin{longtable}{|p{3.6cm}|p{5.5cm}|p{4.2cm}|}
+\caption{Hardware Requirements}
+\label{tab:hardware_requirements}\\
+
+\hline
+\textbf{Component} &
+\textbf{Minimum Specification} &
+\textbf{Recommended Specification} \\
+\hline
+\endfirsthead
+
+\hline
+\textbf{Component} &
+\textbf{Minimum Specification} &
+\textbf{Recommended Specification} \\
+\hline
+\endhead
+
+\hline
+\multicolumn{3}{r}{Continued on next page} \\
+\endfoot
+
+\hline
+\endlastfoot
+
+
+Processor &
+Intel Core i7 (8 cores) &
+Intel Xeon (16+ cores) \\
+\hline
+
+RAM &
+16 GB DDR4 &
+64 GB DDR4 \\
+\hline
+
+GPU &
+NVIDIA GTX 1080 (8 GB VRAM) &
+NVIDIA A100 (40 GB VRAM) \\
+\hline
+
+Storage &
+500 GB SSD &
+2 TB NVMe SSD \\
+\hline
+
+Network &
+1 Gbps Ethernet &
+10 Gbps Ethernet \\
+\hline
+
+Operating System &
+Ubuntu 22.04 LTS &
+Ubuntu 22.04 LTS \\
+\hline
+
+\end{longtable}
 
 \subsection{Design Constraints}
 Design constraints define the technical and operational limitations that influence the architecture, implementation, and deployment of the proposed Intelligent Clinical Document Processing System (ICDPS). The following are the design constraints of ICDPS:
@@ -179,29 +274,6 @@ Design constraints define the technical and operational limitations that influen
     \item \textbf{Network Security:} The system must operate within a network that enforces NHS Data Security and Protection Toolkit controls, restricting external API calls.
     \item \textbf{SNOMED CT Licence Compliance:} The system must not distribute SNOMED CT content beyond the licensed deployment site.
 \end{itemize}
-
-\begin{table}[htbp]
-\centering
-\caption{Hardware Requirements}
-\label{tab:hardware_requirements}
-\begin{tabular}{|p{3.6cm}|p{5.5cm}|p{4.2cm}|}
-\hline
-\textbf{Component} & \textbf{Minimum Specification} & \textbf{Recommended Specification} \\
-\hline
-Processor & Intel Core i7 (8 cores) & Intel Xeon (16+ cores) \\
-\hline
-RAM & 16 GB DDR4 & 64 GB DDR4 \\
-\hline
-GPU & NVIDIA GTX 1080 (8 GB VRAM) & NVIDIA A100 (40 GB VRAM) \\
-\hline
-Storage & 500 GB SSD & 2 TB NVMe SSD \\
-\hline
-Network & 1 Gbps Ethernet & 10 Gbps Ethernet \\
-\hline
-Operating System & Ubuntu 22.04 LTS & Ubuntu 22.04 LTS \\
-\hline
-\end{tabular}
-\end{table}
 
 \section*{Summary}
 This chapter defined the comprehensive software requirements for the ICDPS, covering 14 functional requirements, 9 non-functional requirements, and detailed hardware and software specifications. The constraints identified --- particularly those related to data privacy, GPU dependency, and SNOMED CT licensing --- establish the operational boundary within which the system must be designed and deployed. Chapter 4 translates these requirements into a high-level architectural design.

@@ -298,46 +298,108 @@ Python 3.10 was selected as the implementation language. Python's extensive ecos
 \subsection{AIML Libraries and Frameworks}
 Artificial Intelligence and Machine Learning libraries formed the core computational components of the proposed system, enabling document understanding, entity extraction, semantic search, and large language model integration. Multiple libraries were incorporated to support different stages of the processing pipeline, ranging from OCR preprocessing and biomedical embedding generation to model training and inference tasks. Selection of these frameworks was guided by model performance, availability of domain-specific pretrained models, and interoperability with cloud-based healthcare services. Table~\ref{tab:aiml_libraries} summarises the AIML libraries and frameworks used in the implementation together with their primary functions within the system.
 
-\begin{table}[htbp]
-\centering
+\begin{longtable}{|p{4.9cm}|p{1.5cm}|p{7.8cm}|}
 \caption{AIML Libraries and Frameworks Used}
-\label{tab:aiml_libraries}
-\begin{tabular}{|p{4.9cm}|p{1.5cm}|p{7.8cm}|}
+\label{tab:aiml_libraries}\\
+
 \hline
-\textbf{Library / Framework} & \textbf{Version} & \textbf{Purpose in ICDPS} \\
+\textbf{Library / Framework} &
+\textbf{Version} &
+\textbf{Purpose in ICDPS} \\
 \hline
-PyTorch & 2.0.1 & Deep learning framework for model training and inference \\
+\endfirsthead
+
 \hline
-Hugging Face Transformers & 4.38 & BioBERT model loading, fine-tuning API, tokenizer \\
+\textbf{Library / Framework} &
+\textbf{Version} &
+\textbf{Purpose in ICDPS} \\
 \hline
-Hugging Face Datasets & 2.17 & Efficient dataset loading, batching, and caching \\
+\endhead
+
 \hline
-TorchCRF & 1.1.0 & CRF layer implementation for label sequence decoding \\
+\multicolumn{3}{r}{Continued on next page} \\
+\endfoot
+
 \hline
-seqeval & 1.2.2 & NER evaluation metrics (entity-level F1, precision, recall) \\
+\endlastfoot
+
+
+PyTorch &
+2.0.1 &
+Deep learning framework for model training and inference \\
 \hline
-FAISS-GPU & 1.7.4 & Vector similarity search for SNOMED CT candidate retrieval \\
+
+Hugging Face Transformers &
+4.38 &
+BioBERT model loading, fine-tuning API, tokenizer \\
 \hline
-FastText (gensim) & 4.3.0 & SNOMED CT concept description embeddings \\
+
+Hugging Face Datasets &
+2.17 &
+Efficient dataset loading, batching, and caching \\
 \hline
-PyMuPDF & 1.23 & Direct text extraction from PDF documents \\
+
+TorchCRF &
+1.1.0 &
+CRF layer implementation for label sequence decoding \\
 \hline
-pytesseract & 0.3.10 & Python binding for Tesseract 5.0 OCR engine \\
+
+seqeval &
+1.2.2 &
+NER evaluation metrics (entity-level F1, precision, recall) \\
 \hline
-Pillow & 10.2 & Image preprocessing for OCR (binarization, deskewing) \\
+
+FAISS-GPU &
+1.7.4 &
+Vector similarity search for SNOMED CT candidate retrieval \\
 \hline
-scikit-learn & 1.4 & Platt scaling calibration, data splitting, baseline models \\
+
+FastText (gensim) &
+4.3.0 &
+SNOMED CT concept description embeddings \\
 \hline
-spaCy & 3.7 & Sentence boundary detection and tokenization preprocessing \\
+
+PyMuPDF &
+1.23 &
+Direct text extraction from PDF documents \\
 \hline
-dateparser & 1.2 & Date expression normalization \\
+
+pytesseract &
+0.3.10 &
+Python binding for Tesseract 5.0 OCR engine \\
 \hline
-NumPy & 1.26 & Numerical array operations \\
+
+Pillow &
+10.2 &
+Image preprocessing for OCR (binarization, deskewing) \\
 \hline
-pandas & 2.2 & Tabular data processing and analysis \\
+
+scikit-learn &
+1.4 &
+Platt scaling calibration, data splitting, baseline models \\
 \hline
-\end{tabular}
-\end{table}
+
+spaCy &
+3.7 &
+Sentence boundary detection and tokenization preprocessing \\
+\hline
+
+dateparser &
+1.2 &
+Date expression normalization \\
+\hline
+
+NumPy &
+1.26 &
+Numerical array operations \\
+\hline
+
+pandas &
+2.2 &
+Tabular data processing and analysis \\
+\hline
+
+\end{longtable}
 
 \subsection{Development Tools}
 A range of software development tools was utilised throughout the implementation process to support coding, debugging, version control, dependency management, and project coordination activities. These tools contributed to improving development efficiency and maintaining consistency across different stages of implementation. Furthermore, they facilitated collaborative development practices and streamlined testing and integration procedures. Table~\ref{tab:dev_tools} presents the development tools employed and outlines their specific roles within the project workflow.
@@ -429,7 +491,7 @@ The ICDPS codebase achieves maintainability through three design principles. Fir
 
 \section{Model Evaluation Metrics}
 
-The ICDPS uses the following evaluation metrics, selected for their appropriateness to sequence labelling and information retrieval tasks. Table~\ref{tab:eval_metrics} presents the evaluation metrics used in the ICDPS.
+Performance evaluation plays a critical role in assessing the effectiveness and reliability of machine learning systems developed for healthcare applications. Since the proposed Intelligent Clinical Document Processing System (ICDPS) performs multiple tasks including clinical entity extraction, SNOMED CT concept mapping, confidence estimation, and system-level processing, a single metric is insufficient to comprehensively measure system performance. Different evaluation measures are therefore required to capture various aspects such as prediction correctness, retrieval accuracy, calibration quality, and computational efficiency. Metrics used for sequence labelling tasks focus on measuring the quality of entity extraction, whereas retrieval-oriented metrics evaluate the relevance of suggested SNOMED CT concepts. Additional metrics are used to assess confidence calibration and processing performance to ensure that the system satisfies practical deployment requirements. The ICDPS uses the following evaluation metrics, selected for their appropriateness to sequence labelling and information retrieval tasks. Table~\ref{tab:eval_metrics} presents the evaluation metrics used in the ICDPS.
 
 \begin{table}[htbp]
 \centering

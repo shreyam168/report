@@ -22,7 +22,7 @@
 \vspace{0.5cm}
 \noindent Date: \par
 \ifStuNameEUsed \vspace{1cm}
-\else \vspace{2cm}
+\else \vspace{0.5cm}
 \fi
 \begin{table}[H]
 \centering
@@ -31,24 +31,19 @@
 	&&&&&\\
 	&&&&&\\
 	&Name  &&& Signature& \\
-	&&&&&\\
 	1.&\printStuNameA (\printStuUSNA)&&&&\\
-	&&&&&\\
 	\ifPG% 
 	\else%
 	\ifStuNameBUsed%
 	2.&\printStuNameB (\printStuUSNB)&&&&\\
-	&&&&&\\
 	\else%
 	\fi%
 	\ifStuNameCUsed%
 	3.&\printStuNameC (\printStuUSNC)&&&&\\
-	&&&&&\\
 	\else%
 	\fi%
 	\ifStuNameDUsed%
 	4.&\printStuNameD (\printStuUSND)&&&&\\
-	&&&&&\\
 	\else%
 	\fi%
 	\ifIDP

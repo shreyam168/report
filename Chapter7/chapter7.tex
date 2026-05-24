@@ -206,14 +206,14 @@ Abbreviation Introduction & Common terms replaced with clinical abbreviations & 
 The highest degradation was observed under abbreviation introduction ($-$3.2 pp), motivating the priority assigned to abbreviation expansion in the preprocessing pipeline. The system remained functional and produced clinically useful outputs across all perturbation conditions.
 
 \subsection{Generalization Testing}
-Generalization was assessed using the 150 NHS-representative documents assembled outside the i2b2 corpus. On this out-of-distribution test set, the NER model achieved an entity-level F1-score of 0.851, a decrease of 3.6 percentage points compared to the i2b2 test set performance (0.887). This modest degradation indicates reasonable generalization to NHS clinical document formats, attributable to the diverse document types in the NHS evaluation set including outpatient clinic letters, GP referrals, and radiology report summaries.
+Generalization was assessed using the 150 NHS-representative documents assembled outside the training dataset used for model development. On this out-of-distribution test set, the NER model achieved an entity-level F1-score of 0.851, representing a decrease of 3.6 percentage points compared to the primary test set performance (0.887). This modest degradation indicates reasonable generalization to NHS clinical document formats, attributable to the diverse document types included in the evaluation set such as outpatient clinic letters, GP referrals, and radiology report summaries.
 
 \subsection{Bias and Fairness Analysis}
 A bias analysis was conducted to assess whether extraction performance varied systematically across clinical specialties represented in the test corpus. The evaluation corpus was categorized into five specialty groups: Cardiology, Respiratory, Endocrinology, Oncology, and General Medicine. Entity-level F1-scores per specialty are reported in Table~\ref{tab:bias_analysis}.
 
 \begin{table}[htbp]
 \centering
-\caption{Performance by Clinical Specialty (i2b2 Test Set Subset)}
+\caption{Performance by Clinical Specialty}
 \label{tab:bias_analysis}
 \begin{tabular}{|p{4cm}|p{2.5cm}|p{3cm}|p{3cm}|}
 \hline
@@ -241,4 +241,4 @@ Stress testing was performed by simulating peak load conditions using the Locust
 
 \section* {Summary}
 
-This chapter presented the comprehensive testing and validation of the ICDPS across four testing levels: unit, integration, system, and performance. The NER model achieved an entity-level F1-score of 0.887 on the i2b2 test set, meeting the NFR-03 target of 0.85. The SNOMED CT mapping module achieved precision@1 of 0.854, meeting the NFR-04 target of 0.85. System-level testing on 150 NHS-representative out-of-distribution documents yielded F1 of 0.851, confirming reasonable generalization. Robustness, bias, and stress testing established the system's reliability and suitability for clinical deployment. Chapter 8 presents the consolidated results and discusses their implications in relation to project objectives.
+This chapter presented the comprehensive testing and validation of the Intelligent Clinical Document Processing System (ICDPS) across multiple testing levels including unit, integration, system, and performance evaluation. The NER model achieved an entity-level F1-score of 0.887 on the curated clinical document test set, satisfying the NFR-03 target of 0.85. The SNOMED CT mapping module achieved precision@1 of 0.854, meeting the NFR-04 target of 0.85. System-level testing on 150 NHS-representative out-of-distribution documents yielded an F1-score of 0.851, demonstrating reasonable generalization capability across diverse clinical document formats. Robustness, bias, and stress testing further established the reliability and practical applicability of the proposed system. Chapter 8 presents the consolidated results and discusses their significance in relation to the project objectives.
