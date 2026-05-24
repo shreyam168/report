@@ -1,4 +1,4 @@
 git add .
-git commit -m "Added evaluation metrics section"
+git commit -m "Chapter 1 complete"
 
 git push
