@@ -162,22 +162,34 @@ The ICDPS integrates multiple AI/ML model components, each addressing a distinct
 \subsection{Model Selection}
 Model selection was guided by three criteria: (i) clinical domain suitability, favouring models pre-trained on biomedical or clinical text; (ii) service integration feasibility, preferring managed AWS services; and (iii) published performance benchmarks on comparable tasks. Table~\ref{tab:model_selection} presents the candidate models considered and the selection rationale for each pipeline component.
 
-\begin{table}[htbp]
-\centering
-\caption{Model Selection Analysis for ICDPS Components}
-\label{tab:model_selection}
-
-\begin{tabular}{
+\begin{longtable}{
 |>{\raggedright\arraybackslash}p{2.7cm}
 |>{\raggedright\arraybackslash}p{4.5cm}
 |>{\raggedright\arraybackslash}p{7cm}|}
+
+\caption{Model Selection Analysis for ICDPS Components}
+\label{tab:model_selection}
+\\
+
 \hline
 
 \textbf{Component} &
 \textbf{Candidates Considered} &
 \textbf{Selected Model and Rationale}
 \\
+
 \hline
+\endfirsthead
+
+\hline
+
+\textbf{Component} &
+\textbf{Candidates Considered} &
+\textbf{Selected Model and Rationale}
+\\
+
+\hline
+\endhead
 
 OCR Engine
 &
@@ -185,6 +197,7 @@ AWS Textract; Tesseract 5; Google Cloud Vision
 &
 AWS Textract --- superior table/form extraction; per-word confidence scoring; HIPAA-eligible
 \\
+
 \hline
 
 Layout Understanding
@@ -193,6 +206,7 @@ LayoutLMv3; LayoutXLM; DocFormer
 &
 LayoutLMv3 --- state-of-the-art on PubLayNet/FUNSD; multi-modal text + layout + image
 \\
+
 \hline
 
 Medical NER
@@ -201,6 +215,7 @@ AWS Comprehend Medical; BioBERT; spaCy scispaCy
 &
 AWS Comprehend Medical --- managed HIPAA-eligible; native InferSNOMEDCT API
 \\
+
 \hline
 
 Clinical LLM
@@ -209,6 +224,7 @@ AWS Bedrock Claude Sonnet; GPT-4; Llama 3
 &
 AWS Bedrock Claude Sonnet --- best instruction following; lowest hallucination rate; HIPAA-eligible
 \\
+
 \hline
 
 Concept Embedding
@@ -217,6 +233,7 @@ SapBERT; BioBERT-NER; ClinicalBERT
 &
 SapBERT --- purpose-designed for medical entity normalisation on SNOMED concepts
 \\
+
 \hline
 
 Vector Search
@@ -225,10 +242,10 @@ FAISS; Pinecone; Milvus
 &
 FAISS --- open-source; GPU-accelerated; sub-100 ms retrieval
 \\
+
 \hline
 
-\end{tabular}
-\end{table}
+\end{longtable}
 
 \subsection{Model Architecture Design}
 
@@ -243,6 +260,7 @@ The LayoutLMv3 fine-tuning training configuration was established through a prel
 
 \subsection{Experimental Workflow}
 The experimental workflow followed structured training, evaluation, and hyperparameter refinement cycles. In each cycle: (i) LayoutLMv3 was fine-tuned on the augmented training dataset; (ii) the fine-tuned model was evaluated on the validation set using token-level accuracy, precision, recall, and F1-score for each zone class; (iii) training and validation loss curves were inspected for overfitting; (iv) hyperparameters were adjusted based on validation performance; and (v) the best checkpoint by macro F1-score was retained. For SNOMED mapping, layer-by-layer ablation experiments quantified the marginal contribution of each fallback layer to overall SNOMED code recall. UCS weighting coefficients were validated through threshold sensitivity analysis across the full confidence threshold range $[0.60, 0.80]$ for all 21 document type categories.
+
 \begin{table}[htbp]
 \centering
 \caption{LayoutLMv3 Fine-Tuning Training Configuration}

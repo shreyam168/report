@@ -139,12 +139,11 @@ where TP is the number of correctly predicted entity tokens, FP the number of in
 \section{Comparison of Techniques}
 Various approaches have been proposed for clinical information extraction and natural language processing tasks, ranging from traditional rule-based systems to modern transformer-based architectures. Each technique exhibits distinct characteristics in terms of training requirements, generalization capability, computational complexity, and overall performance. A comparative analysis of these techniques helps in understanding their strengths and limitations and provides a rationale for selecting an appropriate methodology for the proposed system. Table \ref{tab:ner_techniques_comparison} presents a comparison of commonly used approaches, including rule-based systems (e.g., cTAKES \cite{ref6}), BiLSTM-CRF models, and transformer-based methods across multiple evaluation criteria.
 
-\begin{table}[htbp]
-\centering
-\caption{Comparison of Clinical NER Techniques}
-\label{tab:ner_techniques_comparison}
+\begin{longtable}{|p{3cm}|p{3.65cm}|p{3.75cm}|p{3.8cm}|}
 
-\begin{tabular}{|p{3cm}|p{3.65cm}|p{3.75cm}|p{3.8cm}|}
+\caption{Comparison of Clinical NER Techniques}
+\label{tab:ner_techniques_comparison} \\
+
 \hline
 
 \textbf{Criterion} &
@@ -153,6 +152,17 @@ Various approaches have been proposed for clinical information extraction and na
 \shortstack{\textbf{Transformer}\\\textbf{(BioBERT)}} \\
 
 \hline
+\endfirsthead
+
+\hline
+
+\textbf{Criterion} &
+\shortstack{\textbf{Rule-Based}\\\textbf{(cTAKES)}} &
+\textbf{BiLSTM-CRF} &
+\shortstack{\textbf{Transformer}\\\textbf{(BioBERT)}} \\
+
+\hline
+\endhead
 
 Training Data Required &
 None (rules only) &
@@ -195,9 +205,8 @@ Moderate &
 Slower (GPU recommended) \\
 
 \hline
-\end{tabular}
 
-\end{table}
+\end{longtable}
 
 \section*{Summary}
 This chapter presented the theoretical foundations of the ICDPS, covering NLP fundamentals, the transformer architecture, BERT-based biomedical pre-training, SNOMED CT ontology structure, OCR technology, vector similarity search, and the mathematical principles underlying model training and evaluation. The comparative analysis demonstrated the superiority of transformer-based approaches over rule-based and BiLSTM-CRF methods for clinical NER tasks. Chapter 3 presents the detailed software requirements specification for the proposed system.
