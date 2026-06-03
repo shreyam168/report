@@ -1,47 +1,28 @@
 \chapter{Introduction}
-Clinical document processing and automated medical coding have emerged as important research areas due to the rapid growth of unstructured healthcare data and the increasing need for efficient information management. Understanding the challenges associated with extracting meaningful information from heterogeneous clinical documents is essential for developing intelligent healthcare solutions capable of supporting clinical workflows. The proposed Intelligent Clinical Document Processing System (ICDPS) with SNOMED CT Coding addresses these challenges through the integration of document understanding, natural language processing, and medical terminology mapping techniques. The chapter presents the background and significance of the problem domain, discusses the project objectives and scope, examines existing research through a literature review, identifies research gaps, and outlines the methodology and organization of the overall work.
+
+Healthcare organizations generate large volumes of clinical documents every day, including referral letters, discharge summaries, laboratory reports, outpatient records, and clinical notes. These documents contain important information required for patient care, clinical decision-making, and administrative processes. However, much of this information is stored as unstructured text, making it difficult to search, analyse, and integrate into digital healthcare systems.
+
+The increasing adoption of Electronic Health Records (EHRs) has improved the availability of clinical data, but it has also highlighted the challenges associated with processing large collections of heterogeneous documents. Many healthcare workflows still rely on manual review and coding of clinical information, which can be time-consuming and prone to inconsistencies. As the volume of digital health records continues to grow, there is a need for automated methods that can extract clinically relevant information accurately and efficiently.
+
+Recent advances in Natural Language Processing (NLP) and transformer-based language models have significantly improved the ability of computers to understand medical text. At the same time, improvements in Optical Character Recognition (OCR) technologies have enabled the extraction of text from scanned documents and image-based reports. These developments make it possible to design systems that can process clinical documents from different sources and convert them into structured representations suitable for downstream healthcare applications.
+
+To address this problem, this project develops an Intelligent Clinical Document Processing System (ICDPS) capable of processing both PDF and image-based clinical documents. The system combines OCR, clinical Named Entity Recognition (NER), document understanding, and SNOMED CT terminology mapping within a unified processing pipeline. The objective is to automatically extract clinically meaningful information from unstructured documents and represent it in a structured form that can support healthcare information management and clinical coding workflows.
+
+This chapter introduces the problem domain, discusses the motivation and objectives of the work, reviews relevant literature, identifies existing research gaps, and presents the overall methodology adopted in the development of the proposed system.
 
 %=========================================================
 \section[Introduction]
 {\textbf{Introduction}}
 
-Clinical document processing represents one of the most
-labour-intensive and administratively demanding activities in
-modern healthcare systems. Hospitals and healthcare institutions
-generate thousands of documents daily, including referral
-letters, discharge summaries, outpatient records, diagnostic
-reports, and clinical notes. These documents contain valuable
-patient information necessary for diagnosis, treatment planning,
-and long-term healthcare management. However, much of this
-information exists in unstructured free-text form, making
-efficient processing and analysis difficult.
+Processing clinical documents remains a challenging task in modern healthcare environments. Hospitals and healthcare institutions routinely generate referral letters, discharge summaries, diagnostic reports, prescriptions, and other forms of clinical documentation. Although these documents contain valuable patient information, much of the content is recorded as free-text narratives, making automated analysis difficult.
 
-Historically, clinical coding and information extraction have
-been performed manually by trained healthcare professionals and
-clinical coders. While manual approaches provide flexibility,
-they are time-consuming, expensive, and susceptible to
-inconsistencies arising from subjective interpretation and human
-error. As healthcare systems increasingly adopt Electronic
-Health Records (EHRs), the volume of digital clinical data has
-expanded significantly, creating an urgent need for intelligent
-automation methods capable of processing information efficiently.
+Traditionally, the extraction and coding of clinical information have relied on manual effort from healthcare professionals and clinical coders. While manual review allows human interpretation of complex medical information, it is often time-intensive and can lead to variability in coding outcomes. As healthcare organizations continue to digitize records and expand EHR adoption, the volume of clinical text requiring review has increased considerably.
 
-Recent developments in Artificial Intelligence (AI), Natural
-Language Processing (NLP), and deep learning technologies have
-created opportunities for transforming clinical document
-processing workflows. Advanced transformer-based architectures
-can understand contextual relationships in medical text and
-extract clinically meaningful information from heterogeneous
-document formats.
+Advances in artificial intelligence and NLP have created new opportunities for automating parts of this workflow. Transformer-based models such as BioBERT and ClinicalBERT have demonstrated strong performance on clinical information extraction tasks, enabling more accurate identification of diseases, medications, procedures, and other medical concepts from unstructured text.
 
-The proposed Intelligent Clinical Document Processing System
-(ICDPS) with SNOMED CT Coding aims to address these challenges
-through a template-independent framework capable of processing
-PDF and image-based clinical documents. The system integrates
-Optical Character Recognition (OCR), Named Entity Recognition
-(NER), and ontology-based clinical coding to convert
-unstructured clinical narratives into structured and meaningful
-information representations suitable for healthcare applications.
+In addition to textual complexity, healthcare organizations frequently manage documents in multiple formats. Some documents contain selectable digital text, while others are available only as scanned images or PDF files. As a result, effective clinical document processing requires both reliable text extraction and robust language understanding capabilities.
+
+The work presented in this project focuses on developing a template-independent framework for clinical document processing and SNOMED CT coding. The proposed system combines OCR-based text extraction, BioBERT-based entity recognition, clinical information categorization, and semantic SNOMED CT mapping. By integrating these components into a single pipeline, the system aims to transform unstructured clinical narratives into structured information that can support healthcare documentation and coding activities.
 
 %=========================================================
 \subsection[Terminology and Definitions]
@@ -101,107 +82,134 @@ and map extracted information to standardized SNOMED CT codes.
 %=========================================================
 \section{Overview of the Project Topic}
 
-The domain of intelligent clinical document processing sits at the intersection of healthcare informatics, natural language processing, and machine learning. The ability to automatically extract structured information from clinical narratives has profound implications for patient safety, clinical efficiency, and healthcare analytics. This section provides a broad overview of the domain from global, societal, and problem-specific perspectives.
+Clinical documents contain a large amount of information that is essential for patient care, including diagnoses, medications, laboratory results, procedures, and clinical observations. Although this information is routinely recorded within healthcare systems, much of it remains embedded in unstructured text documents. Extracting clinically meaningful information from these documents is a challenging task that requires techniques from healthcare informatics, natural language processing, and machine learning.
+
+The development of modern NLP models has made it possible to automatically identify medical concepts, classify clinical information, and support standardized clinical coding. These capabilities have increased interest in intelligent clinical document processing systems that can reduce manual effort while improving the accessibility and usability of healthcare data. The following subsections discuss the broader context of the problem, its societal relevance, and the technical challenges that motivated this project.
 
 %=========================================================
 \subsection{Global Scenario}
 
-Globally, healthcare systems are undergoing a digital transformation driven by EHR adoption, telemedicine, and data-driven clinical decision support. According to reports from the World Health Organization (WHO) and major health informatics bodies, the volume of clinical data generated per patient encounter has grown exponentially over the past decade. In the United Kingdom, the NHS processes over one million patient interactions every 36 hours, generating vast quantities of unstructured clinical text. Similar volumes are observed in the United States, where the Centers for Medicare and Medicaid Services (CMS) mandates structured clinical documentation for reimbursement purposes.
+Healthcare organizations across the world are increasingly relying on digital health records and electronic documentation systems. As a result, the amount of clinical text generated during routine healthcare activities has grown substantially. Referral letters, discharge summaries, outpatient reports, laboratory reports, and clinical notes are now routinely stored in digital form, creating large repositories of healthcare information.
 
-Research in clinical NLP has accelerated significantly since the release of large pre-trained language models. The i2b2 (Informatics for Integrating Biology and the Bedside) shared task competitions have benchmarked extraction performance across diverse clinical entity types. Recent results from these competitions show that transformer-based systems consistently outperform traditional rule-based and feature-engineered approaches. The adoption of models such as BioBERT~\cite{ref1}, ClinicalBERT~\cite{ref2}, and BioMedBERT has set new state-of-the-art benchmarks for clinical NER and relation extraction tasks.
+This growth has encouraged significant research activity in clinical natural language processing. Early systems primarily relied on handcrafted rules and predefined templates to identify medical concepts. While such approaches performed adequately in controlled environments, their performance often decreased when applied to documents with different formats and writing styles. More recently, transformer-based language models have demonstrated improved performance on clinical information extraction tasks by learning contextual relationships directly from text.
 
-Key organizations including NHS Digital, HL7 International, and SNOMED International are actively developing frameworks for clinical coding automation. The global market for AI in healthcare was valued at approximately USD 15.4 billion in 2022 and is projected to reach USD 187.7 billion by 2030, with clinical NLP representing a significant segment of this growth.
+Research datasets and benchmark initiatives such as i2b2 have played an important role in evaluating these approaches and encouraging the development of more robust extraction systems. Models including BioBERT~\cite{ref1} and ClinicalBERT~\cite{ref2} have demonstrated strong performance on clinical named entity recognition and related biomedical NLP tasks, making them attractive candidates for healthcare document processing applications.
+
+At the same time, healthcare standards organizations continue to promote the adoption of structured clinical terminologies and interoperable health records. This has increased the importance of systems capable of converting unstructured clinical narratives into standardized representations that can be shared and reused across healthcare environments.
 
 %=========================================================
 \subsection{Societal Relevance}
 
-The societal impact of automated clinical document processing is multi-dimensional.
+The ability to process clinical documents automatically has practical benefits for patients, healthcare professionals, and healthcare organizations.
 
-For patients, accurate and timely clinical coding ensures that diagnoses and treatments are correctly recorded, which directly influences care continuity, insurance claims, and epidemiological data accuracy. Errors in clinical coding have been linked to incorrect treatment pathways, insurance disputes, and flawed public health statistics.
+For patients, accurate extraction and coding of clinical information can improve the consistency of medical records and reduce the likelihood of important information being overlooked during treatment. Structured clinical data also supports continuity of care when information must be exchanged between different healthcare providers.
 
-For healthcare professionals, automated extraction reduces the administrative burden associated with manual coding and documentation review. Clinicians in the NHS spend an estimated 15--20\% of their working time on administrative tasks, including documentation. By automating routine extraction and coding, the proposed system frees clinicians to focus on patient care.
+For healthcare professionals, document review and clinical coding can require significant time and effort, particularly when dealing with large volumes of records. Automating routine extraction tasks can reduce administrative workload and allow clinicians and coders to focus on activities that require expert judgement.
 
-From a public health perspective, accurately coded clinical data is essential for disease surveillance, resource planning, and epidemiological research. Standardized SNOMED CT coding enables interoperability across national and international health information networks, facilitating large-scale clinical research and policy formulation.
+Structured and standardized clinical information is also valuable at an organizational level. Healthcare institutions use coded clinical data for reporting, resource planning, quality monitoring, research activities, and interoperability with external healthcare systems. Terminology standards such as SNOMED CT provide a common representation of medical concepts, enabling consistent interpretation of clinical information across different systems and organizations.
 
 %=========================================================
 \subsection{Problem Area}
 
-Despite the evident need for automated clinical coding, existing commercial and research systems exhibit significant limitations. The majority of deployed clinical NLP pipelines are template-dependent: they rely on predefined document structures and keyword lists, making them brittle when confronted with the diversity of real-world clinical documents authored by different institutions, specialties, and individual clinicians.
+Although substantial progress has been made in clinical NLP, several challenges remain when applying these techniques to real-world clinical documents.
 
-A secondary problem lies in the complexity and scale of SNOMED CT itself, which contains over 350,000 active concepts and 1.5 million relationships. Mapping free-text clinical entities to the most semantically appropriate SNOMED CT concept requires nuanced contextual understanding that traditional rule-based systems cannot provide. Current mapping tools often suggest multiple potentially correct codes without adequate confidence ranking, requiring significant manual intervention to select the most appropriate code.
+A major challenge is the diversity of document formats encountered in healthcare environments. Clinical information may appear in referral letters, discharge summaries, scanned reports, laboratory documents, or handwritten forms that have been digitized. Systems designed around fixed templates or predefined document structures often struggle to generalize across these variations.
 
-Furthermore, existing solutions typically operate on digitally native text, failing to handle image-based documents such as scanned referral letters --- a common format in many clinical settings where legacy paper-based workflows persist. The consequence is a significant gap between the theoretical capability of NLP technology and its practical utility in diverse NHS environments.
+Another challenge arises from the complexity of clinical terminology. Medical concepts are frequently expressed using abbreviations, synonyms, incomplete phrases, and context-dependent language. Correctly identifying the intended meaning of a clinical entity and mapping it to an appropriate SNOMED CT concept requires more than simple keyword matching.
+
+In addition, many existing solutions focus primarily on digitally generated text and provide limited support for image-based documents. In practice, scanned referral letters and legacy clinical records remain common in many healthcare settings. These documents require reliable OCR processing before downstream NLP techniques can be applied.
+
+The combination of document variability, terminology complexity, and the need for standardized coding creates a challenging problem that cannot be addressed effectively through traditional rule-based approaches alone. These limitations motivated the development of the proposed Intelligent Clinical Document Processing System (ICDPS), which integrates OCR, clinical entity extraction, and SNOMED CT mapping within a unified processing framework.
 
 %=========================================================
 \section{Specific Details of the Project Topic}
 
-The proposed Intelligent Clinical Document Processing System (ICDPS) integrates several technical components to address the identified limitations. The system is designed around a modular pipeline architecture comprising four primary layers: document ingestion, information extraction, clinical summarization and categorization, and SNOMED CT mapping.
+The Intelligent Clinical Document Processing System (ICDPS) was developed as a modular pipeline to process clinical documents from ingestion to standardized clinical coding. The overall architecture consists of four major stages: document ingestion, clinical information extraction, summarization and categorization, and SNOMED CT mapping.
 
-The document ingestion layer accepts PDFs and image-based documents. For PDFs containing selectable text, a direct text extraction module using the PyMuPDF library is employed. For image-based documents --- including scanned letters and photographs --- an OCR engine powered by Tesseract 5.0 with LSTM models performs character recognition. Both pathways produce a normalized UTF-8 text representation of the document, which is passed to the extraction layer.
+The document ingestion stage is responsible for handling different document formats commonly encountered in healthcare environments. Documents containing selectable text are processed directly using the PyMuPDF library, while scanned reports and image-based documents are processed through an OCR pipeline based on Tesseract 5.0. Both approaches generate a normalized text representation that is forwarded to the downstream NLP components.
 
-The information extraction layer forms the core component of the Intelligent Clinical Document Processing System (ICDPS). It employs a fine-tuned BioBERT model for clinical Named Entity Recognition (NER), trained on the curated clinical document dataset developed for this work and augmented with NHS-representative annotations to improve domain adaptation and contextual understanding. The NER model identifies and classifies clinical entities into predefined categories including Diagnosis, Medication, Dosage, Procedure, Anatomy, Allergy, Lab Result, and Temporal Expression. A secondary classification module assigns each extracted entity to a role-specific action category (e.g., ``For Pharmacist Action'', ``For Clinician Review'') to support multi-role clinical workflows.
+Clinical information extraction forms the central component of the system. A fine-tuned BioBERT model is used to identify clinically relevant entities from extracted text. The model was trained using the curated dataset developed for this project and supplemented with NHS-style annotations to improve performance on representative clinical documents. Extracted entities are classified into categories such as Diagnosis, Medication, Dosage, Procedure, Anatomy, Allergy, Lab Result, and Temporal Expression.
 
-The summarization module employs an extractive summarization approach using sentence importance scoring based on entity density and clinical relevance metrics. The output is a structured summary containing the most clinically significant sentences organized by entity category.
+Following entity extraction, a categorization module assigns identified entities to role-specific action groups to support clinical workflows. For example, medication-related information may be directed towards pharmacist review, while diagnostic findings can be highlighted for clinician attention.
 
-The SNOMED CT mapping module uses a two-stage approach. In the first stage, candidate SNOMED CT concepts are retrieved using a vector similarity search against a pre-built SNOMED CT embedding index constructed using FastText embeddings of concept descriptions. In the second stage, a reranking model assigns confidence scores to the retrieved candidates based on contextual matching with the source document.
+The summarization component generates concise structured summaries by selecting clinically important sentences based on entity density and relevance. The resulting output provides a simplified overview of the document while preserving key clinical information.
 
-
+To support standardized terminology mapping, the system incorporates a SNOMED CT retrieval and ranking module. Candidate concepts are initially retrieved through semantic similarity search using a FastText-based embedding index of SNOMED CT descriptions. Retrieved concepts are then reranked using contextual information from the source document to generate confidence-ranked coding suggestions.
 
 %=========================================================
 \section{Purpose and Motivation}
 
-The primary purpose of this project is to reduce the administrative burden on NHS clinical staff by providing an intelligent, automated solution for extracting and coding information from clinical documents. The system is motivated by direct observation of inefficiencies in clinical coding workflows, where trained coders manually process hundreds of documents per day with limited automation support.
+The increasing volume of clinical documentation presents a significant challenge for healthcare organizations that depend on accurate extraction and coding of patient information. Manual review of referral letters, discharge summaries, and clinical reports can be time-consuming, particularly when large numbers of documents must be processed within limited timeframes.
 
-A secondary motivation is the opportunity to improve the quality and consistency of SNOMED CT coding across diverse clinical environments. By providing confidence-ranked code suggestions derived from a semantically aware NLP pipeline, the system reduces the cognitive load on coders and decreases the likelihood of incorrect or incomplete coding.
+This project was undertaken to investigate whether recent advances in clinical NLP could be applied to automate parts of this workflow. The goal was not to replace clinical judgement, but to provide structured information and coding suggestions that could reduce repetitive manual effort and support faster review of clinical documents.
 
-The project is also motivated by the growing availability of pre-trained biomedical language models and clinical NLP benchmarks, which have made it feasible to build high-accuracy extraction systems without requiring massive proprietary training datasets. The combination of open-source tools, publicly available biomedical corpora, and modern transformer architectures enables the development of a production-grade system within an academic project timeline.
+Another motivation was the need for more consistent mapping of extracted clinical information to standardized medical terminologies. Since multiple SNOMED CT concepts may be relevant for a given clinical phrase, selecting appropriate codes often requires additional effort from healthcare professionals. Providing confidence-ranked suggestions can assist users in identifying suitable concepts more efficiently.
 
+The availability of open-source biomedical language models, publicly accessible research datasets, and established clinical NLP benchmarks also made it possible to explore advanced document processing techniques within an academic project setting. These resources provided a practical foundation for developing and evaluating an end-to-end clinical document processing pipeline.
 
 %=========================================================
 \section{Problem Statement}
 
-Current clinical document processing systems lack a standardized, template-free mechanism for automatically extracting clinical intent and mapping it to medical terminologies such as SNOMED CT without extensive manual intervention. Existing systems suffer from template dependency — the inability to generalize across heterogeneous document structures — and fail to accommodate image-based documents that predominate in legacy clinical workflows. The consequence is a persistent gap between the volume of clinical text generated and the volume that can be efficiently structured and coded.
+Healthcare organizations generate large amounts of clinical information in the form of referral letters, discharge summaries, laboratory reports, and other narrative documents. Much of this information remains embedded within unstructured text, making automated extraction and standardization difficult.
 
-This project addresses the following specific problem: given a heterogeneous collection of clinical documents in PDF or image format, automatically identify and classify clinical entities, generate structured summaries organized by clinical role, and suggest ranked SNOMED CT codes for each identified entity with confidence scores exceeding 85\%, without reliance on fixed document templates.
+Existing solutions often depend on predefined templates, document-specific rules, or manually engineered patterns. Such approaches may perform adequately for known document formats but frequently struggle when applied to documents originating from different healthcare organizations or clinical specialties. In addition, many systems provide limited support for scanned and image-based documents, which remain common in healthcare environments.
+
+The problem addressed in this project is the development of a template-independent system capable of processing heterogeneous clinical documents in PDF and image formats, extracting clinically relevant entities, generating structured summaries, and producing confidence-ranked SNOMED CT coding suggestions with minimal manual intervention.
 
 %=========================================================
 \section{Objectives}
 
 The objectives of the project are:
 
+\section{Objectives}
+
+The objectives of the project are:
+
 \begin{enumerate}
-    \item To develop an intelligent document ingestion module capable of processing clinical documents in both PDF and image formats, using OCR and direct text extraction techniques.
 
-    \item To implement a non-template-based clinical information extraction engine using fine-tuned transformer models (BioBERT) for NER across eight clinical entity categories.
+\item To design and implement a document ingestion pipeline capable of processing both digital PDF documents and image-based clinical records using direct text extraction and OCR techniques.
 
-    \item To automate the generation of structured clinical summaries and categorize extracted entities into role-specific action groups for Pharmacist and Clinician review.
+\item To develop a BioBERT-based clinical entity extraction module capable of identifying key medical entities across multiple clinical categories.
 
-    \item To develop a SNOMED CT mapping module that retrieves and ranks candidate codes using semantic vector similarity and a confidence-based reranker, achieving mapping precision above 85\%.
+\item To generate structured summaries of clinical documents and organize extracted information into role-specific review categories.
 
-    \item To validate the complete end-to-end system on a curated test corpus of NHS-representative clinical documents and report standard NLP evaluation metrics.
+\item To develop a SNOMED CT mapping module that retrieves and ranks candidate concepts using semantic similarity techniques and contextual relevance scoring.
+
+\item To achieve accurate terminology mapping by providing confidence-ranked SNOMED CT code suggestions for extracted clinical entities.
+
+\item To evaluate the complete end-to-end system using representative clinical documents and standard NLP evaluation metrics.
+
 \end{enumerate}
 
 
 %=========================================================
 \section{Scope and Relevance}
 
-The scope of this project encompasses the design, development, and validation of the Intelligent Clinical Document Processing System (ICDPS) for processing English-language clinical documents using Artificial Intelligence and Natural Language Processing techniques. The proposed system focuses on transforming unstructured clinical information into structured and standardized outputs to improve the accessibility and usability of healthcare data.
+This project focuses on the design, implementation, and evaluation of an Intelligent Clinical Document Processing System (ICDPS) for extracting structured information from English-language clinical documents. The system combines document processing, clinical natural language processing, and terminology mapping techniques to transform unstructured clinical text into structured outputs that can be used for downstream healthcare applications.
 
-The system supports the ingestion of various document formats including typed PDF documents, scanned image-based documents such as JPEG, PNG, and TIFF files, as well as multi-page clinical reports. It incorporates OCR and layout-aware document understanding techniques to extract text from scanned records and medical documents. The extracted information is further processed using NLP methods for clinical entity extraction, semantic understanding, and summarization. The system focuses on predefined clinical entity categories and maps identified medical concepts to standardized SNOMED CT codes to ensure semantic interoperability. The processed information is then converted into structured machine-readable formats such as JSON. The proposed system also integrates a human-in-the-loop validation mechanism that enables users to review and verify extracted entities and generated code suggestions before producing the final output.
+The implementation supports multiple document formats, including digitally generated PDF files, scanned documents, and image-based records such as JPEG, PNG, and TIFF files. Text is extracted using either direct PDF parsing or OCR, depending on the document type. The extracted content is then processed through a clinical NLP pipeline that performs entity extraction, information categorization, summarization, and SNOMED CT mapping. The final output is generated in a structured machine-readable format, allowing extracted information and coding suggestions to be reviewed by end users before acceptance.
 
-Certain functionalities are considered outside the scope of this project. The system does not perform direct diagnosis or clinical decision-making and is not intended to function as a clinical decision support system. Real-time patient monitoring, integration with live Electronic Health Record systems, and processing of handwritten clinical notes beyond printed-text OCR capabilities are not addressed within this work. Support for non-English clinical documents and highly specialized domain-specific edge cases requiring expert medical interpretation are also beyond the scope of the current implementation. Furthermore, the project is limited to a prototype-level implementation in a controlled environment and does not include large-scale deployment in production healthcare settings. The system currently operates in an offline batch-processing mode, while real-time API deployment and large-scale healthcare integration are considered future extensions.
+The work is limited to clinical document processing and terminology mapping. The system does not perform medical diagnosis, treatment recommendation, or clinical decision-making. Integration with live Electronic Health Record systems, real-time patient monitoring platforms, and large-scale production healthcare infrastructure is outside the scope of the current implementation. Support for non-English clinical documents and complex handwritten records is also not included in the present version of the system.
 
-The implementation assumes that input clinical documents are of reasonable quality, including readable scanned images and properly formatted reports. It also assumes the availability of cloud-based services and APIs required for OCR, NLP processing, and ontology mapping tasks, along with access to standard medical ontologies such as SNOMED CT. Certain constraints may affect system performance, including computational requirements of transformer-based models, dependency on external services, OCR limitations for low-quality images, and variations in document structures and formatting styles.
+The project was developed and evaluated as a prototype in a controlled environment. The current implementation operates using batch document processing, while large-scale deployment, real-time APIs, and enterprise healthcare integration remain potential areas for future development.
 
-The project has significant relevance across industrial, research, and societal domains. From an industrial perspective, the system addresses challenges associated with managing large volumes of unstructured clinical data by reducing manual workload, improving interoperability with healthcare information systems, and lowering operational costs. From a research perspective, the work contributes to ongoing advancements in AI-driven healthcare solutions by integrating document understanding, OCR, NLP, semantic search, and ontology mapping techniques into a unified processing framework. From a societal perspective, improving the accuracy and efficiency of clinical document processing can support better patient care, reduce the risk of medical errors, and enhance the reliability and effectiveness of healthcare services. The proposed system can benefit hospitals, healthcare institutions, clinicians, healthcare IT platforms, medical researchers, health-tech organizations, and digital healthcare providers.
+The system assumes that input documents are reasonably readable and that scanned records contain sufficient image quality for OCR processing. Performance may be affected by poor scan quality, unusual document layouts, OCR errors, and computational requirements associated with transformer-based NLP models.
+
+The relevance of this work lies in its ability to combine OCR, clinical entity extraction, semantic retrieval, and SNOMED CT mapping within a single processing pipeline. Such systems can help reduce manual review effort, improve the consistency of clinical coding workflows, and increase the accessibility of information contained within unstructured healthcare documents. The techniques explored in this project are also relevant to ongoing research in clinical NLP, healthcare informatics, and intelligent document understanding.
 
 \section[Literature Review]{\textbf{Literature Review}}
 
-A comprehensive review of existing research was conducted to understand the state of the art in clinical NLP, document processing, and SNOMED CT coding. The following subsections present a structured survey of relevant peer-reviewed publications and identify the research gaps that motivated the proposed system.
+A review of existing literature was carried out to identify current approaches used in clinical document processing, biomedical natural language processing, information extraction, and clinical terminology mapping. Examining previous research helped establish the technical foundations of the proposed system and provided insight into the strengths and limitations of existing methods.
+
+The following sections summarize relevant studies, compare their methodologies and findings, and highlight the research gaps that motivated the development of the proposed ICDPS framework.
 
 \subsection[Literature Survey]{\textbf{Literature Survey}}
 
-The literature survey presented in Table~\ref{tab:lit_survey} provides a comprehensive review of existing research works and technologies relevant to the proposed Intelligent Clinical Document Processing System (ICDPS). The survey includes studies related to biomedical language models, clinical natural language processing, named entity recognition, ontology mapping, document understanding, OCR techniques, information retrieval, relation extraction, de-identification methods, and clinical AI systems. Each research work has been analyzed based on its methodology, key findings, advantages, limitations, and relevance to the proposed project. The analysis of these studies identifies current advancements, existing research gaps, and suitable techniques and models for developing the proposed system. The findings from the literature survey also serve as a foundation for designing an integrated framework capable of efficiently processing and standardizing information from unstructured clinical documents.
+Table~\ref{tab:lit_survey} summarizes representative research contributions relevant to this work. The reviewed studies cover a range of topics including biomedical language models, clinical named entity recognition, OCR-based document processing, ontology mapping, semantic retrieval, relation extraction, de-identification, explainable AI, and healthcare information systems.
+
+Each study was examined with respect to its methodology, key contributions, advantages, limitations, and relevance to the objectives of this project. The review helped identify techniques suitable for clinical entity extraction, document understanding, and SNOMED CT mapping, while also revealing limitations in existing systems related to document variability, terminology standardization, and support for heterogeneous clinical records.
+
+The observations obtained from the literature survey guided the selection of models, system components, and architectural decisions used in the development of the proposed clinical document processing framework.
 
 \begin{landscape}
 \begin{singlespace}
@@ -407,7 +415,7 @@ The project followed an iterative SDLC comprising five phases: requirements anal
 
     \item \textbf{Phase 3 --- Implementation:} Each module was implemented and integrated in Python 3.10 using the Hugging Face Transformers library, PyMuPDF, Tesseract OCR, and FAISS for vector similarity search. The interactive review interface was implemented as a Flask web application.
 
-    \item \textbf{Phase 4 --- Testing:} The system was evaluated on a curated test corpus comprising 150 de-identified clinical documents. Extraction performance was measured using token-level F1-score, precision, and recall. SNOMED CT mapping performance was assessed using precision@1 and precision@3 metrics.
+    \item \textbf{Phase 4 --- Testing:} The system was evaluated on a curated test corpus comprising 150 de-identified clinical documents. Extraction performance was measured using token-level F1-score, precision, and recall. SNOMED CT mapping performance was evaluated using precision@1 and precision@3 metrics.
 
     \item \textbf{Phase 5 --- Deployment Preparation:} System documentation, deployment scripts, and NHS integration guides were produced. The system was containerized using Docker for repeatable deployment.
 \end{itemize}
@@ -416,11 +424,11 @@ The project followed an iterative SDLC comprising five phases: requirements anal
 %=========================================================
 \section{Expected Outcomes}
 
-The project is expected to deliver the following outcomes:
+The project delivers the following outcomes:
 
 \begin{itemize}
 
-\item A fully functional end-to-end ICDPS pipeline processing PDFs and image-based clinical documents.
+\item Anl end-to-end ICDPS pipeline that processes PDFs and image-based clinical documents.
 
 \item A fine-tuned BioBERT NER model achieving F1-score $\geq$ 0.88 on clinical entity extraction across all eight entity categories.
 
@@ -438,32 +446,35 @@ The project is expected to deliver the following outcomes:
 %=========================================================
 \section{Organization of the Report}
 
-This report is organized into nine chapters as follows:
+The report is organized into nine chapters:
 
 \begin{itemize}
 
-\item \textbf{Chapter 1 --- Introduction:} Provides the project background, domain overview, problem statement, objectives, scope, literature review, research gaps, and methodology. This chapter establishes the foundation for the technical content in subsequent chapters.
+\item \textbf{Chapter 1 --- Introduction:} Introduces the project domain, outlines the problem being addressed, presents the objectives and scope of the work, reviews relevant literature, identifies research gaps, and describes the overall methodology adopted for system development.
 
-\item \textbf{Chapter 2 --- Theory and Concepts:} Presents the theoretical background relevant to the project, including NLP fundamentals, transformer architectures, clinical ontologies, and document processing concepts.
+\item \textbf{Chapter 2 --- Theory and Concepts:} Reviews the theoretical concepts required for this work, including natural language processing, transformer-based language models, clinical terminologies, ontology mapping, and document processing techniques.
 
-\item \textbf{Chapter 3 --- Software Requirement Specification:} Defines the functional and non-functional requirements, hardware and software specifications, and design constraints of the proposed system.
+\item \textbf{Chapter 3 --- Software Requirement Specification:} Describes the functional and non-functional requirements of the system along with the hardware, software, and operational constraints considered during development.
 
-\item \textbf{Chapter 4 --- High-Level Design:} Describes the overall system architecture, major module interactions, and high-level data and learning workflows.
+\item \textbf{Chapter 4 --- High-Level Design:} Explains the overall system architecture, module interactions, data flow, and major processing stages of the proposed framework.
 
-\item \textbf{Chapter 5 --- Detailed Design:} Presents the internal technical design of each module, including data preprocessing pipelines, model architecture specifications, training configurations, and inference workflows.
+\item \textbf{Chapter 5 --- Detailed Design:} Details the internal design of individual modules, including preprocessing pipelines, model configurations, training procedures, and inference workflows.
 
-\item \textbf{Chapter 6 --- Implementation Details:} Describes the implementation of the proposed system, including the technologies, tools, frameworks, algorithms, and module-level development details used in building the Intelligent Clinical Document Processing System (ICDPS).
+\item \textbf{Chapter 6 --- Implementation Details:} Describes the technologies, frameworks, algorithms, and development procedures used to implement the Intelligent Clinical Document Processing System (ICDPS).
 
-\item \textbf{Chapter 7 --- Model Testing and Validation:} Presents the testing procedures, validation methods, performance evaluation metrics, and test cases used to assess the effectiveness and reliability of the developed models and system components.
+\item \textbf{Chapter 7 --- Model Testing and Validation:} Presents the testing methodology, evaluation procedures, validation strategies, and performance metrics used to assess the developed system.
 
-\item \textbf{Chapter 8 --- Results and Discussion:} Discusses the experimental results obtained from different modules, analyzes system performance, and interprets the outcomes in relation to the project objectives and existing approaches.
+\item \textbf{Chapter 8 --- Results and Discussion:} Analyzes the results obtained from the experiments, evaluates system performance, and discusses the findings with respect to the project objectives.
 
-\item \textbf{Chapter 9 --- Conclusion:} Summarizes the overall contributions and outcomes of the project, highlights the achievements of the proposed system, discusses existing limitations, and suggests potential directions for future improvements and enhancements.
+\item \textbf{Chapter 9 --- Conclusion:} Summarizes the work carried out, reviews the major outcomes of the project, discusses limitations, and outlines possible directions for future enhancements.
 
 \end{itemize}
-
 
 %=========================================================
 \section*{Summary}
 
-This chapter introduced the Intelligent Clinical Document Processing System, positioning it within the global context of clinical NLP and NHS digital transformation. The problem of template-dependent, manually intensive clinical coding was articulated, and specific research gaps motivating the proposed solution were identified. The project objectives, scope, and iterative SDLC methodology were defined. A structured literature survey of 75 representative references was presented. The chapter concluded with an overview of the report organization. Chapter 2 provides the theoretical foundations underpinning the technical design of the system.
+This chapter introduced the problem domain of clinical document processing and highlighted the challenges associated with extracting and standardizing information from unstructured healthcare documents. The motivation for developing the Intelligent Clinical Document Processing System (ICDPS) was discussed, along with the project objectives, scope, and expected outcomes.
+
+Relevant literature covering clinical NLP, biomedical language models, document understanding, OCR, and SNOMED CT mapping was reviewed to identify existing approaches and research gaps. Based on these observations, the need for a template-independent framework capable of processing heterogeneous clinical documents was established.
+
+The chapter also outlined the overall organization of the report. The next chapter presents the theoretical concepts and technical foundations that support the design and implementation of the proposed system.
