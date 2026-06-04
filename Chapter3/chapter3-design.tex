@@ -1,31 +1,31 @@
 \chapter{Software Requirement Specification}
 
-The Software Requirement Specification (SRS) defines the operational requirements and constraints of the Intelligent Clinical Document Processing System (ICDPS). Establishing these requirements is necessary to ensure that the implemented system aligns with the objectives of clinical document processing, information extraction, summarization, and SNOMED CT terminology mapping described in previous chapters.
+The Software Requirements Specification (SRS) defines the operational requirements and limitations of the ICDPS (Intelligent Clinical Document Processing System). Definition of these requirements is indispensable to ensure that the system built fulfill the goals of clinical document processing, information extraction, summarization and SNOMED CT terminological mapping specified in the earlier chapters.
 
-The proposed system integrates multiple processing components within a unified workflow, including document ingestion, OCR, clinical entity extraction, semantic retrieval, and structured output generation. Each component introduces specific requirements related to functionality, performance, reliability, security, and usability. These requirements serve as a reference for subsequent design, implementation, and evaluation activities.
+The designed system is a system that consists of several processing stages in a single workflow: document input, OCR, clinical information extraction, semantic search and output. All of these stages generate specific requirements based on their functionality, efficiency, availability, security and usability. Those requirements form the basis of the design, implementation and testing of the system.
 
-This chapter describes the functional and non-functional requirements of the system together with the hardware, software, and operational conditions considered during development and deployment.
+In this chapter, functional and non-functional requirements are specified. Hardware and software conditions along with the operational conditions, taken in account during the design and implementation of the system, are also mentioned.
 
 \section{Overall Description}
 
-The Intelligent Clinical Document Processing System (ICDPS) is designed to transform unstructured clinical documents into structured information suitable for review and terminology coding. Users submit clinical documents to the system, which then processes the content through a sequence of extraction, analysis, and coding stages before presenting the resulting information through a review interface.
+The Intelligent Clinical Document Processing System (ICDPS) aims to turn unstructured clinical documents into structured data for review and terminology coding. The system receives clinical documents from a user and outputs structured data after the clinical document has been processed through a series of extraction, analysis, and coding steps and presented through a review interface.
 
-The system supports the processing of both digitally generated and image-based clinical documents. Its primary outputs include extracted clinical entities, generated summaries, and confidence-ranked SNOMED CT coding suggestions. The architecture is intended to operate as an intermediary processing layer between document sources and downstream healthcare applications.
+The system should be capable of processing clinical documents originating from both machine-readable formats and scanned images. The outputs will consist of extracted clinical data items, summaries, and a SNOMED CT code assignment suggestion that will include a confidence score. The system is intended to function as an intermediate processing layer situated between document sources and downstream healthcare systems.
 
-This section outlines the operating environment, principal system functions, user interactions, and design constraints that define the scope and expected behaviour of the proposed solution.
+This section describes the intended operating environment, key system features, user actions and constraints for the proposed solution.
 
 \subsection{Product Perspective}
 
-The Intelligent Clinical Document Processing System (ICDPS) was designed as a standalone server-side application responsible for processing clinical documents and generating structured outputs. Rather than being developed for a specific Electronic Health Record (EHR) platform, the system operates independently and can be integrated with existing healthcare applications through REST-based interfaces.
+The ICDPS was originally designed to be a single server-side application performing all the clinical document processing and generating a structured output based on received clinical documents. Instead of designing the system for a specific EHR, the ICDPS was designed as a standalone service to be easily integrated with existing healthcare applications using REST-based APIs.
 
-Clinical documents are submitted to the processing pipeline, where they undergo document ingestion, text extraction, information extraction, summarization, and SNOMED CT mapping. The resulting entities, summaries, and coding suggestions are then returned to the requesting application through the API. By separating document processing from external healthcare systems, the architecture supports integration with different document repositories, review interfaces, and coding workflows without requiring modifications to the core pipeline.
+A clinical document is posted to the processing pipeline, where the document goes through document ingestion, text extraction, information extraction, summarization, and SNOMED CT mapping. A summary and the detected entities with SNOMED CT codes are sent back to the calling application through an API. Because the core pipeline does not need to know about any EHR or its document repository and review interface, different components that interact with the pipeline (document repositories, user review interfaces, coding tools) can be swapped out without having to rewrite the main pipeline logic.
 
-The system was designed for deployment within a secure healthcare environment. Communication between components is protected using TLS 1.3 encryption, while processed documents and generated outputs are stored in a PostgreSQL database to support auditing, validation, and review activities. All processing is performed within the deployment environment, ensuring that patient information remains within organizational boundaries throughout the workflow.
+The system was designed to run within a secure healthcare setting, all internal communication is secured with TLS 1.3 and documents along with outputs are stored in a PostgreSQL database to enable audit, validation and review. All document processing is done within the secure setting and not exposed outside.
 
 \subsection{Product Functions}
 The ICDPS provides the following functionalities:
 \begin{itemize}
-    \item \textbf{Document Ingestion:} Accept clinical documents in PDF and image formats through API-based uploads or batch document processing workflows.
+    \item \textbf{Document Ingestion:} Accept clinical documents, in PDF and image formats. Via API based uploads or batch document processing workflow.
     \item \textbf{Text Extraction:} Extract machine-readable text from PDFs using direct extraction; apply OCR to image-based documents.
     \item \textbf{Named Entity Recognition:} Identify and classify clinical entities in extracted text across eight predefined categories.
     \item \textbf{Clinical Summarization:} Generate extractive summaries of clinical documents highlighting key findings.
@@ -54,11 +54,11 @@ The following constraints apply to the ICDPS:
 
 \section{Specific Requirements}
 
-This section outlines the requirements identified for the Intelligent Clinical Document Processing System (ICDPS). These requirements describe the expected functionality of the system, its operational characteristics, and the constraints considered during development. They establish the criteria against which the system is designed, implemented, and evaluated.
+In this section we detail the requirements that we derived for the ICDPS. These are the specification of the expected functional behavior, the characteristics of the system, and the limitations we took into consideration. These are the specifications by which the ICDPS has been designed, implemented and validated.
 
 \subsection{Functional Requirements}
 
-The functional requirements define the primary capabilities expected from the ICDPS. They describe how the system processes clinical documents, extracts and organizes information, generates SNOMED CT coding suggestions, and presents results for user review. Table~\ref{tab:functional_requirements} summarizes these requirements and their implementation priority.
+The functional requirements describe the core functionality which the ICDPS system must provide. They cover how the ICDPS deals with clinical documents, extracts and structures information, suggests SNOMED CT coding, and displays results for user review. A summary of these requirements and their priority for implementation can be seen in Table~\ref{tab:functional_requirements}.
 
 \begin{longtable}{|p{1.4cm}|p{10.4cm}|p{2cm}|}
 \caption{Functional Requirements}
@@ -79,7 +79,7 @@ FR-02 & The system shall extract machine-readable text from PDFs using direct te
 \hline
 FR-03 & The system shall apply OCR to image-format documents using the Tesseract 5.0 engine to generate UTF-8 text. & High \\
 \hline
-FR-04 & The system shall automatically detect and classify clinical entities from processed document text into predefined categories such as Diagnosis, Medication, Dosage, Procedure, Anatomy, Allergy, Laboratory Result, and Temporal Expression. & High \\
+FR-04 & The system shall automatically extract and classify clinical entities found in the processed document text into established categories including, but not limited to: Diagnosis, Medication, Dosage, Procedure, Anatomy, Allergy, Laboratory Result, and Temporal Expression. & High \\
 \hline
 FR-05 & The system shall assign a negation status (affirmed/negated/uncertain) to each identified entity. & High \\
 \hline
@@ -105,7 +105,7 @@ FR-14 & The system shall provide an exportable structured report in CSV format s
 
 \subsection{Non-Functional Requirements}
 
-Non-functional requirements specify the performance and operational characteristics expected from the ICDPS. They address factors such as reliability, security, usability, maintainability, and processing efficiency, which influence the overall quality and dependability of the system. The non-functional requirements considered during system development are presented in Table~\ref{tab:nonfunctional_requirements}.
+Non-functional requirements are quality and operational requirements placed on the ICDPS. These may relate to performance of the system, security, ease of use, maintainability or efficiency of processing. The non-functional requirements that were imposed on the system are given in Table~\ref{tab:nonfunctional_requirements}.
 
 \begin{longtable}{|p{1.8cm}|p{2.6cm}|p{10cm}|}
 \caption{Non-Functional Requirements}
@@ -142,15 +142,15 @@ NFR-09 & Portability & The system shall be containerized using Docker and deploy
 
 \subsection{Performance Requirements}
 
-Performance requirements define the expected processing speed and responsiveness of the Intelligent Clinical Document Processing System (ICDPS). These requirements establish operational targets for the major processing components and help ensure that clinical documents can be analysed within acceptable time limits.
+The performance requirements of ICDPS specification the speed and responsiveness at which clinical documents are expected to be processed. They provide targets for key processing modules to guide the development process and ensure analysis time of the clinical document meets acceptable standards.
 
-The NER module is expected to process approximately 500 tokens per second on a system equipped with an NVIDIA A100 GPU. The SNOMED CT candidate retrieval module should return the top five concept suggestions within 200 milliseconds for each entity query. In addition, the web-based review interface should display extraction results for an individual clinical document within 2 seconds on a standard clinical workstation.
+The NER module should process an average of 500 tokens per second on a machine with NVIDIA A100 GPU. The SNOMED CT candidate retrieval module should be able to return the top 5 concept candidates within 200 milliseconds per entity query. The web review interface should display extraction for a single clinical document within 2 seconds when used on a standard clinical workstation.
 
-The system should maintain stable performance when processing larger documents containing up to 50 pages or approximately 25,000 tokens. These performance targets were selected to support efficient document processing while maintaining a responsive user experience during review and coding activities.
+Performance should not be substantially degraded when dealing with large clinical documents, with a maximum of 50 pages (or roughly 25,000 tokens). These targets were chosen in consideration of efficient document processing time during the analysis process and the responsive review/coding phase.
 
 \subsection{Software Requirements}
 
-Software requirements define the software components and technologies used within the ICDPS framework. The selected libraries, frameworks, and development tools support the implementation of document processing workflows, machine learning inference, database operations, and system deployment activities.
+Software requirements specify the parts and technologies used within the ICDPS system. The chosen libraries, framework and development tools will be used to develop document processing workflows, machine learning inferences, database operations and system deployment activities.
 
 Table~\ref{tab:software_requirements} summarizes the software platforms, development environments, and supporting technologies used in the implementation of the Intelligent Clinical Document Processing System (ICDPS).
 
@@ -297,6 +297,6 @@ Design constraints define the technical and operational limitations that influen
 
 \section*{Summary}
 
-This chapter outlined the software requirements of the ICDPS, covering functional requirements, non-functional requirements, performance targets, operational constraints, and the supporting technologies required for deployment. These requirements define the expected behaviour and operating environment of the proposed system.
+This chapter outlined the software requirements of the ICDPS, covering functional requirements, non-functional requirements, performance targets, operational constraints, and the supporting technologies required for deployment. 
 
-The next chapter focuses on the high-level system architecture and explains how the identified requirements influenced the design of the overall processing framework.
+These requirements outline the required system behavior and operating environment for the suggested system. The subsequent chapter addresses the high level architecture of the system and describes how the stated requirements shaped the architecture of the overall processing infrastructure.

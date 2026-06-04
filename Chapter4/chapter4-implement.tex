@@ -1,44 +1,44 @@
 \chapter{High-Level Design}
 
-The Intelligent Clinical Document Processing System (ICDPS) is organized as a modular architecture that supports document ingestion, information extraction, summarization, and SNOMED CT terminology mapping. Rather than relying on a single monolithic component, the system is divided into a series of interconnected modules, each responsible for a specific stage of the processing workflow. This approach simplifies development, improves maintainability, and allows individual components to be updated independently.
+The Intelligent Clinical Document Processing System (ICDPS) has a modular architecture for document input, information extraction, document summarisation and mapping to SNOMED CT terminology. Instead of one large component each phase of the workflow has its own module. This makes the system easier to build, maintain, and allows individual components to be changed in isolation.
 
-The architecture defines how clinical documents progress through the processing pipeline, beginning with document submission and ending with the generation of structured outputs for review and coding. It also establishes the interactions between the major system components and the technologies that support them.
+The architecture describes the flow of clinical documents through the processing pipeline starting at submission and finishing with a list of structured outputs to be checked and coded. It also shows how the different parts of the system and supporting technology relate to each other.
 
 \section{Design Considerations}
 
-The design of the ICDPS was influenced by both technical and operational requirements associated with clinical document processing. Healthcare documents vary considerably in structure, content, and quality, requiring an architecture capable of handling heterogeneous inputs while maintaining reliable performance. In addition to processing accuracy, considerations such as modularity, scalability, security, maintainability, and future extensibility were incorporated into the design process.
+Technical and operational needs surrounding clinical document processing affected the design of the ICDPS. Due to the widely varying nature of healthcare documents (i.e., document structure, content and quality), the system architecture was needed to accommodate disparate input and to offer reliable performance. Accuracy of processing was only one factor; modularity, scalability, security, maintainability and extendibility for the future were also taken into account.
 
-These considerations shaped the overall system architecture, technology selection, deployment approach, and communication mechanisms adopted between the major processing modules.
+All of these factors have been taken into account in the general architecture of the system, choice of technologies to be implemented, method of deployment and the means of communication between each of the primary processing components.
 
 \subsection{General Considerations}
 
-Several architectural principles influenced the design of the ICDPS. These principles were adopted to ensure that the system could process heterogeneous clinical documents while remaining maintainable, scalable, secure, and reliable throughout its operational lifecycle.
+There are a number of architectural principles which underpin the design of the ICDPS. The architectural principles adopted were so that the ICDPS would be able to cope with heterogeneity of clinical documents and be: maintainable; scalable; secure; and robust over its lifecycle.
 
 \begin{itemize}
 
-\item \textbf{Modularity:} The system is organized into independent modules, including Document Ingestion, Text Extraction, NER, Summarization, SNOMED CT Mapping, and Review components. Each module exposes clearly defined inputs and outputs, allowing components to be tested, updated, or replaced without affecting the remainder of the pipeline.
+\item \textbf{Modularity:} The system is a set of individual modules, as seen in Figure 1, that are Document Ingestion, Text Extraction, NER, Summarization, SNOMED CT Mapping and Review. Each module defines specific inputs and outputs so that it can be tested, modified or replaced independently.
 
-\item \textbf{Scalability:} The processing workflow supports horizontal scaling through containerized deployment. Additional instances can be introduced to accommodate increased document processing workloads when required.
+\item \textbf{Scalability:} Horizontal scaling can be handled with the help of containers in the processing workflow. More containers can be provisioned and used as and when more documents needs to be processed.
 
-\item \textbf{Reliability:} Error-handling mechanisms are implemented throughout the pipeline. Documents that cannot be processed successfully are redirected to an error queue for investigation, while processing events are recorded to support auditing and troubleshooting activities.
+\item \textbf{Reliability:} The error handling mechanisms are built into the entire pipeline. Unsuccessfully processed documents are placed in an error queue for investigation and the events related to the processing are logged to facilitate auditing.
 
-\item \textbf{Maintainability:} Source code, configuration files, and model artefacts are managed independently to simplify updates and maintenance. API documentation and version control practices support long-term management of the system.
+\item \textbf{Maintainability:} All code, configuration files, model artifacts are stored separately, making them easier to update and maintain. Long term management of the system are facilitated by API documentation and version control methods.
 
-\item \textbf{Security:} Access to system interfaces and API endpoints is controlled through role-based authorization mechanisms. Clinical documents and extracted information remain within the deployment environment and are accessible only to authorized users.
+\item \textbf{Security:} Role-based access control is implemented for access to system interfaces and API endpoints. Clinical documents and extracted data stay in the deployment environment and are only accessible by users who are granted appropriate permissions.
 
-\item \textbf{Explainability:} Generated SNOMED CT suggestions are accompanied by confidence scores, while extracted entities are linked to their corresponding source text spans. These features allow users to review the evidence supporting system outputs before accepting coding recommendations.
+\item \textbf{Explainability:} Suggested SNOMED CT codes are displayed with a confidence value, and entities are mapped back to their source text. Both of these are useful to enable the user to examine the evidence for a given system output before adopting a proposed coding.
 
 \end{itemize}
 
 \subsection{Development Methodology}
 
-The ICDPS was developed using an iterative Software Development Life Cycle (SDLC) comprising requirements analysis, system design, implementation, testing, and deployment preparation. Rather than completing these activities in a strictly sequential manner, development progressed through multiple iterations, allowing design decisions, implementation choices, and model configurations to be refined as testing results became available.
+A linear, iterative Software Development Life Cycle (SDLC) involving requirements analysis, system design, implementation, testing and preparation for deployment was used to develop the ICDPS. However, this was not done in a linear manner but iteratively, where each cycle was based on refining design decisions, implementation decisions and model configuration according to feedback from tests.
 
-Project management activities incorporated selected Agile practices, including periodic sprint reviews, version control through GitHub, and continuous integration using GitHub Actions. These practices supported progress tracking, code quality management, and the coordination of development activities throughout the project.
+Selected Agile project management practices were included; including regular sprint review meetings, source code control with Git/GitHub and continuous integration using GitHub Actions. These helped in tracking progress, maintaining code quality and coordinating activities.
 
 \section{Architecture Strategies}
 
-Architecture strategies outline the key design approaches adopted for the ICDPS and the manner in which major system components are organised and connected. The architecture combines document processing, NLP, semantic retrieval, and terminology mapping within a modular pipeline that supports maintainability, extensibility, and independent component development.
+Architecture strategies present the principal design strategies applied for the ICDPS and the organisation and interrelationship of its major components. The system architecture integrates document processing, NLP, semantic retrieval and terminology mapping in a modular pipeline structure to enable maintainability, extendibility and separate development of components.
 
 \subsection{Technology and Framework Selection}
 Python 3.10 was selected as the primary implementation language because it provides extensive support for machine learning, natural language processing, and document processing frameworks used throughout the ICDPS pipeline. It also provides compatibility with the frameworks and tools used throughout the project. The Hugging Face Transformers library was selected as the primary NLP framework because it offers well-documented implementations of BioBERT and other transformer-based models, along with standardized interfaces for training and inference.
@@ -92,11 +92,7 @@ The ICDPS consists of a set of modules that collectively implement the document 
 
 Table~\ref{tab:module_descriptions} summarizes the major modules in the architecture, along with their inputs, processing responsibilities, and generated outputs.
 
-\begin{longtable}{|>{\raggedright\arraybackslash}p{3.3cm}|
-                  >{\raggedright\arraybackslash}p{2.7cm}|
-                  >{\raggedright\arraybackslash}p{3.9cm}|
-                  >{\raggedright\arraybackslash}p{3.9cm}|}
-\caption{ICDPS Module Descriptions}
+\begin{longtable}{|p{3.3cm}|p{2.7cm}|p{3.9cm}|p{3.9cm}|}
 \label{tab:module_descriptions} \\
 \hline
 \textbf{Module} & \textbf{Input} & \textbf{Processing} & \textbf{Output} \\
@@ -183,41 +179,36 @@ The inference workflow describes how the deployed system processes newly submitt
 
 When a document is uploaded, it undergoes rendering and image preprocessing before being submitted to AWS Textract for OCR extraction. Documents with OCR confidence scores above the predefined threshold of 0.90 continue through the standard processing path. Documents that do not satisfy this threshold are routed to the LayoutLMv3 refinement module for additional processing.
 
-Following text extraction, the SNOMED CT mapping cascade identifies relevant medical concepts and generates standardized terminology suggestions. At the same time, PHI detection, structured field extraction, and document summarization are performed as parallel processing tasks. Outputs from these components are combined with confidence measures produced at different stages of the pipeline to calculate the Unified Confidence Score (UCS).
+Following text extraction, the SNOMED CT mapping cascade identifies relevant medical concepts and generates standardized terminology suggestions. At the same time, PHI detection, structured field extraction, and document summarization are performed as parallel processing tasks. The results of these elements along with confidence measures at various pipeline steps are combined to determine the Unified Confidence Score (UCS).
 
-The UCS provides an overall indication of processing reliability and is used to support downstream workflow decisions. Documents with sufficiently high confidence can proceed directly to output generation, whereas lower-confidence results are flagged for clinician review before final acceptance.
-
+The UCS gives a measure of how reliably a document has been processed and will be used to guide workflow. High confidence documents may skip the clinician review step and be sent to output generation, while low confidence results will be presented to a clinician for validation.
 
 \section{System Interaction and Deployment Overview}
 
-The ICDPS includes both user-facing and backend components that work together to support clinical document processing. Users interact with the platform through document submission and review interfaces, while the underlying infrastructure manages processing tasks, model inference, data storage, and workflow coordination.
+The ICDPS can be divided into both a user facing component and a backend component to facilitate the processing of clinical documents. The user interface allows users to upload and review documents, and the backend provides the processing power, models, data persistence, and workflow management.
 
-This section outlines the user interaction workflow and provides an overview of the deployment environment used to support system operation.
+This section briefly discusses the user interaction workflow, and the deployment environment.
 
 \subsection{User Interaction Flow}
 
-The NHS Portal UI provides the primary point of interaction between healthcare users and the ICDPS. Through this interface, users can upload clinical documents, review generated outputs, and export processed information for further use.
+The main interface for health care users and the ICDPS is via the NHS Portal UI. Users can upload documents for processing, then view the result of the processing, or download the structured information for subsequent use.
 
-Document submission initiates the backend processing workflow through a multipart POST request. As the document progresses through the pipeline, processing status is displayed through a progress indicator. Upon completion, results are organized into four tabbed sections: Details, Coding, Follow-up, and GP Actions, allowing users to navigate different categories of extracted information efficiently.
-
-A colour-coded Unified Confidence Score (UCS) badge is displayed alongside the results to indicate overall processing confidence. Users can examine extracted entities, review generated summaries, adjust SNOMED CT coding suggestions when required, and export the resulting structured records for downstream clinical workflows.
+On submitting a document for processing, a multiparty POST is used to begin the backend processing workflow. As the document moves through the pipeline, a progress indicator show the status of the processing. Results of the pipeline are organized into 4 tabbed areas; Details, Coding, Follow-up and GP Actions.
 
 \subsection{Model-Service Interaction}
 
-Communication between ICDPS components and supporting cloud services is performed through secure service interfaces. AWS resources are accessed using \texttt{boto3} clients over encrypted TLS connections, with related services deployed within the same AWS region to minimise latency.
+All communication between ICDPS components and underlying cloud services happen through protected service interfaces. AWS services are accessed through boto3 clients via protected TLS connections and related services are kept in the same AWS region for lowest latency.
 
-Protected Health Information (PHI) is excluded from logging operations before audit data is stored. The LayoutLMv3 refinement component is deployed as a containerized local service, enabling independent inference and asynchronous processing of documents that require additional analysis.
+PHI are excluded from any logging activities prior to writing audit data. The LayoutLMv3 fine-tuning component is served as a containerized local service to allow off-line inferences and documents needing further inspection to be processed asynchronously.
 
 \subsection{Deployment Overview}
 
-The ICDPS adopts a cloud-native deployment architecture that combines containerized application services with managed AWS infrastructure. The Flask backend and LayoutLMv3 inference component are packaged as Docker containers and deployed using Amazon ECS with Fargate support.
+The deployment architecture of ICDPS utilizes a combination of containerized application services, hosted on managed AWS services. The Flask backend and LayoutLMv3 inference service have both been bundled as Docker containers, and are then deployed onto an Amazon ECS service running with Fargate.
 
-The NHS Portal frontend is distributed through CloudFront to improve availability and reduce response times. Amazon SQS facilitates asynchronous communication between processing stages, while AWS Step Functions orchestrate workflow execution and error-handling operations. Audit records, extracted information, and processing metadata are stored in Amazon DynamoDB.
+The front-end of the NHS Portal is served over a CloudFront distribution, increasing availability and decreasing response times. Amazon SQS is utilized for asynchronous message passing between processing steps, and AWS Step Functions are used to orchestrate execution of workflows and failure conditions. Audit logs, extracted fields and processing information are written to Amazon DynamoDB.
 
-By distributing responsibilities across multiple services, the deployment architecture supports scalability, fault tolerance, and flexible management of document processing workloads.
+The distribution of workloads across various services helps to increase the elasticity, fault tolerance and control over the document processing workload.
 
 \section*{Summary}
 
-This chapter presented the high-level design of the Intelligent Clinical Document Processing System (ICDPS), outlining the major processing layers, module interactions, AI workflow, deployment architecture, and user interaction model. The architectural principles and technology choices that influenced the overall system design were also discussed.
-
-The high-level design establishes how information flows through the system, from document ingestion and processing to structured output generation and review. The next chapter focuses on the detailed design of individual components, including data organisation, preprocessing procedures, model configurations, and implementation-specific design considerations.
+In this chapter the high-level design for the ICDPS was discussed including the different processing layers and interaction between modules, the AI work flow, system architecture of deployment and interaction with the user, as well as explaining the architecture principles and choices made for the system. The high-level design explains how the data is transferred between different processing stages from intake to output and then finally to be validated. In the following chapter the detail design of components is discussed.
